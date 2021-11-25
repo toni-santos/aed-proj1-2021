@@ -1,0 +1,3 @@
+C:/Users/ANTONIO/Desktop/uni/aed-proj-2021/cmake-build-debug/CMakeFiles/aed_proj_2021.dir
+C:/Users/ANTONIO/Desktop/uni/aed-proj-2021/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/ANTONIO/Desktop/uni/aed-proj-2021/cmake-build-debug/CMakeFiles/rebuild_cache.dir

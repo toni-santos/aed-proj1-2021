@@ -3,19 +3,19 @@
 
 #include <string>
 
-class plane {
+class Plane {
 private:
     std::string plate, type;
     unsigned capacity;
 public:
     // Constructors
-    plane() {
+    Plane() {
         this->capacity = 0;
         this->plate = "";
         this->type = "";
     };
 
-    plane(std::string plate, std::string type, unsigned capacity) {
+    Plane(std::string plate, std::string type, unsigned capacity) {
         this->capacity = capacity;
         this->plate = plate;
         this->type = type;

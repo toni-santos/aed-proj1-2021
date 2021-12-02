@@ -3,14 +3,14 @@
 
 #include <string>
 
-class flight {
+class Flight {
 private:
     unsigned number, duration;
     std::string departureDate, destination, origin;
 
 public:
     // Constructors
-    flight() {
+    Flight() {
         this->origin = "";
         this->destination = "";
         this->departureDate = "";
@@ -18,7 +18,7 @@ public:
         this->duration = 0;
     };
 
-    flight(std::string origin, std::string destination, std::string departureDate, unsigned number, unsigned duration) {
+    Flight(std::string origin, std::string destination, std::string departureDate, unsigned number, unsigned duration) {
         this->origin = "";
         this->destination = "";
         this->departureDate = "";

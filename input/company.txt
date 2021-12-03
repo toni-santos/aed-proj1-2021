@@ -1,0 +1,6 @@
+plane 12-11-21 B747 69 1
+plane 09-10-21 Veloz 420 2
+flight Oporto Lisbon 24/12/2021 1 120 1
+flight London Lisbon 25/12/2021 2 200 1
+flight Madrid Oporto 2/1/2022 3 720 1
+flight Dublin Oporto 6/12/2021 4 619 2

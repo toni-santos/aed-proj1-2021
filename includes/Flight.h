@@ -2,43 +2,39 @@
 #define AED_PROJ_2021_FLIGHT_H
 
 #include <string>
+#include <queue>
+#include "Ticket.h"
+#include "Plane.h"
 
 class Flight {
 private:
-    unsigned number, duration;
-    std::string departureDate, destination, origin;
+    const unsigned _number;
+    unsigned _duration;
+    std::queue<Ticket> _tickets;
+    const std::string _destination, _origin;
+    std::string _departureDate;
+    const Plane _plane;
 
 public:
     // Constructors
-    Flight() {
-        this->origin = "";
-        this->destination = "";
-        this->departureDate = "";
-        this->number = 0;
-        this->duration = 0;
-    };
-
-    Flight(std::string origin, std::string destination, std::string departureDate, unsigned number, unsigned duration) {
-        this->origin = "";
-        this->destination = "";
-        this->departureDate = "";
-        this->number = 0;
-        this->duration = 0;
-    };
+    // TODO: prices (?)
+    Flight(std::string origin, std::string destination, std::string departureDate, unsigned number, unsigned duration):
+        _origin(origin), _destination(destination), _departureDate(departureDate), _number(number), _duration(duration) { };
 
     // Getters
-    unsigned getNumber() const { return this->number; };
-    unsigned getDuration() const { return this->duration; };
-    std::string getDepartureDate() const { return this->departureDate; };
-    std::string getDestination() const { return this->destination; };
-    std::string getOrigin() const { return this->origin; };
+    unsigned getNumber() const { return _number; };
+    unsigned getDuration() const { return _duration; };
+    std::string getDepartureDate() const { return _departureDate; };
+    std::string getDestination() const { return _destination; };
+    std::string getOrigin() const { return _origin; };
 
     // Setters
-    void setNumber(unsigned n) { this->number = n; };
-    void setDuration(unsigned dur) { this->duration = dur; };
-    void setDepartureDate(std::string dep) { this->departureDate = dep; };
-    void setDestination(std::string des) { this->destination = des; };
-    void setOrigin(std::string org) { this->origin = org; };
+    void setDuration(unsigned dur) { _duration = dur; };
+    void setDepartureDate(std::string dep) { _departureDate = dep; };
+
+    void addTicket(Ticket ticket) {
+        _tickets.push(ticket);
+    }
 };
 
 

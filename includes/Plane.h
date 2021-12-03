@@ -1,35 +1,53 @@
 #ifndef AED_PROJ_2021_PLANE_H
 #define AED_PROJ_2021_PLANE_H
 
-#include <string>
+#include "Service.h"
 
 class Plane {
 private:
-    std::string plate, type;
-    unsigned capacity;
+    std::string _plate, _type;
+    std::queue<unsigned> _flights;
+    unsigned _capacity, _id;
+    std::queue<Service> _services, _servicesDone;
+
 public:
     // Constructors
     Plane() {
-        this->capacity = 0;
-        this->plate = "";
-        this->type = "";
+        _capacity = 0;
+        _plate = "";
+        _type = "";
     };
 
-    Plane(std::string plate, std::string type, unsigned capacity) {
-        this->capacity = capacity;
-        this->plate = plate;
-        this->type = type;
+    Plane(std::string plate, std::string type, unsigned capacity, unsigned id) {
+        _capacity = capacity;
+        _plate = plate;
+        _type = type;
+        _id = id;
     };
 
     // Getters
-    unsigned getCapacity() const { return this->capacity; };
-    std::string getPlate() const { return this->plate; };
-    std::string getType() const { return this->type; };
+    unsigned getCapacity() const { return _capacity; };
+    std::string getPlate() const { return _plate; };
+    std::string getType() const { return _type; };
+    std::queue<unsigned> getFlights() const { return _flights; };
 
     // Setters
-    void setCapacity(unsigned cap) { this->capacity = cap; };
-    void setPlate(std::string pl) { this->plate = pl; };
-    void setType(std::string type) { this->type = type; };
+    void setCapacity(unsigned cap) { _capacity = cap; };
+    void setPlate(std::string pl) { _plate = pl; };
+    void setType(std::string type) { _type = type; };
+
+    void addFlight(unsigned flightID) {
+        _flights.push(flightID);
+    };
+
+    void addService(Service serv) {
+        _services.push(serv);
+    }
+
+    void serviceDone(){
+        _servicesDone.push(_services.front());
+        _services.pop();
+    }
 };
 
 

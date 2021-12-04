@@ -11,12 +11,12 @@ void readFile(std::string filePath) {
     i.close();
 }
 
-std::vector<std::string> split(std::string str) {
+std::vector<std::string> split(std::string str, char sep) {
     std::string temp;
     std::vector<std::string> final;
 
     for (auto i : str) {
-        if (i == ' ') {
+        if (i == sep) {
             final.push_back(temp);
             temp = "";
         } else {

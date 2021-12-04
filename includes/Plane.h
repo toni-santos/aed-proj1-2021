@@ -27,6 +27,7 @@ public:
 
     // Getters
     unsigned getCapacity() const { return _capacity; };
+    unsigned  getID() const { return _id;};
     std::string getPlate() const { return _plate; };
     std::string getType() const { return _type; };
     std::queue<unsigned> getFlights() const { return _flights; };

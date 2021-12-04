@@ -7,5 +7,5 @@
 #include <vector>
 
 void readFile(std::string filePath);
-std::vector<std::string> split(std::string str);
+std::vector<std::string> split(std::string str, char i);
 #endif //AED_PROJ_2021_UTILS_H

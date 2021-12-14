@@ -1,13 +1,24 @@
+#include <chrono>
 #include <iostream>
+#include <thread>
 
-#include "../includes/Menu.h"
 #include "../includes/Company.h"
+#include "../includes/Exceptions.h"
+#include "../includes/Menu.h"
 
 int main() {
+    Menu menu;
+
     try {
         Company comp = Company();
-        Menu menu;
-        menu.menu(comp);
+
+        while (true) {
+            menu.menu(comp);
+        }
+    } catch (Exit) {
+        menu.exit();
+    } catch (ReadError) {
+        std::cout << "Something went wrong reading a file!" << std::endl;
     } catch (...) {
         std::cout << "Escreve direito burro" << std::endl;
     }

@@ -1,4 +1,4 @@
-#include "../includes/Menu.h"
+#include "../includes/UserInterface.h"
 #include "../includes/Exceptions.h"
 #include "../includes/Utils.h"
 #include "../includes/constants.h"
@@ -7,17 +7,17 @@
 #include <thread>
 #include <unistd.h>
 
-void Menu::optionsMenu(
-    const std::string &menu,
-    const std::vector<std::pair<std::string, MenuType>> &options) {
-    std::cout << clearScreen << menu << "\n\n";
+void UserInterface::optionsMenu(
+    const std::string &text,
+    const std::vector<std::pair<std::string, Menu>> &options) {
+    std::cout << CLEAR_SCREEN << text << "\n\n";
 
-    for (int i{0}; i < options.size() - 1; ++i) {
-        std::cout << "(" << i + 1 << ") " << options.at(i).first << std::endl;
+    for (int i{1}; i < options.size(); ++i) {
+        std::cout << "(" << i << ") " << options.at(i).first << std::endl;
     }
 
-    std::cout << "(0) " << options.at(options.size() - 1).first << "\n\n";
-    std::cout << errorMessage << _errorMessage << reset;
+    std::cout << "(0) " << options.front().first << "\n\n";
+    std::cout << ERROR_MESSAGE << _errorMessage << RESET_FORMATTING;
     _errorMessage = "";
     std::cout << "Please insert option: " << std::flush;
 
@@ -29,12 +29,10 @@ void Menu::optionsMenu(
         return;
     }
 
-    int option = input.at(0) - '0';
+    unsigned option = input.at(0) - '0';
 
-    if (option == 0)
-        _currentMenu = options.back().second;
-    else if (option < options.size())
-        _currentMenu = options.at(option - 1).second;
+    if (option < options.size())
+        _currentMenu = options.at(option).second;
     else
         _errorMessage = "Invalid option!\n";
 }
@@ -43,9 +41,10 @@ bool validCredentials(std::string &username, std::string &password) {
     return username == "admin" && password == "admin";
 }
 
-void Menu::clientMenu() {
-    std::cout << clearScreen
-              << "Welcome to \e[9m[REDACTED]\e[0m Airlines!\n"
+void UserInterface::clientMenu() {
+    std::cout << CLEAR_SCREEN << "Welcome to " << STRIKE_THROUGH << "[REDACTED]"
+              << RESET_FORMATTING
+              << " Airlines!\n"
                  "We are connecting you to our services..."
               << std::flush;
     std::this_thread::sleep_for(std::chrono::seconds(5));
@@ -53,21 +52,21 @@ void Menu::clientMenu() {
     throw Exit();
 }
 
-void Menu::employeeMenu() {
+void UserInterface::employeeMenu() {
     std::string username, password;
 
-    std::cout << clearScreen
+    std::cout << CLEAR_SCREEN
               << "Please enter your credentials\n"
                  "Username: "
               << std::flush;
 
     getInput(username);
 
-    std::cout << "Password: \e[8m\e[?25l";
+    std::cout << "Password: " << CONCEAL_TEXT << DISABLE_CURSOR;
 
     getInput(password);
 
-    std::cout << "\e[?25h\e[0m";
+    std::cout << ENABLE_CURSOR << RESET_FORMATTING;
 
     if (validCredentials(username, password)) {
         _currentMenu = EMPLOYEE_OPTIONS;
@@ -76,26 +75,26 @@ void Menu::employeeMenu() {
     }
 }
 
-void Menu::mainMenu() {
+void UserInterface::mainMenu() {
     optionsMenu("COMPANY NAME",
-                {{"Client", CLIENT}, {"Employee", EMPLOYEE}, {"Exit", EXIT}});
+                {{"Exit", EXIT}, {"Client", CLIENT}, {"Employee", EMPLOYEE}});
 }
 
-void Menu::employeeOptionsMenu() {
-    optionsMenu("[REDACTED] AIRLINES - ADMIN", {{"Planes", PLANES},
+void UserInterface::employeeOptionsMenu() {
+    optionsMenu("[REDACTED] AIRLINES - ADMIN", {{"Log Off", MAIN},
+                                                {"Planes", PLANES},
                                                 {"Flights", FLIGHTS},
                                                 {"Services", SERVICES},
-                                                {"Clients", CLIENTS},
-                                                {"Log Off", MAIN}});
+                                                {"Clients", CLIENTS}});
 }
 
-void Menu::clientOptionsMenu() {
-    optionsMenu("[REDACTED] AIRLINES", {{"Check Flights", CHECK_FLIGHTS},
-                                        {"Buy Tickets", BUY_TICKETS},
-                                        {"Go back", MAIN}});
+void UserInterface::clientOptionsMenu() {
+    optionsMenu("[REDACTED] AIRLINES", {{"Go back", MAIN},
+                                        {"Check Flights", CHECK_FLIGHTS},
+                                        {"Buy Tickets", BUY_TICKETS}});
 }
 
-void Menu::menu(Company comp) {
+void UserInterface::show(Company comp) {
     switch (_currentMenu) {
     case MAIN:
         mainMenu();
@@ -118,8 +117,8 @@ void Menu::menu(Company comp) {
     }
 }
 
-void Menu::exit() {
-    std::cout << clearScreen << std::flush;
+void UserInterface::exit() {
+    std::cout << CLEAR_SCREEN << std::flush;
     std::cout << "Shutting down ✈" << std::flush;
     std::this_thread::sleep_for(std::chrono::milliseconds(250));
     std::cout << "\e[2D. ✈" << std::flush;

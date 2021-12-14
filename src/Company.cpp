@@ -15,7 +15,7 @@ void Company::populate() {
 void Company::readFlight() {
     std::ifstream f;
 
-    f.open(flightFilePath);
+    f.open(FLIGHT_FILE_PATH);
     if (f.fail())
         throw ReadError();
     while (!f.eof()) {
@@ -38,7 +38,7 @@ void Company::readFlight() {
 void Company::readPlane() {
     std::ifstream f;
 
-    f.open(planeFilePath);
+    f.open(PLANE_FILE_PATH);
     if (f.fail())
         throw ReadError();
     while (!f.eof()) {
@@ -57,7 +57,7 @@ void Company::readPlane() {
 void Company::readService() {
     std::ifstream f;
 
-    f.open(serviceFilePath);
+    f.open(SERVICE_FILE_PATH);
     if (f.fail())
         throw ReadError();
     while (!f.eof()) {

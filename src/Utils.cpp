@@ -29,14 +29,12 @@ std::vector<std::string> split(std::string str, char sep) {
     return final;
 }
 
-bool getInput(std::string &input) {
+void getInput(std::string &input) {
     std::getline(std::cin, input);
     normalizeInput(input);
 
     if (std::cin.eof())
         throw Exit();
-
-    return true;
 }
 
 void normalizeInput(std::string &input) {

@@ -4,19 +4,19 @@
 
 #include "../includes/Company.h"
 #include "../includes/Exceptions.h"
-#include "../includes/Menu.h"
+#include "../includes/UserInterface.h"
 
 int main() {
-    Menu menu;
+    UserInterface ui;
 
     try {
         Company comp = Company();
 
         while (true) {
-            menu.menu(comp);
+            ui.show(comp);
         }
     } catch (Exit) {
-        menu.exit();
+        ui.exit();
     } catch (ReadError) {
         std::cout << "Something went wrong reading a file!" << std::endl;
     } catch (...) {

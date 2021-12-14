@@ -8,19 +8,21 @@
 
 int main() {
     UserInterface ui;
+    Company comp;
 
     try {
-        Company comp = Company();
+        comp.populate();
+    } catch (ReadError) {
+        std::cerr << "Something went wrong reading a file!" << std::endl;
+        return 1;
+    }
 
+    try {
         while (true) {
             ui.show(comp);
         }
     } catch (Exit) {
         ui.exit();
-    } catch (ReadError) {
-        std::cout << "Something went wrong reading a file!" << std::endl;
-    } catch (...) {
-        std::cout << "Escreve direito burro" << std::endl;
     }
     // std::cout << "Hello, World!" << std::endl;
     return 0;

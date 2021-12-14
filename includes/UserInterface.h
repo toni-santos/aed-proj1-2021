@@ -15,9 +15,25 @@ enum Menu {
     EMPLOYEE,
     EMPLOYEE_OPTIONS,
     PLANES,
+    CREATE_PLANE,
+    READ_PLANE,
+    UPDATE_PLANE,
+    DELETE_PLANE,
     FLIGHTS,
+    CREATE_FLIGHT,
+    READ_FLIGHT,
+    UPDATE_FLIGHT,
+    DELETE_FLIGHT,
     SERVICES,
+    CREATE_SERVICE,
+    READ_SERVICE,
+    UPDATE_SERVICE,
+    DELETE_SERVICE,
     CLIENTS,
+    CREATE_CLIENT,
+    READ_CLIENT,
+    UPDATE_CLIENT,
+    DELETE_CLIENT
 };
 
 class UserInterface {
@@ -25,10 +41,16 @@ class UserInterface {
      * @brief Specifies which menu to show.
      */
     Menu _currentMenu = MAIN;
+
     /**
      * @brief The error message to show.
      */
     std::string _errorMessage{};
+
+    /**
+     * @brief The NIF of the current user (client side)
+     */
+    unsigned userNIF{};
 
     /**
      * @brief Helper method to show a menu with options.
@@ -49,18 +71,13 @@ class UserInterface {
     void optionsMenu(const std::string &text,
                      const std::vector<std::pair<std::string, Menu>> &options);
 
+    void loadString(const std::string &text, unsigned time) const;
+
     /**
      * @brief Shows the main menu.
      */
     void mainMenu();
-    /**
-     * @brief Shows the employee menu.
-     */
-    void employeeMenu();
-    /**
-     * @brief Shows the employee options menu.
-     */
-    void employeeOptionsMenu();
+
     /**
      * @brief Shows the client menu.
      */
@@ -70,13 +87,26 @@ class UserInterface {
      */
     void clientOptionsMenu();
 
+    /**
+     * @brief Shows the employee menu.
+     */
+    void employeeMenu();
+    /**
+     * @brief Shows the employee options menu.
+     */
+    void employeeOptionsMenu();
+
+    void clientsMenu(Company &comp);
+
+    void clientsFlightsMenu(Company &comp);
+
 public:
     /**
      * @brief Shows the current menu.
      *
      * @param comp
      */
-    void show(Company comp);
+    void show(Company &comp);
     /**
      * @brief Shows a message before the program exits.
      */

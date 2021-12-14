@@ -2,9 +2,10 @@
 #define AED_PROJ_2021_CONSTANTS_H
 
 // Files
-const std::string FLIGHT_FILE_PATH = "../input/flight.txt";
-const std::string PLANE_FILE_PATH = "../input/plane.txt";
-const std::string SERVICE_FILE_PATH = "../input/service.txt";
+const std::string CLIENT_FILE_PATH = "../input/client.tsv";
+const std::string FLIGHT_FILE_PATH = "../input/flight.tsv";
+const std::string PLANE_FILE_PATH = "../input/plane.tsv";
+const std::string SERVICE_FILE_PATH = "../input/service.tsv";
 
 // Terminal escape sequences
 const std::string CLEAR_SCREEN = "\e[2J\e[H";

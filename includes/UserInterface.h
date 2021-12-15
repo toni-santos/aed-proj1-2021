@@ -48,9 +48,9 @@ class UserInterface {
     std::string _errorMessage{};
 
     /**
-     * @brief The NIF of the current user (client side)
+     * @brief The current client that is accessing the platform
      */
-    unsigned userNIF{};
+    Client *currClient = nullptr;
 
     /**
      * @brief Helper method to show a menu with options.
@@ -81,7 +81,7 @@ class UserInterface {
     /**
      * @brief Shows the client menu.
      */
-    void clientMenu();
+    void clientMenu(Company &comp);
     /**
      * @brief Shows the client options menu.
      */
@@ -91,14 +91,38 @@ class UserInterface {
      * @brief Shows the employee menu.
      */
     void employeeMenu();
+
     /**
      * @brief Shows the employee options menu.
      */
     void employeeOptionsMenu();
 
+    /**
+     * @brief Shows the employee all the available clients and CRUD operations
+     * over them.
+     * @param comp the company
+     */
     void clientsMenu(Company &comp);
 
+    /**
+     * @brief Shows the client the flights they have booked.
+     * @param comp the company
+     */
     void clientsFlightsMenu(Company &comp);
+
+    /**
+     * @brief Shows the employee a menu to create a new client.
+     * @param comp the company
+     */
+    void createClientMenu(Company &comp);
+
+    /**
+     * @brief Shows the employee a menu to see a specific's client information.
+     * @param comp the company
+     */
+    void readClientMenu(Company &comp);
+
+    void deleteClientMenu(Company &comp);
 
 public:
     /**

@@ -81,7 +81,7 @@ public:
 
     std::vector<Plane> getPlanes() const { return _planes; };
 
-    std::vector<Client> getClients() const { return _clients; };
+    std::vector<Client> getClients() { return _clients; };
 
     /**
      * @brief Iterates over the _flights vector to find the flight with
@@ -97,6 +97,42 @@ public:
      * @param flightID The NIF of the client that is being searched
      */
     Client *findClient(unsigned NIF);
+
+    void removeClient(std::vector<Client>::iterator itr) {
+        _clients.erase(itr);
+    }
+
+    void updateClientInfo(int pos, std::string name, std::string strNIF) {
+        if (name != "") {
+            _clients.at(pos).setName(name);
+        }
+
+        if (strNIF != "") {
+            _clients.at(pos).setNIF(stoul(strNIF));
+        }
+    }
+
+    void updatePlaneInfo(int pos, std::string plate, std::string type, std::string capacity, std::string id){
+        if (plate != "") {
+            _planes.at(pos).setPlate(plate);
+        }
+
+        if (type != "") {
+            _planes.at(pos).setType(type);
+        }
+
+        if (capacity != "") {
+            _planes.at(pos).setCapacity(stoul(capacity));
+        }
+
+        if (id != "") {
+            _planes.at(pos).setId(stoul(id));
+        }
+    }
+
+    void removePlane(std::vector<Plane>::iterator itr) {
+        _planes.erase(itr);
+    }
 };
 
 #endif // AED_PROJ_2021_COMPANY_H

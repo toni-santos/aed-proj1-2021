@@ -124,6 +124,22 @@ class UserInterface {
 
     void deleteClientMenu(Company &comp);
 
+    void updateClientMenu(Company &comp);
+
+    void servicesMenu(Company &comp);
+
+    void planesMenu(Company &comp);
+
+    void checkPlane(Company &comp);
+
+    void createPlane(Company &comp);
+
+    void updatePlane(Company &comp);
+
+    void deletePlane(Company &comp);
+
+    void flightsMenu(Company &comp);
+
 public:
     /**
      * @brief Shows the current menu.

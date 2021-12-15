@@ -8,7 +8,7 @@
 class Client {
 private:
     std::string _name{};
-    const unsigned _NIF{}; // id attribute
+    unsigned _NIF{}; // id attribute
     std::vector<Ticket> _tickets{};
 
 public:
@@ -24,6 +24,10 @@ public:
     std::vector<Ticket> getTickets() const { return _tickets; }
 
     void addFlight(Ticket ticket) { _tickets.push_back(ticket); }
+
+    bool operator==(const Client c2){
+        return (this->getNIF() == c2.getNIF());
+    }
 };
 
 #endif // AED_PROJ_2021_CLIENT_H

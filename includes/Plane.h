@@ -2,6 +2,7 @@
 #define AED_PROJ_2021_PLANE_H
 
 #include "Service.h"
+#include <queue>
 
 class Plane {
 private:
@@ -33,9 +34,10 @@ public:
     std::queue<unsigned> getFlights() const { return _flights; };
 
     // Setters
-    void setCapacity(unsigned cap) { _capacity = cap; };
-    void setPlate(std::string pl) { _plate = pl; };
-    void setType(std::string type) { _type = type; };
+    void setCapacity(unsigned cap) { _capacity = cap; }
+    void setPlate(std::string pl) { _plate = pl; }
+    void setType(std::string type) { _type = type; }
+    void setId(unsigned id) { _id = id; }
 
     void addFlight(unsigned flightID) {
         _flights.push(flightID);

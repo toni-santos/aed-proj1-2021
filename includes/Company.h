@@ -88,6 +88,10 @@ public:
      * @param flightID The NIF of the client that is being searched
      */
     Client *findClient(unsigned nif);
+
+	Plane *findPlane(unsigned id);
+
+	Airport *findAirport(std::string name);
 };
 
 #endif // AED_PROJ_2021_COMPANY_H

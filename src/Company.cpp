@@ -1,9 +1,8 @@
 #include "../includes/Company.h"
-#include "../includes/Client.h"
+#include "../includes/Plane.h"
 #include "../includes/Exceptions.h"
 #include "../includes/Utils.h"
 #include "../includes/constants.h"
-#include <iostream>
 
 void Company::populate() {
     readPlane();
@@ -115,6 +114,25 @@ void Company::deleteAirport(Airport *airport) {
     _airports.at(airport->getID()) = nullptr;
 
     delete airport;
+}
+
+Plane *Company::findPlane(unsigned id) {
+	for (Plane *p: _planes) {
+		if (p->getID() == id) {
+			return p;
+		}
+	}
+
+	return nullptr;
+}
+
+Airport *Company::findAirport(std::string name) {
+	for (Airport *a: _airports) {
+		if (a->getName() == name) {
+			return a;
+		}
+	}
+	return nullptr;
 }
 
 Flight *Company::findFlight(unsigned number) {

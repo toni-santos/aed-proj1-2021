@@ -1,7 +1,3 @@
-//
-// Created by toni on 03/12/21.
-//
-
 #include "../includes/Flight.h"
 
 #include <algorithm>
@@ -37,10 +33,12 @@ void Flight::setPlane(Plane *plane) {
     deleteTickets();
     generateTickets();
 }
-
+// TODO: FIX THIS FUNCITON - error: no match for ‘operator<’ (operand types are ‘Ticket*’ and ‘const Ticket’)
+/*
 Ticket *Flight::findTicketBySeat(const std::string &seat) {
     auto it = std::lower_bound(_tickets.begin(), _tickets.end(),
                                Ticket(nullptr, seat));
 
     return it == _tickets.end() ? nullptr : *it;
 }
+*/

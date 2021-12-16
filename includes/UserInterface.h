@@ -27,8 +27,6 @@ enum Menu {
     SERVICES,
     CREATE_SERVICE,
     READ_SERVICE,
-    UPDATE_SERVICE,
-    DELETE_SERVICE,
     CLIENTS,
     CREATE_CLIENT,
     READ_CLIENT,
@@ -181,11 +179,15 @@ class UserInterface {
 	 */
     void createService(Company &comp);
 
-	/**
-	 * @brief Shows the employee a menu to alter a specific's service information.
-	 * @param comp the company
-	 */
-	void updateService(Company &comp);
+	void readService(Company &comp);
+
+	void createFlight(Company &comp);
+
+	void readFlight(Company &comp);
+
+	void updateFlight(Company &comp);
+
+	void removeFlight(Company &comp);
 
 public:
     /**
@@ -211,7 +213,7 @@ public:
 	 * @param client The client that is getting their flights printed
 	 * @param comp The company
 	 */
-	void printClientFlights(Client &client, Company &comp);
+	void printClientFlights(Client *client, Company &comp);
 
 	/**
 	 * @brief Prints each attribute of the plane in the order of the sortedVec

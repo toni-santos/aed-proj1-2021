@@ -3,6 +3,9 @@
 
 #include <string>
 
+/**
+ * @brief Class representing a service.
+ */
 class Service {
 private:
     const std::string _date, _worker;
@@ -15,8 +18,17 @@ public:
         : _worker(worker), _date(date), _type(type){};
 
     // Getters
+    /**
+     * @return This service's date.
+     */
     std::string getDate() const { return _date; };
+    /**
+     * @return This service's worker.
+     */
     std::string getWorker() const { return _worker; };
+    /**
+     * @return This service's type.
+     */
     unsigned int getType() const { return _type; };
 };
 

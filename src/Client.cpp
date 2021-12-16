@@ -3,3 +3,8 @@
 //
 
 #include "../includes/Client.h"
+
+Client::~Client() {
+    for (Ticket *t : _tickets)
+        t->setClient(nullptr);
+}

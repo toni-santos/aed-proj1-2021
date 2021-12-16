@@ -1,39 +1,53 @@
 #ifndef AED_PROJ_2021_FLIGHT_H
 #define AED_PROJ_2021_FLIGHT_H
 
+class Flight;
+
+#include "Airport.h"
 #include "Plane.h"
 #include "Ticket.h"
+
 #include <queue>
 #include <string>
+#include <vector>
 
 class Flight {
 private:
+    const unsigned _id;
     const unsigned _number;
     unsigned _duration;
-    std::queue<Ticket> _tickets;
-    const std::string _destination, _origin;
+    std::vector<Ticket *> _tickets;
+    Airport *_destination, *_origin;
     std::string _departureDate;
+    Plane *_plane;
+
+    void generateTickets();
+    void deleteTickets();
 
 public:
     // Constructors
     // TODO: prices (?)
-    Flight(std::string origin, std::string destination,
-           std::string departureDate, unsigned number, unsigned duration)
-        : _origin(origin), _destination(destination),
-          _departureDate(departureDate), _number(number), _duration(duration){};
+    Flight(unsigned id, unsigned number, unsigned duration, Airport *origin,
+           Airport *dest, std::string departureDate, Plane *plane);
+    ~Flight();
 
     // Getters
+    unsigned getID() const { return _id; };
     unsigned getNumber() const { return _number; };
     unsigned getDuration() const { return _duration; };
     std::string getDepartureDate() const { return _departureDate; };
-    std::string getDestination() const { return _destination; };
-    std::string getOrigin() const { return _origin; };
+    Airport *getDestination() const { return _destination; };
+    Airport *getOrigin() const { return _origin; };
+    Plane *getPlane() const { return _plane; };
 
     // Setters
     void setDuration(unsigned dur) { _duration = dur; };
     void setDepartureDate(std::string dep) { _departureDate = dep; };
+    void setOrigin(Airport *origin) { _origin = origin; };
+    void setDestination(Airport *dest) { _destination = dest; };
+    void setPlane(Plane *plane);
 
-    void addTicket(Ticket ticket) { _tickets.push(ticket); }
+    Ticket *findTicketBySeat(const std::string &seat);
 };
 
 #endif // AED_PROJ_2021_FLIGHT_H

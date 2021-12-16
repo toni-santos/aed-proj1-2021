@@ -1,57 +1,48 @@
 #ifndef AED_PROJ_2021_PLANE_H
 #define AED_PROJ_2021_PLANE_H
 
+class Plane;
+
+#include "Flight.h"
 #include "Service.h"
 #include <queue>
 
 class Plane {
 private:
-    std::string _plate, _type;
-    std::queue<unsigned> _flights;
-    unsigned _capacity, _id;
+    const unsigned _id;
+
+    const std::string _plate, _type;
+    std::queue<Flight *> _flights;
+    unsigned _rows, _columns;
     std::queue<Service> _services, _servicesDone;
 
 public:
     // Constructors
-    Plane() {
-        _capacity = 0;
-        _plate = "";
-        _type = "";
-    };
-
-    Plane(std::string plate, std::string type, unsigned capacity, unsigned id) {
-        _capacity = capacity;
-        _plate = plate;
-        _type = type;
-        _id = id;
-    };
+    Plane(unsigned id, unsigned rows, unsigned columns, std::string plate,
+          std::string type)
+        : _id(id), _rows(rows), _columns(columns), _plate(plate), _type(type){};
+    ~Plane();
 
     // Getters
-    unsigned getCapacity() const { return _capacity; };
-    unsigned  getID() const { return _id;};
+    unsigned getID() const { return _id; };
+    unsigned getCapacity() const { return _rows * _columns; };
+    unsigned getRows() const { return _rows; };
+    unsigned getColumns() const { return _columns; };
     std::string getPlate() const { return _plate; };
     std::string getType() const { return _type; };
-    std::queue<unsigned> getFlights() const { return _flights; };
+    std::queue<Flight *> getFlights() const { return _flights; };
+    std::queue<Service> getServices() const { return _services; };
+    std::queue<Service> getServicesDone() const { return _servicesDone; };
 
     // Setters
-    void setCapacity(unsigned cap) { _capacity = cap; }
-    void setPlate(std::string pl) { _plate = pl; }
-    void setType(std::string type) { _type = type; }
-    void setId(unsigned id) { _id = id; }
+    void setRows(unsigned rows) { _rows = rows; };
+    void setColumns(unsigned columns) { _columns = columns; };
 
-    void addFlight(unsigned flightID) {
-        _flights.push(flightID);
-    };
+    void addFlight(Flight *flight);
 
-    void addService(Service serv) {
-        _services.push(serv);
-    }
+    void addService(Service serv);
 
-    void serviceDone(){
-        _servicesDone.push(_services.front());
-        _services.pop();
-    }
+    void doService();
 };
 
-
-#endif //AED_PROJ_2021_PLANE_H
+#endif // AED_PROJ_2021_PLANE_H

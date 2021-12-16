@@ -98,8 +98,7 @@ class UserInterface {
     void employeeOptionsMenu();
 
     /**
-     * @brief Shows the employee all the available clients and CRUD operations
-     * over them.
+     * @brief Shows the employee CRUD operations over clients.
      * @param comp the company
      */
     void clientsMenu(Company &comp);
@@ -117,28 +116,76 @@ class UserInterface {
     void createClientMenu(Company &comp);
 
     /**
-     * @brief Shows the employee a menu to see a specific's client information.
+     * @brief Shows the employee a menu to see a specific's client information (can be ordered by several parameters).
      * @param comp the company
      */
     void readClientMenu(Company &comp);
 
-    void deleteClientMenu(Company &comp);
+	/**
+	 * @brief Shows the employee a menu to delete a client.
+	 * @param comp the company
+	 */
+	void deleteClientMenu(Company &comp);
 
-    void updateClientMenu(Company &comp);
+	/**
+	 * @brief Shows the employee a menu to alter a specific's client information.
+	 * @param comp the company
+	 */
+	void updateClientMenu(Company &comp);
 
-    void servicesMenu(Company &comp);
+	/**
+	 * @brief Shows the employee CRUD operations over the services.
+	 * @param comp the company
+	 */
+	void servicesMenu(Company &comp);
 
+	/**
+	 * @brief Shows the employee CRUD operations over the planes.
+	 * @param comp the company
+	 */
     void planesMenu(Company &comp);
 
+	/**
+	 * @brief Shows the employee a menu to see a specific's plane information (can be ordered by several parameters).
+	 * @param comp the company
+	 */
     void checkPlane(Company &comp);
 
+	/**
+	 * @brief Shows the employee a menu to create a new plane.
+	 * @param comp the company
+	 */
     void createPlane(Company &comp);
 
+	/**
+	 * @brief Shows the employee a menu to alter a specific's plane information.
+	 * @param comp the company
+	 */
     void updatePlane(Company &comp);
 
+	/**
+	 * @brief Shows the employee a menu to delete a plane.
+	 * @param comp the company
+	 */
     void deletePlane(Company &comp);
 
+	/**
+	 * @brief Shows the employee CRUD operations over the flights.
+	 * @param comp the company
+	 */
     void flightsMenu(Company &comp);
+
+	/**
+	 * @brief Shows the employee a menu to create a new service.
+	 * @param comp the company
+	 */
+    void createService(Company &comp);
+
+	/**
+	 * @brief Shows the employee a menu to alter a specific's service information.
+	 * @param comp the company
+	 */
+	void updateService(Company &comp);
 
 public:
     /**
@@ -152,5 +199,26 @@ public:
      */
     void exit();
 };
+	/**
+	 * @brief Prints each attribute of the plane in the order of the sortedVec
+	 * @param sortedVec Vector sorted according to previous user decision
+	 */
+	void printPlaneVector(std::vector<Plane> sortedVec);
+
+	/**
+	 * @brief Prints all of the flights' information of a given client
+	 *
+	 * @param client The client that is getting their flights printed
+	 * @param comp The company
+	 */
+	void printClientFlights(Client &client, Company &comp);
+
+	/**
+	 * @brief Prints each attribute of the plane in the order of the sortedVec
+	 *
+	 * @param sortedVec vector sorted according to previous user decision
+	 * @param comp the company
+	 */
+	void printClientVector(std::vector<Client> sortedVec, Company &comp);
 
 #endif // AED_PROJ_2021_MENU_H

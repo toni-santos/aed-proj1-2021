@@ -4,8 +4,6 @@
 #include "Client.h"
 #include "Flight.h"
 
-#include "fstream"
-
 class Company {
 private:
     std::vector<Flight> _flights;
@@ -81,7 +79,7 @@ public:
 
     std::vector<Plane> getPlanes() const { return _planes; };
 
-    std::vector<Client> getClients() { return _clients; };
+    std::vector<Client> getClients() const { return _clients; };
 
     /**
      * @brief Iterates over the _flights vector to find the flight with
@@ -98,8 +96,12 @@ public:
      */
     Client *findClient(unsigned NIF);
 
-    void removeClient(std::vector<Client>::iterator itr) {
-        _clients.erase(itr);
+    void removeClient(int pos) {
+        _clients.erase(_clients.begin() + pos);
+    }
+
+    void removePlane(int pos) {
+        _planes.erase(_planes.begin() + pos);
     }
 
     void updateClientInfo(int pos, std::string name, std::string strNIF) {
@@ -130,9 +132,7 @@ public:
         }
     }
 
-    void removePlane(std::vector<Plane>::iterator itr) {
-        _planes.erase(itr);
-    }
+
 };
 
 #endif // AED_PROJ_2021_COMPANY_H

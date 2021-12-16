@@ -40,8 +40,6 @@ public:
      * @param client The new client.
      */
     void setClient(Client *client) { _client = client; }
-
-    bool operator<(const Ticket &other) { return _seat < other._seat; }
 };
 
 #endif // AED_PROJ_2021_TICKET_H

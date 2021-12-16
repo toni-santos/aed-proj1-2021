@@ -43,4 +43,23 @@ void Flight::setPlane(Plane *plane) {
 
 // TODO: FIX THIS FUNCITON - error: no match for ‘operator<’ (operand types are
 // ‘Ticket*’ and ‘const Ticket’)
-Ticket *Flight::findTicketBySeat(const std::string &seat) { return nullptr; }
+bool operator<(const Ticket *ticket, const std::string &seat) {
+    return ticket->getSeat() < seat;
+}
+
+Ticket *Flight::findTicketBySeat(const std::string &seat) {
+    size_t begin{0}, end{_tickets.size() - 1};
+
+    while (begin < end) {
+        size_t middle{(begin + end) / 2};
+
+        if (_tickets.at(middle) < seat) {
+            begin = middle + 1;
+        } else {
+            end = middle;
+        }
+    }
+
+    Ticket *ticket{_tickets.at(begin)};
+    return ticket->getSeat() != seat ? nullptr : ticket;
+}

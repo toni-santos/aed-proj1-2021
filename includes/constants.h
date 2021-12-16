@@ -3,9 +3,8 @@
 
 // Files
 const std::string CLIENT_FILE_PATH = "../input/client.tsv";
-const std::string FLIGHT_FILE_PATH = "../input/flight.tsv";
 const std::string PLANE_FILE_PATH = "../input/plane.tsv";
-const std::string SERVICE_FILE_PATH = "../input/service.tsv";
+const std::string AIRPORT_FILE_PATH = "../input/airport.tsv";
 
 // Terminal escape sequences
 const std::string CLEAR_SCREEN = "\e[2J\e[H";

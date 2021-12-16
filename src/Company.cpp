@@ -1,10 +1,11 @@
 #include "../includes/Company.h"
-#include "../includes/Plane.h"
 #include "../includes/Exceptions.h"
+#include "../includes/Plane.h"
 #include "../includes/Utils.h"
 #include "../includes/constants.h"
 
 void Company::populate() {
+    readAirport();
     readPlane();
     readClient();
 }
@@ -117,22 +118,22 @@ void Company::deleteAirport(Airport *airport) {
 }
 
 Plane *Company::findPlane(unsigned id) {
-	for (Plane *p: _planes) {
-		if (p->getID() == id) {
-			return p;
-		}
-	}
+    for (Plane *p : _planes) {
+        if (p->getID() == id) {
+            return p;
+        }
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 Airport *Company::findAirport(std::string name) {
-	for (Airport *a: _airports) {
-		if (a->getName() == name) {
-			return a;
-		}
-	}
-	return nullptr;
+    for (Airport *a : _airports) {
+        if (a->getName() == name) {
+            return a;
+        }
+    }
+    return nullptr;
 }
 
 Flight *Company::findFlight(unsigned number) {
@@ -167,6 +168,23 @@ std::vector<std::pair<int, int>> parseClientTickets(std::string vec) {
     }
 
     return result;
+}
+
+void Company::readAirport() {
+    std::ifstream f{AIRPORT_FILE_PATH};
+
+    if (f.fail())
+        throw ReadError();
+
+    while (!f.eof()) {
+        std::string line;
+        // std::vector<std::string> parsedLine;
+        getline(f, line);
+        // parsedLine = split(line, '\t');
+
+        createAirport(line);
+    }
+    f.close();
 }
 
 void Company::readPlane() {
@@ -277,6 +295,17 @@ void Company::readClient() {
     }
 
     f.close();
+}
+
+void Company::writeAirport() {
+    std::ofstream of{AIRPORT_FILE_PATH};
+
+    if (of.fail())
+        throw ReadError();
+
+    for (Airport *airport : _airports) {
+        of << airport->getName() << '\n';
+    }
 }
 
 // DONE

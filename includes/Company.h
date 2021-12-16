@@ -17,6 +17,8 @@ private:
     std::vector<Client *> _clients{};
     std::vector<Airport *> _airports{};
 
+    void readAirport();
+
     /**
      * @brief Loads planes, their flights and their services from file.
      */
@@ -26,6 +28,8 @@ private:
      * @brief Loads clients and their tickets from file.
      */
     void readClient();
+
+    void writeAirport();
 
     /**
      * @brief Writes the planes, their flights and their services to file.
@@ -199,9 +203,9 @@ public:
      */
     Client *findClient(unsigned nif);
 
-	Plane *findPlane(unsigned id);
+    Plane *findPlane(unsigned id);
 
-	Airport *findAirport(std::string name);
+    Airport *findAirport(std::string name);
 };
 
 #endif // AED_PROJ_2021_COMPANY_H

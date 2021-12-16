@@ -277,8 +277,9 @@ void Company::writePlane() {
             Flight *flight = flights.front();
             flights.pop();
             of << flight->getNumber() << '\t' << flight->getDuration() << '\t'
-               << flight->getOrigin() << '\t' << flight->getDestination()
-               << '\t' << flight->getDepartureDate() << '\n';
+               << flight->getOrigin()->getID() << '\t'
+               << flight->getDestination()->getID() << '\t'
+               << flight->getDepartureDate() << '\n';
         }
 
         auto servicesDone = plane->getServicesDone();

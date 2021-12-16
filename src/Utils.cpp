@@ -62,3 +62,14 @@ void normalizeInput(std::string &input) {
         }
     }
 }
+
+unsigned numberLength(unsigned n) {
+    unsigned nd = 0;
+
+    do {
+        ++nd;
+        n /= 10;
+    } while (n);
+
+    return nd;
+}

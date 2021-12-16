@@ -15,4 +15,10 @@ const std::string DISABLE_CURSOR = "\e[?25l";
 const std::string ENABLE_CURSOR = "\e[?25h";
 const std::string RESET_FORMATTING = "\e[0m";
 
+// Others
+// hi :D
+// nada disto funfa no clion :(
+const std::string COMPANY_NAME =
+    STRIKE_THROUGH + "[REDACTED]" + RESET_FORMATTING + " AIRLINES";
+
 #endif // AED_PROJ_2021_CONSTANTS_H

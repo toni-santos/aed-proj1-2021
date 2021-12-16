@@ -47,6 +47,8 @@ public:
      */
     void populate();
 
+    void save();
+
     /**
      * @return All the flights operated by this company.
      */
@@ -61,6 +63,8 @@ public:
      * @return All the clients that have bought from this company.
      */
     std::vector<Client *> getClients() const { return _clients; };
+
+    std::vector<Airport *> getAirports() const { return _airports; };
 
     /**
      * @brief Creates a new client.
@@ -116,9 +120,8 @@ public:
      * @param departure The new departure date.
      * @param plane The new plane.
      */
-    void updateFlight(Flight *flight, std::string duration, std::string origin,
-                      std::string dest, std::string departure,
-                      std::string plane);
+    void updateFlight(Flight *flight, unsigned duration, unsigned origin,
+                      unsigned dest, std::string departure, unsigned plane);
 
     /**
      * @brief Deletes a flight.
@@ -150,7 +153,7 @@ public:
      * @param rows The new rows.
      * @param columns The new columns.
      */
-    void updatePlane(Plane *plane, std::string rows, std::string columns);
+    void updatePlane(Plane *plane, unsigned rows, unsigned columns);
 
     /**
      * @brief Deletes a plane.

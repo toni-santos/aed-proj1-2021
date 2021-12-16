@@ -10,6 +10,12 @@ void Company::populate() {
     readClient();
 }
 
+void Company::save() {
+    writeAirport();
+    writeClient();
+    writePlane();
+}
+
 // DONE
 Client *Company::createClient(unsigned nif, std::string name) {
     Client *client = new Client(_clients.size(), nif, name);
@@ -41,30 +47,37 @@ Flight *Company::createFlight(unsigned number, unsigned duration,
 }
 
 // DONE
-void Company::updateFlight(Flight *flight, std::string duration,
-                           std::string origin, std::string dest,
-                           std::string departure, std::string plane) {
-    if (duration != "")
-        flight->setDuration(stoul(duration));
+void Company::updateFlight(Flight *flight, unsigned duration, unsigned origin,
+                           unsigned dest, std::string departure,
+                           unsigned plane) {
 
-    if (origin != "")
-        flight->setOrigin(_airports.at(stoul(origin)));
+    flight->setDuration(duration);
 
-    if (dest != "")
-        flight->setDestination(_airports.at(stoul(dest)));
+    flight->setOrigin(_airports.at(origin));
+
+    flight->setDestination(_airports.at(dest));
 
     if (departure != "")
         flight->setDepartureDate(departure);
 
-    if (plane != "")
-        flight->setPlane(_planes.at(stoul(plane)));
+    flight->setPlane(_planes.at(plane));
 }
 
 // DONE
 void Company::deleteFlight(Flight *flight) {
-    _flights.at(flight->getID()) = nullptr;
-
-    delete flight;
+    bool deleted = false;
+    for (size_t i{0}; i < _flights.size(); ++i) {
+        if (_flights.at(i) == flight)
+            deleted = true;
+        else if (deleted) {
+            _flights.at(i)->setID(i - 1);
+            _flights.at(i - 1) = _flights.at(i);
+        }
+    }
+    if (deleted) {
+        _flights.pop_back();
+        delete flight;
+    }
 }
 
 // DONE
@@ -76,25 +89,33 @@ Plane *Company::createPlane(unsigned rows, unsigned columns, std::string plate,
 }
 
 // DONE
-void Company::updatePlane(Plane *plane, std::string rows, std::string columns) {
-    if (rows != "")
-        plane->setRows(stoul(rows));
+void Company::updatePlane(Plane *plane, unsigned rows, unsigned columns) {
+    if (rows)
+        plane->setRows(rows);
 
-    if (columns != "")
-        plane->setColumns(stoul(rows));
+    if (columns)
+        plane->setColumns(columns);
 }
 
 // DONE
 void Company::deletePlane(Plane *plane) {
-    _planes.at(plane->getID()) = nullptr;
-
-    auto flights = plane->getFlights();
-    while (!flights.empty()) {
-        deleteFlight(flights.front());
-        flights.pop();
+    bool deleted = false;
+    for (size_t i{0}; i < _planes.size(); ++i) {
+        if (_planes.at(i) == plane)
+            deleted = true;
+        else if (deleted) {
+            _planes.at(i)->setID(i - 1);
+            _planes.at(i - 1) = _planes.at(i);
+        }
     }
+    if (deleted) {
+        _planes.pop_back();
 
-    delete plane;
+        for (Flight *flight : plane->getFlights())
+            deleteFlight(flight);
+
+        delete plane;
+    }
 }
 
 // DONE
@@ -112,9 +133,19 @@ void Company::updateAirport(Airport *airport, std::string name) {
 
 // DONE
 void Company::deleteAirport(Airport *airport) {
-    _airports.at(airport->getID()) = nullptr;
-
-    delete airport;
+    bool deleted = false;
+    for (size_t i{0}; i < _airports.size(); ++i) {
+        if (_airports.at(i) == airport)
+            deleted = true;
+        else if (deleted) {
+            _airports.at(i)->setID(i - 1);
+            _airports.at(i - 1) = _airports.at(i);
+        }
+    }
+    if (deleted) {
+        _airports.pop_back();
+        delete airport;
+    }
 }
 
 Plane *Company::findPlane(unsigned id) {
@@ -155,21 +186,6 @@ Client *Company::findClient(unsigned nif) {
     return nullptr;
 }
 
-std::vector<std::pair<int, int>> parseClientTickets(std::string vec) {
-    std::vector<std::pair<int, int>> result;
-
-    if (vec.empty())
-        return result;
-
-    std::vector<std::string> parsedTickets = split(vec, ';');
-    for (auto t : parsedTickets) {
-        std::vector<std::string> ids = split(t, ',');
-        result.push_back({stoul(ids.at(0)), stoul(ids.at(1))});
-    }
-
-    return result;
-}
-
 void Company::readAirport() {
     std::ifstream f{AIRPORT_FILE_PATH};
 
@@ -180,6 +196,10 @@ void Company::readAirport() {
         std::string line;
         // std::vector<std::string> parsedLine;
         getline(f, line);
+
+        if (line == "")
+            break;
+
         // parsedLine = split(line, '\t');
 
         createAirport(line);
@@ -197,6 +217,10 @@ void Company::readPlane() {
         std::string line;
         std::vector<std::string> parsedLine;
         getline(f, line);
+
+        if (line == "")
+            break;
+
         parsedLine = split(line, '\t');
 
         unsigned rows = stoul(parsedLine.at(0));
@@ -235,7 +259,8 @@ void Company::readPlane() {
 
             parsedLine = split(line, '\t');
 
-            unsigned type = stoul(parsedLine.at(0));
+            ServiceType type =
+                static_cast<ServiceType>(stoul(parsedLine.at(0)));
             std::string date = parsedLine.at(1);
             std::string worker = parsedLine.at(2);
 
@@ -252,7 +277,8 @@ void Company::readPlane() {
 
             parsedLine = split(line, '\t');
 
-            unsigned type = stoul(parsedLine.at(0));
+            ServiceType type =
+                static_cast<ServiceType>(stoul(parsedLine.at(0)));
             std::string date = parsedLine.at(1);
             std::string worker = parsedLine.at(2);
 
@@ -272,6 +298,10 @@ void Company::readClient() {
         std::string line;
         std::vector<std::string> parsedLine;
         std::getline(f, line);
+
+        if (line == "")
+            break;
+
         parsedLine = split(line, '\t');
 
         unsigned nif = stoul(parsedLine.at(0));
@@ -298,7 +328,8 @@ void Company::readClient() {
 }
 
 void Company::writeAirport() {
-    std::ofstream of{AIRPORT_FILE_PATH};
+    // std::ofstream of{AIRPORT_FILE_PATH};
+    std::ofstream of{"../output/airport.tsv"};
 
     if (of.fail())
         throw ReadError();
@@ -310,7 +341,8 @@ void Company::writeAirport() {
 
 // DONE
 void Company::writePlane() {
-    std::ofstream of{PLANE_FILE_PATH};
+    // std::ofstream of{PLANE_FILE_PATH};
+    std::ofstream of{"../output/plane.tsv", std::ofstream::trunc};
 
     if (of.fail())
         throw ReadError();
@@ -319,39 +351,29 @@ void Company::writePlane() {
         of << plane->getRows() << '\t' << plane->getColumns() << '\t'
            << plane->getPlate() << '\t' << plane->getType() << '\n';
 
-        auto flights = plane->getFlights();
-        while (!flights.empty()) {
-            Flight *flight = flights.front();
-            flights.pop();
+        for (Flight *flight : plane->getFlights())
             of << flight->getNumber() << '\t' << flight->getDuration() << '\t'
                << flight->getOrigin()->getID() << '\t'
                << flight->getDestination()->getID() << '\t'
                << flight->getDepartureDate() << '\n';
-        }
+        of << '\n';
 
-        auto servicesDone = plane->getServicesDone();
-        while (!servicesDone.empty()) {
-            Service service = servicesDone.front();
-            servicesDone.pop();
-            of << service.getType() << service.getDate() << service.getWorker()
-               << '\n';
-        }
+        for (const Service &service : plane->getServicesDone())
+            of << service.getType() << '\t' << service.getDate() << '\t'
+               << service.getWorker() << '\n';
+        of << '\n';
 
-        auto services = plane->getServices();
-        while (!services.empty()) {
-            Service service = services.front();
-            servicesDone.pop();
-            of << service.getType() << service.getDate() << service.getWorker()
-               << '\n';
-        }
-
+        for (const Service &service : plane->getServices())
+            of << service.getType() << '\t' << service.getDate() << '\t'
+               << service.getWorker() << '\n';
         of << '\n';
     }
 }
 
 // DONE
 void Company::writeClient() {
-    std::ofstream of{CLIENT_FILE_PATH};
+    // std::ofstream of{CLIENT_FILE_PATH};
+    std::ofstream of{"../output/client.tsv"};
 
     if (of.fail())
         throw ReadError();
@@ -359,9 +381,8 @@ void Company::writeClient() {
     for (Client *c : _clients) {
         of << c->getNIF() << '\t' << c->getName() << '\n';
 
-        bool first{true};
         for (Ticket *t : c->getTickets())
-            of << t->getFlight()->getID() << '\t' << t->getSeat();
+            of << t->getFlight()->getID() << '\t' << t->getSeat() << '\n';
 
         of << '\n';
     }

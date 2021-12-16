@@ -15,6 +15,9 @@ int main() {
     } catch (ReadError) {
         std::cerr << "Something went wrong reading a file!" << std::endl;
         return 1;
+    } catch (std::invalid_argument) {
+        std::cerr << "Error in file!" << std::endl;
+        return 2;
     }
 
     try {
@@ -24,6 +27,13 @@ int main() {
     } catch (Exit) {
         ui.exit();
     }
-    // std::cout << "Hello, World!" << std::endl;
+
+    try {
+        comp.save();
+    } catch (ReadError) {
+        std::cerr << "Something went wrong writing to a file!" << std::endl;
+        return 1;
+    }
+
     return 0;
 }

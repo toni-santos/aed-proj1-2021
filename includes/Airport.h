@@ -12,7 +12,7 @@ class Airport;
  * @brief Class representing an airport.
  */
 class Airport {
-    const unsigned _id;
+    unsigned _id;
 
     std::string _name{};
     // TODO
@@ -29,6 +29,12 @@ public:
      * @return This airport's name.
      */
     std::string getName() const { return _name; };
+    /**
+     * @brief Set this airport's id.
+     *
+     * @param id The new id.
+     */
+    void setID(unsigned id) { _id = id; }
     /**
      * @brief Set this airport's name.
      *

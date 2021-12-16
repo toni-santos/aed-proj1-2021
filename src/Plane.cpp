@@ -2,11 +2,13 @@
 
 Plane::~Plane() {}
 
-void Plane::addFlight(Flight *flight) { _flights.push(flight); }
+void Plane::addFlight(Flight *flight) { _flights.push_back(flight); }
 
-void Plane::addService(Service serv) { _services.push(serv); }
+void Plane::removeFlight(Flight *flight) { _flights.remove(flight); }
+
+void Plane::addService(Service serv) { _services.push_back(serv); }
 
 void Plane::doService() {
-    _servicesDone.push(_services.front());
-    _services.pop();
+    _servicesDone.push_back(_services.front());
+    _services.pop_front();
 }

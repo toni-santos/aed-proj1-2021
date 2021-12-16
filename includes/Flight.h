@@ -16,7 +16,8 @@ class Flight;
  */
 class Flight {
 private:
-    const unsigned _id;
+    unsigned _id;
+
     const unsigned _number;
     unsigned _duration;
     std::vector<Ticket *> _tickets;
@@ -63,8 +64,20 @@ public:
      * @return This flight's plane.
      */
     Plane *getPlane() const { return _plane; };
+    /**
+     * @return This flight's tickets.
+     */
+    std::vector<Ticket *> getTickets() const { return _tickets; };
+
+    unsigned getAvailability() const;
 
     // Setters
+    /**
+     * @brief Set this flight's duration.
+     *
+     * @param duration The new duration.
+     */
+    void setID(unsigned id) { _id = id; };
     /**
      * @brief Set this flight's duration.
      *

@@ -28,4 +28,6 @@ void normalizeInput(std::string &input);
  */
 void getInput(std::string &input);
 
+unsigned numberLength(unsigned n);
+
 #endif // AED_PROJ_2021_UTILS_H

@@ -5,19 +5,19 @@ class Plane;
 
 #include "Flight.h"
 #include "Service.h"
-#include <queue>
+#include <list>
 
 /**
  * @brief Class representing a plane.
  */
 class Plane {
 private:
-    const unsigned _id;
+    unsigned _id;
 
     const std::string _plate, _type;
-    std::queue<Flight *> _flights;
+    std::list<Flight *> _flights;
     unsigned _rows, _columns;
-    std::queue<Service> _services, _servicesDone;
+    std::list<Service> _services, _servicesDone;
 
 public:
     // Constructors
@@ -54,17 +54,23 @@ public:
     /**
      * @return This plane's flights.
      */
-    std::queue<Flight *> getFlights() const { return _flights; };
+    std::list<Flight *> getFlights() const { return _flights; };
     /**
      * @return This plane's services that need to be done.
      */
-    std::queue<Service> getServices() const { return _services; };
+    std::list<Service> getServices() const { return _services; };
     /**
      * @return This plane's services that have been done.
      */
-    std::queue<Service> getServicesDone() const { return _servicesDone; };
+    std::list<Service> getServicesDone() const { return _servicesDone; };
 
     // Setters
+    /**
+     * @brief Set this plane's id.
+     *
+     * @param rows The new id.
+     */
+    void setID(unsigned id) { _id = id; };
     /**
      * @brief Set this plane's rows.
      *
@@ -79,6 +85,8 @@ public:
     void setColumns(unsigned columns) { _columns = columns; };
 
     void addFlight(Flight *flight);
+
+    void removeFlight(Flight *flight);
 
     void addService(Service serv);
 

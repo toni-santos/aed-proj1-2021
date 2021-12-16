@@ -4,7 +4,9 @@
 #include "../includes/constants.h"
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <iostream>
+#include <list>
 #include <sstream>
 #include <thread>
 
@@ -13,30 +15,53 @@
 // TODO: LUGGAGE
 // TODO: BST DAS DESTINATIONS
 
-void printServiceQueue(Plane *plane) {
-    std::queue<Service> tqueue = plane->getServices();
-    std::cout << "Type - Date - Worker" << std::endl;
-    while (tqueue.size() != 0) {
-        Service s = tqueue.front();
-        tqueue.pop();
-        std::cout << s.getType() << " - " << s.getDate() << " - "
-                  << s.getWorker() << std::endl;
+void printServiceList(Company &comp) {
+    for (auto plane : comp.getPlanes()) {
+        std::cout << "Type - Date - Worker" << std::endl;
+        printPlaneServices(plane);
     }
 }
 
-void printPlaneVector(std::vector<Plane *> sortedVec) {
-    std::cout << "ID - Type - Plate - Capacity - Flights\n\n" << std::flush;
-    for (const Plane *plane : sortedVec) {
-        std::string fls;
-        std::queue<Flight *> tempq = plane->getFlights();
-        while (tempq.size() != 0) {
-            fls += " " + (tempq.front()->getID());
-            tempq.pop();
-        }
+void printPlaneServices(Plane *plane) {
+    unsigned cnt{0};
 
+    if (plane->getServices().size() == 0) {
+        std::cout << "No services to be done!\n";
+    } else {
+        for (const Service &service : plane->getServices()) {
+            std::cout << cnt << service.getType() << " - "
+                      << service.getWorker() << " - " << service.getDate()
+                      << '\n';
+        }
+    }
+    std::cout << std::endl;
+
+    cnt = 0;
+
+    if (plane->getServicesDone().size() == 0) {
+        std::cout << "No services have been done!\n";
+    } else {
+        for (const Service &service : plane->getServicesDone()) {
+            std::cout << cnt << service.getType() << " - "
+                      << service.getWorker() << " - " << service.getDate()
+                      << '\n'
+                      << std::flush;
+        }
+    }
+    std::cout << std::endl;
+}
+
+void printPlaneVector(std::vector<Plane *> sortedVec) {
+    std::cout << "ID - Type - Plate - Capacity - Flight IDs\n\n" << std::flush;
+    for (const Plane *plane : sortedVec) {
+        std::string fls = " - ";
+        std::list<Flight *> temp = plane->getFlights();
+        for (auto f : temp) {
+            fls += std::to_string(f->getID()) + " ";
+        }
         std::cout << plane->getID() << " - " << plane->getType() << " - "
-                  << plane->getPlate() << " - " << plane->getCapacity() << " -"
-                  << fls << std::endl;
+                  << plane->getPlate() << " - " << plane->getCapacity() << fls
+                  << std::endl;
     }
 }
 
@@ -44,12 +69,12 @@ void printClientFlights(Client *client, Company &comp) {
     for (auto ticket : client->getTickets()) {
         Flight *f = comp.findFlight(ticket->getFlight()->getID());
 
-        std::cout << "Ticket: " << ticket->getFlight()->getID() << '\n'
-                  << "Flight Number:" << f->getNumber() << '\n'
-                  << "From->To:" << f->getOrigin() << "->"
-                  << f->getDestination() << '\n'
-                  << "Date of Departure: " << f->getDepartureDate() << '\n'
-                  << "---------------------" << std::endl;
+        std::cout << "Ticket: " << ticket->getFlight()->getID() << " - "
+                  << "Flight Number:" << f->getNumber() << " - "
+                  << "From->To:" << f->getOrigin()->getName() << "->"
+                  << f->getDestination()->getName() << " - "
+                  << "Date of Departure: " << f->getDepartureDate()
+                  << "\n---------------------" << std::endl;
     }
 }
 
@@ -92,6 +117,39 @@ void UserInterface::optionsMenu(
         _errorMessage = "Invalid option!\n";
 }
 
+unsigned UserInterface::getNumberInput(std::string prompt, unsigned min,
+                                       unsigned max) {
+    std::string input;
+    unsigned number;
+    bool done = false;
+
+    do {
+        std::cout << ERROR_MESSAGE << _errorMessage << RESET_FORMATTING;
+        _errorMessage = "";
+        std::cout << prompt;
+        getInput(input);
+
+        try {
+            number = stoul(input);
+            done = true;
+        } catch (std::invalid_argument) {
+            _errorMessage = "Invalid input!\n";
+            done = false;
+        }
+    } while (!done || !inRange(number, min, max));
+
+    return number;
+}
+
+bool UserInterface::inRange(unsigned n, unsigned min, unsigned max) {
+    bool b = (n <= max) && (n >= min);
+
+    if (!b)
+        _errorMessage = "Value outside allowed range!\n";
+
+    return b;
+}
+
 bool validCredentials(std::string &username, std::string &password) {
     return username == "admin" && password == "admin";
 }
@@ -102,16 +160,17 @@ bool isDigitOnly(std::string strNIF) {
 }
 
 void UserInterface::clientMenu(Company &comp) {
-    std::string userNIF, name;
-    std::cout << CLEAR_SCREEN << "Welcome to " << STRIKE_THROUGH << "[REDACTED]"
-              << RESET_FORMATTING << " Airlines!" << std::endl;
-    std::cout << "Please enter your NIF:" << std::flush;
-    getInput(userNIF);
+    std::string name;
+
+    std::cout << CLEAR_SCREEN << "Welcome to " << COMPANY_NAME << std::endl;
+    unsigned userNIF = getNumberInput("Please enter your NIF: ");
+
     for (Client *c : comp.getClients()) {
-        if (c->getNIF() == stoul(userNIF)) {
+        if (c->getNIF() == userNIF) {
             currClient = c;
             loadString("Connecting you to our services...", 3000);
             _currentMenu = CLIENT_OPTIONS;
+            return;
         }
     }
 
@@ -120,12 +179,9 @@ void UserInterface::clientMenu(Company &comp) {
 
     getInput(name);
 
-    if (isDigitOnly(userNIF)) {
-        currClient = comp.createClient(stoul(userNIF), name);
-        std::cout << "Thanks for choosing " << STRIKE_THROUGH << "[REDACTED]"
-                  << RESET_FORMATTING << " Airlines!" << std::endl;
-        _currentMenu = CLIENT_OPTIONS;
-    }
+    currClient = comp.createClient(userNIF, name);
+    std::cout << "Thanks for choosing " << COMPANY_NAME << std::endl;
+    _currentMenu = CLIENT_OPTIONS;
 }
 
 void UserInterface::employeeMenu() {
@@ -152,21 +208,21 @@ void UserInterface::employeeMenu() {
 }
 
 void UserInterface::mainMenu() {
-    optionsMenu("COMPANY NAME",
+    optionsMenu(COMPANY_NAME,
                 {{"Exit", EXIT}, {"Client", CLIENT}, {"Employee", EMPLOYEE}});
 }
 
 void UserInterface::employeeOptionsMenu() {
-    optionsMenu("[REDACTED] AIRLINES - ADMIN", {{"Log off", MAIN},
-                                                {"Planes", PLANES},
-                                                {"Flights", FLIGHTS},
-                                                {"Services", SERVICES},
-                                                {"Clients", CLIENTS}});
+    optionsMenu(COMPANY_NAME + " - ADMIN", {{"Log off", MAIN},
+                                            {"Planes", PLANES},
+                                            {"Flights", FLIGHTS},
+                                            {"Services", SERVICES},
+                                            {"Airports", AIRPORTS},
+                                            {"Clients", CLIENTS}});
 }
 
 void UserInterface::clientOptionsMenu() {
-    optionsMenu("[REDACTED] AIRLINES - Welcome " +
-                    std::to_string(currClient->getNIF()) + " !",
+    optionsMenu(COMPANY_NAME + " - Welcome " + currClient->getName() + "!",
                 {{"Go back", MAIN},
                  {"Check my flights", CHECK_FLIGHTS},
                  {"Buy tickets", BUY_TICKETS}});
@@ -175,15 +231,11 @@ void UserInterface::clientOptionsMenu() {
 void UserInterface::servicesMenu(Company &comp) {
     std::stringstream text;
     std::string p;
-    text << "These are all the planes:\n\n";
-    text << "ID\n\n";
-    for (const Plane *plane : comp.getPlanes()) {
-        text << plane->getID() << '\n';
-    }
 
     optionsMenu(text.str(), {{"Go back", EMPLOYEE_OPTIONS},
                              {"New service", CREATE_SERVICE},
-                             {"Check services", READ_SERVICE}});
+                             {"Check services", READ_SERVICE},
+                             {"Do service", COMPLETE_SERVICE}});
 }
 
 void UserInterface::planesMenu(Company &comp) {
@@ -200,10 +252,24 @@ void UserInterface::planesMenu(Company &comp) {
                              {"Delete plane", DELETE_PLANE}});
 }
 
+void UserInterface::completeService(Company &comp) {
+    unsigned planeID, sID;
+    printPlaneVector(comp.getPlanes());
+
+    planeID = getNumberInput("Insert the ID of the plane: ", 0,
+                             comp.getPlanes().size() - 1);
+
+    comp.getPlanes().at(planeID)->doService();
+
+    std::cout << "Service done... Returning to the previous menu..."
+              << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    _currentMenu = SERVICES;
+}
+
 void UserInterface::createPlane(Company &comp) {
-    std::string plate, type, strRow, strCol, strId;
-    unsigned id;
-    bool flag = true;
+    std::string plate, type;
+    unsigned rows, cols;
 
     std::cout << "Insert the plane's plate: " << std::flush;
     getInput(plate);
@@ -211,47 +277,30 @@ void UserInterface::createPlane(Company &comp) {
     std::cout << "Insert the plane's type: " << std::flush;
     getInput(type);
 
-    std::cout << "Insert the plane's row (max. 26): " << std::flush;
-    getInput(strRow);
+    rows = getNumberInput("Insert the plane's rows (max. 26): ", 1, 26);
 
-    std::cout << "Insert the plane's column: " << std::flush;
-    getInput(strCol);
+    cols = getNumberInput("Insert the plane's columns: ", 1);
 
-    std::cout << "Insert the plane's ID: " << std::flush;
-    getInput(strId);
-
-    for (auto p : comp.getPlanes()) {
-        if (stoul(strId) == p->getID()) {
-            std::cout
-                << "A plane with that ID already exists! Re-enter the data..."
-                << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            flag = false;
-        }
-    }
-    if (flag) {
-        if (isDigitOnly(strCol) && isDigitOnly(strRow) && isDigitOnly(strId)) {
-            std::cout << "\nCreating the plane..." << std::flush;
-            comp.createPlane(stoul(strRow), stoul(strCol), plate, type);
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            std::cout << "Returning to the previous menu..." << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-            _currentMenu = PLANES;
-        }
-    } else {
-        _currentMenu = PLANES;
-    }
+    std::cout << "\nCreating the plane..." << std::flush;
+    comp.createPlane(rows, cols, plate, type);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::cout << "Returning to the previous menu..." << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    _currentMenu = PLANES;
 }
 
 void UserInterface::checkPlane(Company &comp) {
     std::string opt;
-    std::cout << "Choose an ordering strategy..." << std::endl;
 
-    std::cout << "ID: (1) Descending	(q) Ascending" << std::endl;
-    std::cout << "Type: (2) Descending	(w) Ascending" << std::endl;
-    std::cout << "Plate: (3) Descending	(e) Ascending" << std::endl;
-    std::cout << "Capacity: (4) Descending	(r) Ascending" << std::endl;
-    std::cout << "(0) Go back" << std::endl;
+    std::cout << "ID:       (1) Descending	(q) Ascending\n"
+              << "Type:     (2) Descending	(w) Ascending\n"
+              << "Plate:    (3) Descending	(e) Ascending\n"
+              << "Capacity: (4) Descending	(r) Ascending\n"
+              << "(0) Go back" << std::endl;
+
+    std::cout << ERROR_MESSAGE << _errorMessage << RESET_FORMATTING;
+    _errorMessage = "";
+    std::cout << "Choose an ordering strategy..." << std::endl;
     getInput(opt);
 
     if (opt == "1") {
@@ -334,94 +383,72 @@ void UserInterface::checkPlane(Company &comp) {
         std::cout << "Returning to the previous menu..." << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         _currentMenu = PLANES;
+
     } else {
-        std::cout << "That's not a valid input! Please choose a valid one..."
-                  << std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        _currentMenu = READ_PLANE;
+        _errorMessage = "Invalid input!\n";
     }
 }
 
 void UserInterface::updatePlane(Company &comp) {
-    std::string strId, newRows, newCols;
-    bool flag = true;
+    unsigned id, newRows, newCols;
+    Plane *plane;
 
-    std::cout << "Insert the ID of the plane you wish to update: "
-              << std::flush;
-    getInput(strId);
+    while (true) {
+        id =
+            getNumberInput("Insert the ID of the plane you wish to update: ", 0,
+                           comp.getPlanes().size() - 1);
 
-    for (Plane *plane : comp.getPlanes()) {
-        if (stoul(strId) == plane->getID()) {
-            std::cout
-                << "Current capacity: " << plane->getRows() << '\n'
-                << "New capacity (press Enter to not alter the current one): "
-                << std::flush;
-            getInput(newRows);
-
-            std::cout
-                << "Current capacity: " << plane->getColumns() << '\n'
-                << "New capacity (press Enter to not alter the current one): "
-                << std::flush;
-            getInput(newCols);
-
-            comp.updatePlane(plane, newRows, newCols);
-
-            std::cout << "The changes have been saved!\n"
-                      << "Returning to the previous menu..." << std::flush;
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            flag = false;
-        }
+        if (plane = comp.getPlanes().at(id))
+            break;
+        else
+            _errorMessage = "Invalid input!\n";
     }
-    if (flag) {
-        std::cout << "That client does not exist! Re-enter the NIF..."
-                  << std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        _currentMenu = UPDATE_PLANE;
-    } else {
-        _currentMenu = PLANES;
-    }
+
+    std::cout << "Current rows: " << plane->getRows() << '\n';
+    newRows = getNumberInput("New rows (0 to keep current value): ", 0, 26);
+
+    std::cout << "Current columns: " << plane->getColumns() << '\n';
+    newCols = getNumberInput("New columns (0 to keep current value): ", 0, 99);
+
+    comp.updatePlane(plane, newRows, newCols);
+
+    std::cout << "The changes have been saved!\n"
+              << "Returning to the previous menu..." << std::flush;
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+    _currentMenu = PLANES;
 }
 
 void UserInterface::deletePlane(Company &comp) {
-    std::string strId, confirm;
-    bool flag = true;
-    std::cout << "Insert the ID of the plane you wish to delete: "
-              << std::flush;
-    getInput(strId);
-    for (Plane *plane : comp.getPlanes()) {
-        if (stoul(strId) == plane->getID()) {
-            do {
-                std::cout << "Confirm (Y/N): " << std::flush;
-                getInput(confirm);
-                if (confirm == "Y") {
-                    flag = false;
-                    comp.deletePlane(plane);
-                    std::cout << "Deleting..." << std::flush;
-                    std::this_thread::sleep_for(
-                        std::chrono::milliseconds(1000));
-                    std::cout << "Done! Returning to the previous menu..."
-                              << std::flush;
-                    std::this_thread::sleep_for(
-                        std::chrono::milliseconds(1000));
-                } else if (confirm == "N") {
-                    std::cout << "Returning to the previous menu..."
-                              << std::flush;
-                    std::this_thread::sleep_for(
-                        std::chrono::milliseconds(2000));
-                    flag = false;
-                }
-            } while (flag);
+    std::string confirm;
+    unsigned id;
+    Plane *plane;
+
+    while (true) {
+        id =
+            getNumberInput("Insert the ID of the plane you wish to delete: ", 0,
+                           comp.getPlanes().size() - 1);
+
+        if (plane = comp.getPlanes().at(id))
             break;
-        }
+        else
+            _errorMessage = "Invalid input!\n";
     }
-    if (flag) {
-        std::cout << "That plane does not exist! Re-enter the ID..."
-                  << std::endl;
+
+    std::cout << "Confirm (y/N): " << std::flush;
+    getInput(confirm);
+    if (confirm == "Y" || confirm == "y") {
+        comp.deletePlane(plane);
+        std::cout << "Deleting..." << std::flush;
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        _currentMenu = DELETE_PLANE;
+        std::cout << "Done! Returning to the previous menu..." << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     } else {
-        _currentMenu = PLANES;
+        std::cout << "Returning to the previous menu..." << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     }
+
+    _currentMenu = PLANES;
 }
 
 void UserInterface::flightsMenu(Company &comp) {
@@ -430,8 +457,9 @@ void UserInterface::flightsMenu(Company &comp) {
     text << "Number - Departure Date - Origin->Destination - Duration\n\n";
     for (Flight *flight : comp.getFlights()) {
         text << flight->getNumber() << " - " << flight->getDepartureDate()
-             << " - " << flight->getOrigin() << "->" << flight->getDestination()
-             << " - " << flight->getDuration() << '\n';
+             << " - " << flight->getOrigin()->getName() << "->"
+             << flight->getDestination()->getName() << " - "
+             << flight->getDuration() << '\n';
     }
 
     text << "\nChoose an operation...";
@@ -444,21 +472,27 @@ void UserInterface::flightsMenu(Company &comp) {
 }
 
 void UserInterface::createFlight(Company &comp) {
-    std::string strNumber, strDuration, origin, dest, departureDate, planeID;
+    std::string origin, dest, departureDate;
+    unsigned planeID, number, duration;
+
     Airport *o;
     Airport *d;
-    std::cout << "Insert the flight number: " << std::flush;
-    getInput(strNumber);
-    std::cout << "Insert the flight duration: " << std::flush;
-    getInput(strDuration);
+
+    number = getNumberInput("Insert the flight number: ");
+
+    duration = getNumberInput("Insert the flight duration: ");
+
     std::cout << "Insert the flight origin: " << std::flush;
     getInput(origin);
+
     std::cout << "Insert the flight destination: " << std::flush;
     getInput(dest);
+
     std::cout << "Insert the flight departure date: " << std::flush;
     getInput(departureDate);
-    std::cout << "Insert the flight plane's number: " << std::flush;
-    getInput(planeID);
+
+    planeID = getNumberInput("Insert the flight's plane number: ", 0,
+                             comp.getPlanes().size() - 1);
 
     if (comp.findAirport(origin) != nullptr) {
         o = comp.createAirport(origin);
@@ -472,18 +506,25 @@ void UserInterface::createFlight(Company &comp) {
         d = comp.findAirport(dest);
     }
 
-    if (comp.findPlane(stoul(planeID)) != nullptr) {
+    if (comp.findPlane(planeID) == nullptr) {
         std::cout << "That is not a valid plane! Please retry..." << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         _currentMenu = CREATE_FLIGHT;
     } else {
-        comp.createFlight(stoul(strNumber), stoul(strDuration), o, d,
-                          departureDate, comp.findPlane(stoul(planeID)));
+        comp.createFlight(number, duration, o, d, departureDate,
+                          comp.findPlane(planeID));
         std::cout << "Creating flight..." << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         std::cout << "Done! Returning to previous menu!" << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         _currentMenu = FLIGHTS;
+    }
+}
+
+void printAirportVector(Company &comp) {
+    std::cout << "ID - Name\n";
+    for (auto a : comp.getAirports()) {
+        std::cout << a->getID() << " - " << a->getName() << '\n' << std::flush;
     }
 }
 
@@ -509,7 +550,7 @@ void UserInterface::readFlight(Company &comp) {
     getInput(opt);
 
     std::cout << "Flight Number - Origin->Destination - Departure Date - "
-                 "Duration - Plane ID"
+                 "Duration - Plane ID\n"
               << std::flush;
     if (opt == "1") {
         std::vector<Flight *> sortedVec = comp.getFlights();
@@ -576,32 +617,33 @@ void UserInterface::readFlight(Company &comp) {
 }
 
 void UserInterface::updateFlight(Company &comp) {
-    std::string strId, newDuration, newOrigin, newDest, newDeparture,
-        newPlaneID;
+    std::string newDeparture;
+    unsigned ID, newPlaneID, newDuration, newOrigin, newDest;
     bool flag = true;
-    std::cout << "Insert the flight ID of the flight you wish to update: "
-              << std::flush;
-    getInput(strId);
+    ID = getNumberInput(
+        "Insert the flight ID of the flight you wish to update: ");
     for (Flight *flight : comp.getFlights()) {
-        if (stoul(strId) == flight->getID()) {
-            std::cout
-                << "Current duration: " << flight->getDuration() << '\n'
-                << "New duration (press Enter to not alter the current one): "
-                << std::flush;
-            getInput(newDuration);
-
-            std::cout
-                << "Current origin: " << flight->getOrigin() << '\n'
-                << "New origin (press Enter to not alter the current one): "
-                << std::flush;
-            getInput(newOrigin);
-
-            std::cout << "Current destination: " << flight->getDestination()
-                      << '\n'
-                      << "New destination (press Enter to not alter the "
-                         "current one): "
+        if (ID == flight->getID()) {
+            std::cout << "Current duration: " << flight->getDuration() << '\n'
                       << std::flush;
-            getInput(newDest);
+            newDuration = getNumberInput(
+                "New duration (press Enter to not alter the current one): ", 1);
+
+            printAirportVector(comp);
+
+            std::cout << "Current origin: " << flight->getOrigin()->getName()
+                      << '\n'
+                      << std::flush;
+            newOrigin = getNumberInput(
+                "New origin ID (press Enter to not alter the current one): ");
+
+            printAirportVector(comp);
+
+            std::cout << "Current destination: "
+                      << flight->getDestination()->getName() << '\n'
+                      << std::flush;
+            newDest = getNumberInput("New destination ID (press Enter to not "
+                                     "alter the current one): ");
 
             std::cout << "Current departure date: "
                       << flight->getDepartureDate() << '\n'
@@ -610,11 +652,11 @@ void UserInterface::updateFlight(Company &comp) {
                       << std::flush;
             getInput(newDeparture);
 
-            std::cout
-                << "Current plane ID: " << flight->getPlane()->getID() << '\n'
-                << "New plane ID (press Enter to not alter the current one): "
-                << std::flush;
-            getInput(newPlaneID);
+            std::cout << "Current plane ID: " << flight->getPlane()->getID()
+                      << '\n'
+                      << std::flush;
+            newPlaneID = getNumberInput(
+                "New plane ID (press Enter to not alter the current one): ");
 
             comp.updateFlight(flight, newDuration, newOrigin, newDest,
                               newDeparture, newPlaneID);
@@ -636,45 +678,35 @@ void UserInterface::updateFlight(Company &comp) {
 }
 
 void UserInterface::removeFlight(Company &comp) {
-    std::string strID, confirm;
-    bool flag = true;
-    std::cout << "Insert the flight ID of the flight you wish to delete: "
-              << std::flush;
-    getInput(strID);
-    for (Flight *flight : comp.getFlights()) {
-        if (stoul(strID) == flight->getID()) {
-            do {
-                std::cout << "Confirm (Y/N): " << std::flush;
-                getInput(confirm);
-                if (confirm == "Y") {
-                    flag = false;
-                    comp.deleteFlight(flight);
-                    std::cout << "Deleting..." << std::flush;
-                    std::this_thread::sleep_for(
-                        std::chrono::milliseconds(1000));
-                    std::cout << "Done! Returning to the previous menu..."
-                              << std::flush;
-                    std::this_thread::sleep_for(
-                        std::chrono::milliseconds(1000));
-                } else if (confirm == "N") {
-                    std::cout << "Returning to the previous menu..."
-                              << std::flush;
-                    std::this_thread::sleep_for(
-                        std::chrono::milliseconds(2000));
-                    flag = false;
-                }
-            } while (flag);
+    std::string confirm;
+    unsigned id;
+    Flight *flight;
+
+    while (true) {
+        id = getNumberInput(
+            "Insert the flight ID of the flight you wish to delete: ", 0,
+            comp.getFlights().size() - 1);
+
+        if (flight = comp.getFlights().at(id))
             break;
-        }
+        else
+            _errorMessage = "Invalid input!\n";
     }
-    if (flag) {
-        std::cout << "That flight does not exist! Re-enter the flight ID..."
-                  << std::endl;
+
+    std::cout << "Confirm (y/N): " << std::flush;
+    getInput(confirm);
+    if (confirm == "Y" || confirm == "y") {
+        comp.deleteFlight(flight);
+        std::cout << "Deleting... " << std::flush;
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        _currentMenu = DELETE_FLIGHT;
+        std::cout << "Done! Returning to the previous menu..." << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     } else {
-        _currentMenu = FLIGHTS;
+        std::cout << "Returning to the previous menu..." << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     }
+
+    _currentMenu = FLIGHTS;
 }
 
 void UserInterface::clientsMenu(Company &comp) {
@@ -697,23 +729,20 @@ void UserInterface::clientsMenu(Company &comp) {
 void UserInterface::updateClientMenu(Company &comp) {
     std::string strNIF, newName;
     bool flag = true;
-    std::cout << "Insert the NIF of the client you wish to update: "
-              << std::flush;
-    getInput(strNIF);
+    strNIF =
+        getNumberInput("Insert the NIF of the client you wish to update: ");
     for (Client *client : comp.getClients()) {
-        if (stoul(strNIF) == client->getNIF()) {
-            std::cout << "Current name: " << client->getName() << '\n'
-                      << "New name (press Enter to not alter the current one): "
-                      << std::flush;
-            getInput(newName);
+        std::cout << "Current name: " << client->getName() << '\n'
+                  << "New name (press Enter to not alter the current one): "
+                  << std::flush;
+        getInput(newName);
 
-            comp.updateClient(client, newName);
+        comp.updateClient(client, newName);
 
-            std::cout << "The changes have been saved!\n"
-                      << "Returning to the previous menu..." << std::flush;
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            flag = false;
-        }
+        std::cout << "The changes have been saved!\n"
+                  << "Returning to the previous menu..." << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        flag = false;
     }
     if (flag) {
         std::cout << "That client does not exist! Re-enter the NIF..."
@@ -732,30 +761,26 @@ void UserInterface::deleteClientMenu(Company &comp) {
               << std::flush;
     getInput(strNIF);
     for (Client *client : comp.getClients()) {
-        if (stoul(strNIF) == client->getNIF()) {
-            do {
-                std::cout << "Confirm (Y/N): " << std::flush;
-                getInput(confirm);
-                if (confirm == "Y") {
-                    flag = false;
-                    comp.deleteClient(client);
-                    std::cout << "Deleting..." << std::flush;
-                    std::this_thread::sleep_for(
-                        std::chrono::milliseconds(1000));
-                    std::cout << "Done! Returning to the previous menu..."
-                              << std::flush;
-                    std::this_thread::sleep_for(
-                        std::chrono::milliseconds(1000));
-                } else if (confirm == "N") {
-                    std::cout << "Returning to the previous menu..."
-                              << std::flush;
-                    std::this_thread::sleep_for(
-                        std::chrono::milliseconds(2000));
-                    flag = false;
-                }
-            } while (flag);
-            break;
-        }
+        strNIF =
+            getNumberInput("Insert the NIF of the client you wish to delete: ");
+        do {
+            std::cout << "Confirm (y/N): " << std::flush;
+            getInput(confirm);
+            if (confirm == "Y" || confirm == "y") {
+                flag = false;
+                comp.deleteClient(client);
+                std::cout << "Deleting..." << std::flush;
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                std::cout << "Done! Returning to the previous menu..."
+                          << std::flush;
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            } else {
+                std::cout << "Returning to the previous menu..." << std::flush;
+                std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+                flag = false;
+            }
+        } while (flag);
+        break;
     }
     if (flag) {
         std::cout << "That client does not exist! Re-enter the NIF..."
@@ -768,31 +793,29 @@ void UserInterface::deleteClientMenu(Company &comp) {
 }
 
 void UserInterface::createClientMenu(Company &comp) {
-    std::string name, strNIF;
+    std::string name;
     unsigned NIF;
 
     std::cout << "Insert the client's name: " << std::flush;
 
     getInput(name);
 
-    std::cout << "Insert the client's NIF: " << std::flush;
-
-    getInput(strNIF);
-
-    if (isDigitOnly(strNIF)) {
-        NIF = stoul(strNIF);
+    NIF = getNumberInput("Insert the client's NIF: ");
+    if (!comp.findClient(NIF)) {
         std::cout << "\nCreating the client..." << std::flush;
-        comp.createClient(stoul(strNIF), name);
+        comp.createClient(NIF, name);
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        std::cout << "Created client: " << name << " - " << strNIF << std::endl;
+        std::cout << "Created client: " << name << " - " << std::to_string(NIF)
+                  << std::endl;
         std::cout << "Returning to the previous menu..." << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         _currentMenu = CLIENTS;
     } else {
-        std::cout << "An error has occurred! Re-enter the data..."
-                  << std::flush;
+        std::cout << "There was an error creating the client!\nReturning to "
+                     "the previous menu..."
+                  << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-        _currentMenu = CREATE_CLIENT;
+        _currentMenu = CLIENTS;
     }
 }
 
@@ -841,12 +864,12 @@ void UserInterface::readClientMenu(Company &comp) {
     } else if (opt == "0") {
         std::cout << "Returning to the previous menu..." << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        _currentMenu = SERVICES;
+        _currentMenu = CLIENTS;
     } else {
         std::cout << "That's not a valid input! Please choose a valid one..."
                   << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        _currentMenu = READ_SERVICE;
+        _currentMenu = READ_CLIENT;
     }
 }
 
@@ -861,10 +884,12 @@ void UserInterface::clientsFlightsMenu(Company &comp) {
 }
 
 void UserInterface::createService(Company &comp) {
-    std::string date, worker, planeid, type;
-    std::cout << "Insert the service's type: " << std::flush;
+    std::string date, worker;
+    unsigned int type;
+    unsigned planeID;
 
-    getInput(type);
+    getNumberInput(
+        "(0) Cleaning\n(1) Maintenance\n\nInsert the service's type: ", 0, 1);
 
     std::cout << "Insert the service's responsible worker: " << std::flush;
 
@@ -874,35 +899,236 @@ void UserInterface::createService(Company &comp) {
 
     getInput(date);
 
-    std::cout << "Insert the id of the plane that will receive this service: "
+    planeID = getNumberInput(
+        "Insert the id of the plane that will receive this service: ", 0,
+        comp.getPlanes().size() - 1);
+
+    Service service = Service(static_cast<ServiceType>(type), date, worker);
+    comp.getPlanes().at(planeID)->addService(service);
+
+    std::cout << "Service has been created! Returning to previous menu..."
               << std::flush;
-
-    getInput(planeid);
-
-    Service service = Service(stoul(type), date, worker);
-    for (Plane *plane : comp.getPlanes()) {
-        if (stoul(planeid) == plane->getID()) {
-            std::cout << "\nCreating the service..." << std::flush;
-            plane->addService(service);
-            break;
-        } else {
-            std::cout << "An error has occurred! Re-enter the data..."
-                      << std::flush;
-            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-            _currentMenu = CREATE_SERVICE;
-        }
-    }
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    std::cout << "Created service: " << type << " - " << worker << std::endl;
-    std::cout << "Returning to the previous menu..." << std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     _currentMenu = SERVICES;
 }
 
 void UserInterface::readService(Company &comp) {
-    for (Plane *plane : comp.getPlanes()) {
-        std::cout << "Plane ID: " << plane->getID() << "\n\t" << std::endl;
-        printServiceQueue(plane);
+    std::string back;
+    printServiceList(comp);
+    std::cout << "Press 0 to go back!" << std::endl;
+    getInput(back);
+    if (back == "0") {
+        _currentMenu = SERVICES;
+    }
+}
+
+void printPlaneLayout(Flight *flight) {
+    Plane *plane = flight->getPlane();
+    unsigned rows = plane->getRows();
+    unsigned columns = plane->getColumns();
+    unsigned width = numberLength(columns);
+
+    for (int j = width - 1; j >= 0; j--) {
+        std::cout << "  ";
+        for (unsigned i = 1; i <= columns; i++) {
+            std::cout << i / ((unsigned)pow(10, j)) % 10;
+        }
+        std::cout << '\n';
+    }
+
+    for (unsigned row = 0; row < rows; ++row) {
+        printf("%c ", 'A' + row);
+        std::cout << " ";
+        for (unsigned column = 0; column < columns; ++column) {
+            Ticket *ticket = flight->getTickets().at(row * columns + column);
+
+            std::cout << (ticket->getClient() ? "x" : "o");
+        }
+
+        std::cout << std::endl;
+    }
+}
+
+void UserInterface::clientBuyTickets(Company &comp) {
+    std::string seat, name;
+    unsigned opt, opt1, NIF;
+
+    std::cout << "Available flights: \n" << std::flush;
+    std::cout << "Flight Number - Origin->Destination - Departure Date - "
+                 "Duration - Plane ID"
+              << std::flush;
+    printFlightVector(comp.getFlights());
+
+    opt = getNumberInput("Choose a flight number to buy tickets: ");
+
+    Flight *flight = comp.findFlight(opt);
+
+    if (flight->getAvailability() > 0) {
+        opt1 = getNumberInput(
+            "Will you be travelling alone or in a group (0 - alone)? ");
+
+        if (opt1 == 0) {
+            printPlaneLayout(flight);
+            std::cout << "Pick a seat: " << std::flush;
+            getInput(seat);
+
+            if (flight->findTicketBySeat(seat) != nullptr) {
+                comp.findClient(currClient->getNIF())
+                    ->addTicket(flight->findTicketBySeat(seat));
+            } else {
+                std::cout << "That's not a valid seat! "
+                          << "Returning to previous menu..." << std::flush;
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                _currentMenu = CLIENT_OPTIONS;
+            }
+
+        } else {
+            if (opt1 >= flight->getAvailability()) {
+                for (int i = 0; i < opt1; i++) {
+                    NIF = getNumberInput("Insert the passenger's number ");
+
+                    if (comp.findClient(NIF) != nullptr) {
+                        printPlaneLayout(flight);
+                        std::cout << "Pick a seat: " << std::flush;
+                        getInput(seat);
+                        if (flight->findTicketBySeat(seat) != nullptr) {
+                            comp.findClient(NIF)->addTicket(
+                                flight->findTicketBySeat(seat));
+                            std::cout << "The ticket has been purchased! "
+                                      << "Thanks for travelling with us..."
+                                      << std::flush;
+                            std::this_thread::sleep_for(
+                                std::chrono::milliseconds(1000));
+                            _currentMenu = CLIENT_OPTIONS;
+                        } else {
+                            std::cout << "That's not a valid seat! "
+                                      << "Returning to previous menu..."
+                                      << std::flush;
+                            std::this_thread::sleep_for(
+                                std::chrono::milliseconds(1000));
+                            _currentMenu = CLIENT_OPTIONS;
+                        }
+                    } else {
+                        std::cout << "It seems you have never "
+                                     "travelled with us... :(\n"
+                                  << "To finish your registration "
+                                     "insert your name: "
+                                  << std::flush;
+
+                        getInput(name);
+
+                        if (NIF) {
+                            comp.createClient(NIF, name);
+                        }
+                        std::cout << "\n\n";
+
+                        printPlaneLayout(flight);
+                        std::cout << "Pick a seat: " << std::flush;
+                        getInput(seat);
+                        if (flight->findTicketBySeat(seat) != nullptr) {
+                            comp.findClient(NIF)->addTicket(
+                                flight->findTicketBySeat(seat));
+                        } else {
+                            std::cout << "That's not a valid seat! "
+                                      << "Returning to previous menu..."
+                                      << std::flush;
+                            std::this_thread::sleep_for(
+                                std::chrono::milliseconds(1000));
+                            _currentMenu = CLIENT_OPTIONS;
+                        }
+                    }
+                }
+            } else {
+                std::cout << "Not enough seats left on that plane! "
+                          << "Returning to previous menu..." << std::flush;
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                _currentMenu = CLIENT_OPTIONS;
+            }
+        }
+    } else {
+        std::cout
+            << "It seems there are no available tickets for this flight!\n"
+            << std::flush;
+        std::cout << "Returning to previous menu..." << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        _currentMenu = CLIENT_OPTIONS;
+    }
+}
+
+void UserInterface::airportsMenu(Company &comp) {
+    std::stringstream text;
+
+    std::cout << "AIRPORTS\n" << std::endl;
+
+    std::cout << "Choose an operation..." << std::endl;
+
+    optionsMenu(text.str(), {{"Go back", EMPLOYEE_OPTIONS},
+                             {"New airport", CREATE_AIRPORT},
+                             {"Check airports", READ_AIRPORT},
+                             {"Remove airport", DELETE_AIRPORT}});
+}
+
+void UserInterface::createAirport(Company &comp) {
+    std::string name;
+
+    std::cout << "Insert the name of the airport: " << std::flush;
+    getInput(name);
+
+    if (comp.findAirport(name) == nullptr) {
+        comp.createAirport(name);
+        std::cout << "Creating airport..." << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        std::cout << "Done! Returning to previous menu!" << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        _currentMenu = AIRPORTS;
+    } else {
+        std::cout << "That airport already exists! Please retry..."
+                  << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        _currentMenu = CREATE_AIRPORT;
+    }
+}
+
+void UserInterface::readAirport(Company &comp) {
+    std::string back;
+    printAirportVector(comp);
+    std::cout << "Press 0 to go back!" << std::endl;
+    getInput(back);
+    if (back == "0") {
+        _currentMenu = AIRPORTS;
+    }
+}
+
+void UserInterface::deleteAirport(Company &comp) {
+    std::string confirm;
+    unsigned id;
+    Airport *airport;
+    printAirportVector(comp);
+    while (true) {
+        id = getNumberInput(
+            "Insert the  ID of the airport you wish to delete: ", 0,
+            comp.getAirports().size() - 1);
+
+        if (airport = comp.getAirports().at(id))
+            break;
+        else
+            _errorMessage = "Invalid input!\n";
+    }
+
+    std::cout << "Confirm (y/N): " << std::flush;
+    getInput(confirm);
+
+    if (confirm == "Y" || confirm == "y") {
+        comp.deleteAirport(airport);
+        std::cout << "Deleting... " << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        std::cout << "Done! Returning to the previous menu..." << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        _currentMenu = AIRPORTS;
+    } else {
+        std::cout << "Returning to the previous menu..." << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+        _currentMenu = AIRPORTS;
     }
 }
 
@@ -921,6 +1147,8 @@ void UserInterface::show(Company &comp) {
     case CHECK_FLIGHTS:
         clientsFlightsMenu(comp);
         break;
+    case BUY_TICKETS:
+        clientBuyTickets(comp);
     case EMPLOYEE:
         employeeMenu();
         break;
@@ -963,6 +1191,9 @@ void UserInterface::show(Company &comp) {
     case CREATE_SERVICE:
         createService(comp);
         break;
+    case COMPLETE_SERVICE:
+        completeService(comp);
+        break;
     case READ_SERVICE:
         readService(comp);
         break;
@@ -980,6 +1211,18 @@ void UserInterface::show(Company &comp) {
         break;
     case READ_PLANE:
         checkPlane(comp);
+        break;
+    case AIRPORTS:
+        airportsMenu(comp);
+        break;
+    case CREATE_AIRPORT:
+        createAirport(comp);
+        break;
+    case DELETE_AIRPORT:
+        deleteAirport(comp);
+        break;
+    case READ_AIRPORT:
+        readAirport(comp);
         break;
     default:
         throw Exit();
@@ -1000,12 +1243,5 @@ void UserInterface::loadString(const std::string &text, unsigned time) const {
 
 void UserInterface::exit() {
     std::cout << CLEAR_SCREEN << std::flush;
-    // std::cout << "Shutting down ✈" << std::flush;
-    // std::this_thread::sleep_for(std::chrono::milliseconds(250));
-    // std::cout << "\e[2D. ✈" << std::flush;
-    // std::this_thread::sleep_for(std::chrono::milliseconds(250));
-    // std::cout << "\e[2D. ✈" << std::flush;
-    // std::this_thread::sleep_for(std::chrono::milliseconds(250));
-    // std::cout << "\e[2D. ✈" << std::endl;
     loadString("Shutting down...", 1000);
 }

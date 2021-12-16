@@ -18,6 +18,13 @@ void Flight::generateTickets() {
     delete[] seat;
 }
 
+void Flight::deleteTickets() {
+    for (Ticket *ticket : _tickets)
+        delete ticket;
+
+    _tickets.resize(0);
+}
+
 Flight::Flight(unsigned id, unsigned number, unsigned duration, Airport *origin,
                Airport *dest, std::string departureDate, Plane *plane)
     : _id(id), _number(number), _origin(origin), _destination(dest),
@@ -33,12 +40,7 @@ void Flight::setPlane(Plane *plane) {
     deleteTickets();
     generateTickets();
 }
-// TODO: FIX THIS FUNCITON - error: no match for ‘operator<’ (operand types are ‘Ticket*’ and ‘const Ticket’)
-/*
-Ticket *Flight::findTicketBySeat(const std::string &seat) {
-    auto it = std::lower_bound(_tickets.begin(), _tickets.end(),
-                               Ticket(nullptr, seat));
 
-    return it == _tickets.end() ? nullptr : *it;
-}
-*/
+// TODO: FIX THIS FUNCITON - error: no match for ‘operator<’ (operand types are
+// ‘Ticket*’ and ‘const Ticket’)
+Ticket *Flight::findTicketBySeat(const std::string &seat) { return nullptr; }

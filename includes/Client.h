@@ -52,6 +52,8 @@ public:
 
     void addTicket(Ticket *ticket) { _tickets.push_back(ticket); }
 
+    void removeTicket(Ticket *ticket);
+
     bool operator==(const Client c2) { return (this->getNIF() == c2.getNIF()); }
 };
 

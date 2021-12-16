@@ -3,7 +3,17 @@ project(aed_proj_2021)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(aed_proj_2021 src/main.cpp includes/Plane.h includes/Flight.h src/Ticket.cpp includes/Ticket.h src/Flight.cpp src/Client.cpp includes/Client.h src/Service.cpp includes/Service.h src/UserInterface.cpp includes/UserInterface.h src/Company.cpp includes/Company.h src/Utils.cpp includes/Utils.h includes/constants.h)
+add_executable(aed_proj_2021 src/main.cpp includes/constants.h includes/Exceptions.h
+               src/Airport.cpp includes/Airport.h
+               src/Client.cpp includes/Client.h
+               src/Company.cpp includes/Company.h
+               src/Flight.cpp includes/Flight.h
+               src/Plane.cpp includes/Plane.h
+               src/Service.cpp includes/Service.h
+               src/Ticket.cpp includes/Ticket.h
+               src/Transport.cpp includes/Transport.h
+               src/UserInterface.cpp includes/UserInterface.h
+               src/Utils.cpp includes/Utils.h)
 
 # Doxygen Build
 find_package(Doxygen)

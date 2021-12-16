@@ -8,6 +8,9 @@ class Ticket;
 
 #include <string>
 
+/**
+ * @brief Class representing a ticket for a flight.
+ */
 class Ticket {
     const Flight *_flight;
     const std::string _seat;
@@ -18,10 +21,24 @@ public:
     ~Ticket();
 
     // Getters
+    /**
+     * @return This ticket's flight.
+     */
     const Flight *getFlight() const { return _flight; };
+    /**
+     * @return This ticket's seat.
+     */
     std::string getSeat() const { return _seat; };
+    /**
+     * @return This ticket's client.
+     */
     Client *getClient() const { return _client; };
 
+    /**
+     * @brief Set this ticket's client.
+     *
+     * @param client The new client.
+     */
     void setClient(Client *client) { _client = client; }
 
     bool operator<(const Ticket &other) { return _seat < other._seat; }

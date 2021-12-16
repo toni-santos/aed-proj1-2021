@@ -5,6 +5,10 @@
 
 enum TransportType { TRAIN, BUS, METRO };
 
+/**
+ * @brief Class representing a land transport, like a train, bus or metro, near
+ *        an airport.
+ */
 class Transport {
     unsigned _distance{};
     std::string _name{};
@@ -14,8 +18,17 @@ public:
     Transport(TransportType type, unsigned distance, std::string name)
         : _type(type), _distance(distance), _name(name){};
 
+    /**
+     * @return This transport's name.
+     */
     std::string getName() const { return _name; };
+    /**
+     * @return This transport's distance to the airport.
+     */
     unsigned getDistance() const { return _distance; };
+    /**
+     * @return This transport's type.
+     */
     TransportType getType() const { return _type; };
 
     bool operator<(const Transport &other) {

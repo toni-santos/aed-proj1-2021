@@ -8,6 +8,9 @@ class Airport;
 
 #include <string>
 
+/**
+ * @brief Class representing an airport.
+ */
 class Airport {
     const unsigned _id;
 
@@ -18,8 +21,19 @@ class Airport {
 public:
     Airport(unsigned id, std::string name) : _id(id), _name(name){};
 
+    /**
+     * @return This airport's index in the Company::_airports vector.
+     */
     unsigned getID() const { return _id; }
+    /**
+     * @return This airport's name.
+     */
     std::string getName() const { return _name; };
+    /**
+     * @brief Set this airport's name.
+     *
+     * @param name The new name.
+     */
     void setName(std::string name) { _name = name; }
 };
 

@@ -4,6 +4,7 @@
 class Flight;
 
 #include "Airport.h"
+#include "Luggage.h"
 #include "Plane.h"
 #include "Ticket.h"
 
@@ -21,6 +22,7 @@ private:
     const unsigned _number;
     unsigned _duration;
     std::vector<Ticket *> _tickets;
+    std::vector<Luggage *> _storage;
     Airport *_destination, *_origin;
     std::string _departureDate;
     Plane *_plane;
@@ -119,6 +121,8 @@ public:
      * @return The ticket, if it was found.
      */
     Ticket *findTicketBySeat(const std::string &seat);
+
+    void addLuggage(Luggage *luggage) { _storage.push_back(luggage); };
 };
 
 #endif // AED_PROJ_2021_FLIGHT_H

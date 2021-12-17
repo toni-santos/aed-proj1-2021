@@ -2,6 +2,7 @@
 #define AED_PROJ_2021_COMPANY_H
 
 #include "Airport.h"
+#include "Cart.h"
 #include "Client.h"
 #include "Flight.h"
 
@@ -16,6 +17,7 @@ private:
     std::vector<Plane *> _planes{};
     std::vector<Client *> _clients{};
     std::vector<Airport *> _airports{};
+    std::vector<Cart *> _carts{};
 
     void readAirport();
 
@@ -65,6 +67,10 @@ public:
     std::vector<Client *> getClients() const { return _clients; };
 
     std::vector<Airport *> getAirports() const { return _airports; };
+
+    std::vector<Cart *> getCarts() const { return _carts; };
+
+    Cart *findCart(unsigned flightID);
 
     /**
      * @brief Creates a new client.

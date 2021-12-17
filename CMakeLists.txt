@@ -5,9 +5,12 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(aed_proj_2021 src/main.cpp includes/constants.h includes/Exceptions.h
                src/Airport.cpp includes/Airport.h
+               includes/BST.h
+               src/Cart.cpp includes/Cart.h
                src/Client.cpp includes/Client.h
                src/Company.cpp includes/Company.h
                src/Flight.cpp includes/Flight.h
+               src/Luggage.cpp includes/Luggage.h
                src/Plane.cpp includes/Plane.h
                src/Service.cpp includes/Service.h
                src/Ticket.cpp includes/Ticket.h

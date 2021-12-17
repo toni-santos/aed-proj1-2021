@@ -5,6 +5,7 @@ class Ticket;
 
 #include "Client.h"
 #include "Flight.h"
+#include "Luggage.h"
 
 #include <string>
 
@@ -15,6 +16,7 @@ class Ticket {
     const Flight *_flight;
     const std::string _seat;
     Client *_client = nullptr;
+    Luggage *_luggage = nullptr;
     // TODO: prices (?)
 public:
     Ticket(Flight *flight, std::string seat) : _flight(flight), _seat(seat){};
@@ -39,7 +41,9 @@ public:
      *
      * @param client The new client.
      */
-    void setClient(Client *client) { _client = client; }
+    void setClient(Client *client) { _client = client; };
+
+    void addLuggage(Luggage *luggage) { _luggage = luggage; };
 };
 
 #endif // AED_PROJ_2021_TICKET_H

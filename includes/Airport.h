@@ -3,8 +3,8 @@
 
 class Airport;
 
-#include "Transport.h"
-// #include "bst.h"
+#include "../includes/BST.h"
+#include "../includes/Transport.h"
 
 #include <string>
 
@@ -15,8 +15,7 @@ class Airport {
     unsigned _id;
 
     std::string _name{};
-    // TODO
-    // BST<Transport> transports{};
+    BST<Transport> _transports;
 
 public:
     Airport(unsigned id, std::string name) : _id(id), _name(name){};
@@ -29,6 +28,10 @@ public:
      * @return This airport's name.
      */
     std::string getName() const { return _name; };
+    /**
+     * @return Land transports near this airport.
+     */
+    BST<Transport> getTransports() const { return _transports; }
     /**
      * @brief Set this airport's id.
      *

@@ -43,6 +43,7 @@ Flight *Company::createFlight(unsigned number, unsigned duration,
     Flight *flight = new Flight(_flights.size(), number, duration, origin, dest,
                                 departure, plane);
     _flights.push_back(flight);
+    _carts.push_back(new Cart(flight));
     return flight;
 }
 
@@ -183,6 +184,17 @@ Client *Company::findClient(unsigned nif) {
             return c;
         }
     }
+
+    return nullptr;
+}
+
+Cart *Company::findCart(unsigned flightID) {
+    for (auto cart : _carts) {
+        if (cart->getFlight()->getID() == flightID) {
+            return cart;
+        }
+    }
+
     return nullptr;
 }
 

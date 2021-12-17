@@ -15,7 +15,7 @@ class Client {
 private:
     const unsigned _id;
 
-    const unsigned _nif{}; // id attribute
+    const unsigned _nif{};
     std::string _name{};
     std::vector<Ticket *> _tickets{};
 

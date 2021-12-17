@@ -961,10 +961,11 @@ void UserInterface::clientBuyTickets(Company &comp) {
     opt = getNumberInput("\nChoose a flight: ");
 
     if (opt == 0) {
-        std::cout << "Returning to previous menu..." << std::flush;
+        std::cout << "Returning to previous menu...\n" << std::flush;
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         _currentMenu = CLIENT_OPTIONS;
-    }
+		return;
+	}
 
     Flight *flight = comp.findFlight(opt);
 

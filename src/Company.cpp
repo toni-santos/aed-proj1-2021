@@ -332,7 +332,9 @@ void Company::readClient() {
             unsigned flightID = stoul(parsedLine.at(0));
             std::string seat = parsedLine.at(1);
 
-            client->addTicket(_flights.at(flightID)->findTicketBySeat(seat));
+			Ticket *ticket = _flights.at(flightID)->findTicketBySeat(seat);
+			ticket->setClient(client);
+            client->addTicket(ticket);
         }
     }
 

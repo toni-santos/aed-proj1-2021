@@ -36,7 +36,9 @@ enum Menu {
     AIRPORTS,
     CREATE_AIRPORT,
     DELETE_AIRPORT,
-    READ_AIRPORT
+    READ_AIRPORT,
+	CARTS,
+	UPDATE_CART
 };
 
 class UserInterface {

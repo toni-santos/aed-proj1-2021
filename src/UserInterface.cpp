@@ -10,12 +10,9 @@
 #include <sstream>
 #include <thread>
 
-// TODO: IMPLEMENT WRITE/DELETE
-// TODO: WHEN PRINNTING AIRPORTS PRINT THE NEARBY DESTINATIONS (?)
+// TODO: IMPLEMENT FILE WRITE/DELETE
+// TODO: WHEN PRINTING AIRPORTS PRINT THE NEARBY DESTINATIONS (?)
 // TODO: DESTINATIONS
-// TODO: TICKETS THAT ARE BOUGHT ARE NOT SAVING THAT INFORMATION (aka Client attribute)
-// TODO: IMPLEMENT CHECKING IF SEAT IS OCCUPIED WHEN BUYING TICKETS (fix above first obvs)
-// TODO: SEGFAULT WHEN BUYING MULTIPLE TICKETS
 // TODO: UPDATE OF CARTS
 
 void printServiceList(Company &comp) {
@@ -69,12 +66,11 @@ void printPlaneVector(std::vector<Plane *> sortedVec) {
 }
 
 void printClientFlights(Client *client, Company &comp) {
-    std::cout << "\nTicket - Flight Number - Origin->Destination - Date of Departure\n\n";
+    std::cout << "\nFlight Number - Origin->Destination - Date of Departure\n\n";
     for (auto ticket : client->getTickets()) {
         const Flight *f = ticket->getFlight();
 
-        std::cout << f->getPlane()->getID()  << " - "
-                  << f->getNumber() << " - "
+        std::cout << f->getNumber() << " - "
                   << f->getOrigin()->getName() << "->"
                   << f->getDestination()->getName() << " - "
                   << f->getDepartureDate()
@@ -942,7 +938,6 @@ void printPlaneLayout(Flight *flight) {
 
     for (unsigned row = 0; row < rows; ++row) {
         printf("%c ", 'A' + row);
-        std::cout << " ";
         for (unsigned column = 0; column < columns; ++column) {
             Ticket *ticket = flight->getTickets().at(row * columns + column);
 
@@ -963,7 +958,7 @@ void UserInterface::clientBuyTickets(Company &comp) {
               << std::flush;
     printFlightVector(comp.getFlights());
 
-    opt = getNumberInput("\nChoose a flight number to buy tickets: ");
+    opt = getNumberInput("\nChoose a flight: ");
 
     if (opt == 0) {
         std::cout << "Returning to previous menu..." << std::flush;
@@ -977,37 +972,47 @@ void UserInterface::clientBuyTickets(Company &comp) {
         opt1 = getNumberInput(
             "Will you be travelling alone or in a group (0/1 = alone)? ");
 
-        if (opt1 == 0 || opt == 1) {
-            printPlaneLayout(flight);
-            std::cout << "Pick a seat: " << std::flush;
-            getInput(seat);
+        if (opt1 == 1) {
+			printPlaneLayout(flight);
+			std::cout << "Pick a seat: " << std::flush;
+			getInput(seat);
 
-            if (flight->findTicketBySeat(seat) != nullptr) {
-                std::cout << "Do you wish to use automatic "
-                             "luggaging? (y/N) "
-                          << std::flush;
-                getInput(opt2);
-                if (opt2 == "Y" || opt2 == "y") {
-                    doLuggaging(comp, flight, currClient->getNIF(), seat);
-                    _currentMenu = CLIENT_OPTIONS;
-                } else {
-                    comp.findClient(currClient->getNIF())->addTicket(
-                                flight->findTicketBySeat(seat));
-                        std::cout << "The ticket has been purchased! "
-                                  << "Thanks for travelling with us... :D\n"
-                                  << std::flush;
-                        std::this_thread::sleep_for(
-                                std::chrono::milliseconds(1000));
-                        _currentMenu = CLIENT_OPTIONS;
-                    }
-
-                } else {
-                std::cout << "That's not a valid seat! "
-                          << "Returning to previous menu..." << std::flush;
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                _currentMenu = CLIENT_OPTIONS;
-            }
-        } else {
+			if (flight->findTicketBySeat(seat) != nullptr) {
+				if (flight->findTicketBySeat(seat)->getClient() == nullptr) {
+					std::cout << "Do you wish to use automatic "
+								 "luggaging? (y/N) "
+							  << std::flush;
+					getInput(opt2);
+					if (opt2 == "Y" || opt2 == "y") {
+						doLuggaging(comp, flight, currClient->getNIF(), seat);
+						_currentMenu = CLIENT_OPTIONS;
+					} else {
+						flight->findTicketBySeat(seat)->setClient(currClient);
+						currClient->addTicket(flight->findTicketBySeat(seat));
+						std::cout << "The ticket has been purchased! "
+								  << "Thanks for travelling with us... :D\n"
+								  << std::flush;
+						std::this_thread::sleep_for(
+								std::chrono::milliseconds(1000));
+						_currentMenu = CLIENT_OPTIONS;
+					}
+				} else {
+					std::cout << "That's not a valid seat! "
+							  << "Returning to previous menu...\n" << std::flush;
+					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+					_currentMenu = CLIENT_OPTIONS;
+				}
+			} else {
+				std::cout << "That's not a valid seat! "
+						  << "Returning to previous menu...\n" << std::flush;
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+				_currentMenu = CLIENT_OPTIONS;
+			}
+		} else if (opt1 == 0) {
+			std::cout << "Returning to previous menu...\n" << std::flush;
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+			_currentMenu = CLIENT_OPTIONS;
+		} else {
             if (opt1 <= flight->getAvailability()) {
                 for (int i = 0; i < opt1; i++) {
                     NIF = getNumberInput("Insert the passenger's NIF: ");
@@ -1017,25 +1022,35 @@ void UserInterface::clientBuyTickets(Company &comp) {
                         std::cout << "Pick a seat: " << std::flush;
                         getInput(seat);
                         if (flight->findTicketBySeat(seat) != nullptr) {
-                            std::cout << "Do you wish to use automatic "
-                                         "luggaging? (y/N) "
-                                      << std::flush;
-                            getInput(opt2);
+							if (flight->findTicketBySeat(seat)->getClient() == nullptr) {
+								std::cout << "Do you wish to use automatic "
+											 "luggaging? (y/N) "
+										  << std::flush;
+								getInput(opt2);
 
-                            if (opt2 == "Y" || opt2 == "y") {
-                                doLuggaging(comp, flight, NIF, seat);
-                            } else {
-                                comp.findClient(NIF)->addTicket(
-                                        flight->findTicketBySeat(seat));
-                                std::cout << "The ticket has been purchased! "
-                                          << "Thanks for travelling with us... :D\n"
-                                          << std::flush;
-                                std::this_thread::sleep_for(
-                                        std::chrono::milliseconds(1000));
-                            }
+								if (opt2 == "Y" || opt2 == "y") {
+									doLuggaging(comp, flight, NIF, seat);
+								} else {
+									flight->findTicketBySeat(seat)->setClient(comp.findClient(NIF));
+									comp.findClient(NIF)->addTicket(flight->findTicketBySeat(seat));
+
+									std::cout << "The ticket has been purchased! "
+											  << "Thanks for travelling with us... :D\n"
+											  << std::flush;
+									std::this_thread::sleep_for(
+											std::chrono::milliseconds(1000));
+								}
+							} else {
+								std::cout << "That's not a valid seat! "
+										  << "Returning to previous menu...\n"
+										  << std::flush;
+								std::this_thread::sleep_for(
+										std::chrono::milliseconds(1000));
+								_currentMenu = CLIENT_OPTIONS;
+							}
                         } else {
                                 std::cout << "That's not a valid seat! "
-                                          << "Returning to previous menu..."
+                                          << "Returning to previous menu...\n"
                                           << std::flush;
                                 std::this_thread::sleep_for(
                                         std::chrono::milliseconds(1000));
@@ -1059,11 +1074,35 @@ void UserInterface::clientBuyTickets(Company &comp) {
                         std::cout << "Pick a seat: " << std::flush;
                         getInput(seat);
                         if (flight->findTicketBySeat(seat) != nullptr) {
-                            comp.findClient(NIF)->addTicket(
-                                flight->findTicketBySeat(seat));
+							if (flight->findTicketBySeat(seat)->getClient() == nullptr) {
+								std::cout << "Do you wish to use automatic "
+											 "luggaging? (y/N) "
+										  << std::flush;
+								getInput(opt2);
+
+								if (opt2 == "Y" || opt2 == "y") {
+									doLuggaging(comp, flight, NIF, seat);
+								} else {
+									flight->findTicketBySeat(seat)->setClient(comp.findClient(NIF));
+									comp.findClient(NIF)->addTicket(flight->findTicketBySeat(seat));
+
+									std::cout << "The ticket has been purchased! "
+											  << "Thanks for travelling with us... :D\n"
+											  << std::flush;
+									std::this_thread::sleep_for(
+											std::chrono::milliseconds(1000));
+								}
+							} else {
+								std::cout << "That's not a valid seat! "
+										  << "Returning to previous menu...\n"
+										  << std::flush;
+								std::this_thread::sleep_for(
+										std::chrono::milliseconds(1000));
+								_currentMenu = CLIENT_OPTIONS;
+							}
                         } else {
                             std::cout << "That's not a valid seat! "
-                                      << "Returning to previous menu..."
+                                      << "Returning to previous menu...\n"
                                       << std::flush;
                             std::this_thread::sleep_for(
                                 std::chrono::milliseconds(1000));
@@ -1074,16 +1113,16 @@ void UserInterface::clientBuyTickets(Company &comp) {
                 _currentMenu = CLIENT_OPTIONS;
             } else {
                 std::cout << "Not enough seats left on that plane! "
-                          << "Returning to previous menu..." << std::flush;
+                          << "Returning to previous menu...\n" << std::flush;
                 std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                 _currentMenu = CLIENT_OPTIONS;
             }
         }
     } else {
         std::cout
-            << "It seems there are no available tickets for this flight!\n"
+            << "It seems there are no available tickets for this flight!"
             << std::flush;
-        std::cout << "Returning to previous menu..." << std::flush;
+        std::cout << "Returning to previous menu...\n" << std::flush;
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         _currentMenu = CLIENT_OPTIONS;
     }
@@ -1103,15 +1142,13 @@ void UserInterface::airportsMenu(Company &comp) {
 }
 
 void UserInterface::doLuggaging(Company &comp, Flight *flight, unsigned NIF, std::string seat) {
-    // TODO: SEGFAULT AQUI DENTRO
-    Luggage *luggage =
-            new Luggage(comp.findClient(NIF));
-    flight->findTicketBySeat(seat)->addLuggage(
-            luggage);
-    comp.findCart(flight->getID())
-            ->addLuggage(luggage);
-    comp.findClient(NIF)->addTicket(
-            flight->findTicketBySeat(seat));
+    Luggage *luggage = new Luggage(comp.findClient(NIF));
+	comp.findCart(flight->getID())->addLuggage(luggage);
+
+	flight->findTicketBySeat(seat)->addLuggage(luggage);
+	flight->findTicketBySeat(seat)->setClient(comp.findClient(NIF));
+    comp.findClient(NIF)->addTicket(flight->findTicketBySeat(seat));
+
     std::cout << "The ticket has been purchased "
                  "and your luggage will be taken "
                  "care by our team! "
@@ -1278,6 +1315,10 @@ void UserInterface::show(Company &comp) {
     case READ_AIRPORT:
         readAirport(comp);
         break;
+	case CARTS:
+		break;
+	case UPDATE_CART:
+		break;
     default:
         throw Exit();
         break;

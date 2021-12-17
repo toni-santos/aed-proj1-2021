@@ -12,6 +12,11 @@ template <class E> class BSTByLevelIterator;
 template <class E> class BST;
 
 //---------------------- BinaryNode ----------------------
+/**
+ * @brief Represents a node in a binary tree.
+ *
+ * @tparam E The element type.
+ */
 template <class E> class BinaryNode {
     E _element;
     BinaryNode *_left;
@@ -21,15 +26,51 @@ public:
     BinaryNode(const E &el) : _element(el){};
     ~BinaryNode();
 
+    /**
+     * @return This node's element.
+     */
     E getElement() const { return _element; };
+    /**
+     * @return The child to the left of this node.
+     */
     BinaryNode *getLeft() const { return _left; };
+    /**
+     * @return The child to the right of this node.
+     */
     BinaryNode *getRight() const { return _right; };
 
+    /**
+     * @brief Set this node's element.
+     *
+     * @param el The new element.
+     */
     void setElement(const E &el) { _element = el; };
 
+    /**
+     * @brief Inserts a new child to the left of this node.
+     *
+     * @note If there was already a child to the left of this node, it and its
+     *       children are deleted.
+     *
+     * @param el The element to insert
+     */
     void insertLeft(const E &el);
+    /**
+     * @brief Inserts a new child to the right of this node.
+     *
+     * @note If there was already a child to the right of this node, it and its
+     *       children are deleted.
+     *
+     * @param el The element to insert
+     */
     void insertRight(const E &el);
+    /**
+     * @brief Deletes the child to the left of this node.
+     */
     void deleteLeft();
+    /**
+     * @brief Deletes the child to the right of this node.
+     */
     void deleteRight();
 };
 
@@ -57,6 +98,11 @@ template <class E> void BinaryNode<E>::deleteRight() {
 }
 
 //-------------------------- BST -------------------------
+/**
+ * @brief Implements a binary search tree.
+ *
+ * @tparam E The element type.
+ */
 template <class E> class BST {
     BinaryNode<E> *_root;
 
@@ -77,24 +123,97 @@ public:
     bool empty() const;
     void makeEmpty();
 
+    /**
+     * @brief Gets the minimum element in the tree.
+     *
+     * @return The node with the minimum element.
+     */
     BinaryNode<E> min() const;
+    /**
+     * @brief Gets the maximum element in the tree.
+     *
+     * @return The node with the maximum element.
+     */
     BinaryNode<E> max() const;
 
+    /**
+     * @brief Searches for an element equivelement to the given value.
+     *
+     * @tparam A type comparable with the element type, that is, implements
+     *         C < E and E < C.
+     * @param x The value to search for.
+     * @return The node with the element searched for, or nullptr if not found.
+     */
     template <class C> BinaryNode<E> *find(const C &x);
 
+    /**
+     * @brief Inserts an element into the tree.
+     *
+     * @param x The element to insert.
+     * @return true if inserted.
+     * @return false if already in tree.
+     */
     bool insert(const E &x);
+    /**
+     * @brief Removes the element equivelent to the given value from the tree.
+     *
+     * @tparam A type comparable with the element type, that is, implements
+     *         C < E and E < C.
+     * @param x The value to search for.
+     * @return true if removed.
+     * @return false if not in tree.
+     */
     template <class C> bool remove(const C &x);
 
+    /**
+     * @return An in-order iterator for this tree.
+     */
     BSTInOrderIterator<E> inorderBegin() const;
+    /**
+     * @return An in-order iterator for this tree that points to after the last
+     *         element.
+     */
     BSTInOrderIterator<E> inorderEnd() const;
+    /**
+     * @return A pre-order iterator for this tree.
+     */
     BSTPreOrderIterator<E> preorderBegin() const;
+    /**
+     * @return A pre-order iterator for this tree that points to after the last
+     *         element.
+     */
     BSTPreOrderIterator<E> preorderEnd() const;
+    /**
+     * @return A post-order iterator for this tree.
+     */
     BSTPostOrderIterator<E> postorderBegin() const;
+    /**
+     * @return A post-order iterator for this tree that points to after the last
+     *         element.
+     */
     BSTPostOrderIterator<E> postorderEnd() const;
+    /**
+     * @return A by-level iterator for this tree.
+     */
     BSTByLevelIterator<E> bylevelBegin() const;
+    /**
+     * @return A by-level iterator for this tree that points to after the last
+     *         element.
+     */
     BSTByLevelIterator<E> bylevelEnd() const;
 
+    /**
+     * @note Same as inorderBegin.
+     *
+     * @return An in-order iterator for this tree.
+     */
     auto begin() const { return inorderBegin(); };
+    /**
+     * @note Same as inorderEnd.
+     *
+     * @return An in-order iterator for this tree that points to after the last
+     *         element.
+     */
     auto end() const { return inorderEnd(); };
 };
 
@@ -212,6 +331,11 @@ template <class E> BSTByLevelIterator<E> BST<E>::bylevelEnd() const {
 }
 
 //----------------- BSTPostOrderIterator -----------------
+/**
+ * @brief An iterator that loops over a binary search tree in post order.
+ *
+ * @tparam E The element type.
+ */
 template <class E> class BSTPostOrderIterator {
     using iterator_category = std::forward_iterator_tag;
     using difference_type = std::ptrdiff_t;
@@ -308,6 +432,11 @@ bool BSTPostOrderIterator<E>::operator!=(const BSTPostOrderIterator<E> &other) {
 };
 
 //----------------- BSTPreOrderIterator ------------------
+/**
+ * @brief An iterator that loops over a binary search tree in pre order.
+ *
+ * @tparam E The element type.
+ */
 template <class E> class BSTPreOrderIterator {
     using iterator_category = std::forward_iterator_tag;
     using difference_type = std::ptrdiff_t;
@@ -391,6 +520,11 @@ bool BSTPreOrderIterator<E>::operator!=(const BSTPreOrderIterator<E> &other) {
 };
 
 //------------------ BSTInOrderIterator ------------------
+/**
+ * @brief An iterator that loops over a binary search tree in order.
+ *
+ * @tparam E The element type.
+ */
 template <class E> class BSTInOrderIterator {
     using iterator_category = std::forward_iterator_tag;
     using difference_type = std::ptrdiff_t;
@@ -470,6 +604,11 @@ bool BSTInOrderIterator<E>::operator!=(const BSTInOrderIterator<E> &other) {
 };
 
 //------------------ BSTByLevelIterator ------------------
+/**
+ * @brief An iterator that loops over a binary search tree by level.
+ *
+ * @tparam E The element type.
+ */
 template <class E> class BSTByLevelIterator {
     using iterator_category = std::forward_iterator_tag;
     using difference_type = std::ptrdiff_t;

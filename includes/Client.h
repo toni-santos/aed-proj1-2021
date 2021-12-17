@@ -50,10 +50,22 @@ public:
      */
     std::vector<Ticket *> getTickets() const { return _tickets; }
 
+    /**
+     * @brief associate a ticket to this client.
+     *
+     * @param ticket the ticket to be added.
+     */
     void addTicket(Ticket *ticket) { _tickets.push_back(ticket); }
-
+    /**
+     * @brief remove a ticket from this client.
+     *
+     * @param ticket the ticket to be removed.
+     */
     void removeTicket(Ticket *ticket);
-
+    /**
+     * @param c2 the client to be compared.
+     * @return a boolean that verifies if this client's NIF is equal to another client's (c2's) NIF.
+     */
     bool operator==(const Client c2) { return (this->getNIF() == c2.getNIF()); }
 };
 

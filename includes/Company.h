@@ -19,6 +19,9 @@ private:
     std::vector<Airport *> _airports{};
     std::vector<Cart *> _carts{};
 
+    /**
+     * @brief Loads airports from file.
+     */
     void readAirport();
 
     /**
@@ -31,6 +34,9 @@ private:
      */
     void readClient();
 
+    /**
+     * @brief Writes the names of the airports to file.
+     */
     void writeAirport();
 
     /**
@@ -48,7 +54,9 @@ public:
      * @brief Populates this company with data from files.
      */
     void populate();
-
+    /**
+     * @brief Calls the write functions to save the current company's data to files.
+     */
     void save();
 
     /**
@@ -66,10 +74,22 @@ public:
      */
     std::vector<Client *> getClients() const { return _clients; };
 
+    /**
+     * @return all of this company's airports.
+     */
     std::vector<Airport *> getAirports() const { return _airports; };
 
+    /**
+     * @return all of this company's lugagge carts.
+     */
     std::vector<Cart *> getCarts() const { return _carts; };
 
+    /**
+     * @brief Iterates over the _carts vector to find the cart from flightID.
+     *
+     * @param flightID The ID of the flight to which the cart points at.
+     * @return A pointer to the correspondent cart or nullptr if is does not exist.
+     */
     Cart *findCart(unsigned flightID);
 
     /**
@@ -94,14 +114,14 @@ public:
     /**
      * @brief Deletes a client.
      *
-     * Dealocates the pointer and sets it to null in the _clients vector.
+     * @note Dealocates the pointer and sets it to null in the _clients vector.
      *
      * @param client The client to delete
      */
     void deleteClient(Client *client);
 
     /**
-     * @brief Create a new flight.
+     * @brief Creates a new flight.
      *
      * @param number The new flight's number.
      * @param duration The new flight's duration.
@@ -132,14 +152,14 @@ public:
     /**
      * @brief Deletes a flight.
      *
-     * Dealocates the pointer and sets it to null in the _flights vector.
+     * @note Dealocates the pointer and sets it to null in the _flights vector.
      *
-     * @param flight The flight to delete
+     * @param flight The flight to delete.
      */
     void deleteFlight(Flight *flight);
 
     /**
-     * @brief Create a new plane.
+     * @brief Creates a new plane.
      *
      * @param rows The new plane's rows.
      * @param columns The new plane's columns.
@@ -164,14 +184,14 @@ public:
     /**
      * @brief Deletes a plane.
      *
-     * Dealocates the pointer and sets it to null in the _planes vector.
+     * @note Dealocates the pointer and sets it to null in the _planes vector.
      *
-     * @param client The plane to delete
+     * @param plane The plane to delete.
      */
     void deletePlane(Plane *plane);
 
     /**
-     * @brief Create a new airport.
+     * @brief Creates a new airport.
      *
      * @param name The new airport's name.
      * @return A pointer to the newly created airport.
@@ -191,29 +211,43 @@ public:
     /**
      * @brief Deletes an airport.
      *
-     * Dealocates the pointer and sets it to null in the _airports vector.
+     * @note Dealocates the pointer and sets it to null in the _airports vector.
      *
-     * @param client The airport to delete
+     * @param airport The airport to delete.
      */
     void deleteAirport(Airport *airport);
 
     /**
      * @brief Iterates over the _flights vector to find the flight with
-     * flightID.
+     * number.
      *
-     * @param flightID The ID of the flight that is being searched
+     * @param number The number of the flight that is being searched.
+     * @return A pointer to the flight with the correspondent number or nullptr if is does not exist.
      */
     Flight *findFlight(unsigned number);
 
     /**
      * @brief Iterates over the _clients vector to find the client with NIF.
      *
-     * @param flightID The NIF of the client that is being searched
+     * @param nif The NIF of the client that is being searched.
+     * @return A pointer to the client with the correspondent NIF or nullptr if is does not exist.
      */
     Client *findClient(unsigned nif);
 
+    /**
+     * @brief Iterates over the _planes vector to find the plane with id.
+     *
+     * @param id The id of the plane.
+     * @return A pointer to the plane with the correspondent id or nullptr if is does not exist.
+     */
     Plane *findPlane(unsigned id);
 
+    /**
+     * @brief Iterates over the _airports vector to find the plane with name.
+     *
+     * @param name The name of the airport.
+     * @return A pointer to the plane with the correspondent name or nullptr if is does not exist.
+     */
     Airport *findAirport(std::string name);
 };
 

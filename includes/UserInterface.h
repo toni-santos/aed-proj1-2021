@@ -214,6 +214,8 @@ class UserInterface {
 
     void readAirport(Company &comp);
 
+    void doLuggaging(Company &comp, Flight *flight, unsigned NIF, std::string seat);
+
 public:
     /**
      * @brief Shows the current menu.

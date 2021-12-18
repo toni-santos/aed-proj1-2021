@@ -9,7 +9,7 @@
 #include <fstream>
 
 /**
- * @brief Class representing the airline company.
+ * @brief Represents the airline company.
  */
 class Company {
 private:
@@ -55,7 +55,8 @@ public:
      */
     void populate();
     /**
-     * @brief Calls the write functions to save the current company's data to files.
+     * @brief Calls the write functions to save the current company's data to
+     * files.
      */
     void save();
 
@@ -88,7 +89,8 @@ public:
      * @brief Iterates over the _carts vector to find the cart from flightID.
      *
      * @param flightID The ID of the flight to which the cart points at.
-     * @return A pointer to the correspondent cart or nullptr if is does not exist.
+     * @return A pointer to the correspondent cart or nullptr if is does not
+     * exist.
      */
     Cart *findCart(unsigned flightID);
 
@@ -146,8 +148,8 @@ public:
      * @param departure The new departure date.
      * @param plane The new plane.
      */
-    void updateFlight(Flight *flight, unsigned duration, unsigned origin,
-                      unsigned dest, std::string departure, unsigned plane);
+    void updateFlight(Flight *flight, unsigned duration, std::string origin,
+                      std::string dest, std::string departure, unsigned plane);
 
     /**
      * @brief Deletes a flight.
@@ -222,7 +224,8 @@ public:
      * number.
      *
      * @param number The number of the flight that is being searched.
-     * @return A pointer to the flight with the correspondent number or nullptr if is does not exist.
+     * @return A pointer to the flight with the correspondent number or nullptr
+     * if is does not exist.
      */
     Flight *findFlight(unsigned number);
 
@@ -230,7 +233,8 @@ public:
      * @brief Iterates over the _clients vector to find the client with NIF.
      *
      * @param nif The NIF of the client that is being searched.
-     * @return A pointer to the client with the correspondent NIF or nullptr if is does not exist.
+     * @return A pointer to the client with the correspondent NIF or nullptr if
+     * is does not exist.
      */
     Client *findClient(unsigned nif);
 
@@ -238,7 +242,8 @@ public:
      * @brief Iterates over the _planes vector to find the plane with id.
      *
      * @param id The id of the plane.
-     * @return A pointer to the plane with the correspondent id or nullptr if is does not exist.
+     * @return A pointer to the plane with the correspondent id or nullptr if is
+     * does not exist.
      */
     Plane *findPlane(unsigned id);
 
@@ -246,11 +251,13 @@ public:
      * @brief Iterates over the _airports vector to find the plane with name.
      *
      * @param name The name of the airport.
-     * @return A pointer to the plane with the correspondent name or nullptr if is does not exist.
+     * @return A pointer to the plane with the correspondent name or nullptr if
+     * is does not exist.
      */
     Airport *findAirport(std::string name);
 
-	void updateCart(Cart *cart, unsigned newCartSize, unsigned newTrolleySize, unsigned newStackSize);
+    void updateCart(Cart *cart, unsigned newCartSize, unsigned newTrolleySize,
+                    unsigned newStackSize);
 };
 
 #endif // AED_PROJ_2021_COMPANY_H

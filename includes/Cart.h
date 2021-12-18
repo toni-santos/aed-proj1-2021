@@ -10,7 +10,7 @@ class Cart;
 #include <stack>
 #include <vector>
 /**
- * @brief Class representing a luggage cart.
+ * @brief Represents a luggage cart.
  */
 class Cart {
     unsigned _cartSize, _trolleySize, _stackSize;
@@ -65,7 +65,8 @@ public:
      */
     void addLuggage(Luggage *luggage);
     /**
-     * @brief empty the cart by storing all of the luggages in the plane of the associated flight.
+     * @brief empty the cart by storing all of the luggages in the plane of the
+     * associated flight.
      */
     void unloadCart();
     /**

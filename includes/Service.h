@@ -6,7 +6,7 @@
 enum ServiceType { CLEANING, MAINTENANCE };
 
 /**
- * @brief Class representing a service.
+ * @brief Represents a service.
  */
 class Service {
 private:

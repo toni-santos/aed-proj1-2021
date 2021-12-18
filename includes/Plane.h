@@ -8,7 +8,7 @@ class Plane;
 #include <list>
 
 /**
- * @brief Class representing a plane.
+ * @brief Represents a plane.
  */
 class Plane {
 private:
@@ -108,7 +108,8 @@ public:
     /**
      * @brief Marks the service in front of the _services list as done.
      *
-     * @note It acomplishes this by adding the service to the _servicesDone list and removing it from the _services list.
+     * @note It acomplishes this by adding the service to the _servicesDone list
+     * and removing it from the _services list.
      */
     void doService();
 };

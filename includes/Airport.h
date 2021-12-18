@@ -9,7 +9,7 @@ class Airport;
 #include <string>
 
 /**
- * @brief Class representing an airport.
+ * @brief Represents an airport.
  */
 class Airport {
     unsigned _id;

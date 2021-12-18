@@ -6,8 +6,8 @@
 enum TransportType { TRAIN, BUS, METRO };
 
 /**
- * @brief Class representing a land transport, like a train, bus or metro, near
- *        an airport.
+ * @brief Represents a land transport, like a train, bus or metro, near an
+ *        airport.
  */
 class Transport {
     unsigned _distance{};
@@ -32,8 +32,8 @@ public:
     TransportType getType() const { return _type; };
     /**
      * @param other the transport to be compared.
-     * @return a boolean that verifies if this transport's distance (to the airport) is less than
-     * another transport's (other's) distance.
+     * @return a boolean that verifies if this transport's distance (to the
+     * airport) is less than another transport's (other's) distance.
      */
     bool operator<(const Transport &other) {
         return _distance < other._distance;

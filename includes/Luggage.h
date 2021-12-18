@@ -5,6 +5,9 @@ class Luggage;
 
 #include "Client.h"
 
+/**
+ * @brief Represents a piece of luggage.
+ */
 class Luggage {
     const Client *_owner;
 

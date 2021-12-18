@@ -13,7 +13,7 @@ class Flight;
 #include <vector>
 
 /**
- * @brief Class representing a flight.
+ * @brief Represents a flight.
  */
 class Flight {
 private:
@@ -25,7 +25,7 @@ private:
     std::vector<Luggage *> _storage;
     Airport *_destination, *_origin;
     std::string _departureDate;
-    Plane *_plane;
+    Plane *_plane = nullptr;
 
     void generateTickets();
     void deleteTickets();

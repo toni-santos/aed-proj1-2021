@@ -29,14 +29,6 @@ std::vector<std::string> split(std::string str, char sep) {
     return final;
 }
 
-void getInput(std::string &input) {
-    std::getline(std::cin, input);
-    normalizeInput(input);
-
-    if (std::cin.eof())
-        throw Exit();
-}
-
 void normalizeInput(std::string &input) {
     char last = 0;
     size_t i = 0;

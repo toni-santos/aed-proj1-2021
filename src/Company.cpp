@@ -29,15 +29,16 @@ void Company::updateClient(Client *client, std::string name) {
         client->setName(name);
 }
 
-void Company::updateCart(Cart *cart, unsigned newCartSize, unsigned newTrolleySize, unsigned newStackSize) {
-	if (newCartSize > 0)
-		cart->setCartSize(newCartSize);
+void Company::updateCart(Cart *cart, unsigned newCartSize,
+                         unsigned newTrolleySize, unsigned newStackSize) {
+    if (newCartSize > 0)
+        cart->setCartSize(newCartSize);
 
-	if (newTrolleySize > 0)
-		cart->setTrolleySize(newTrolleySize);
+    if (newTrolleySize > 0)
+        cart->setTrolleySize(newTrolleySize);
 
-	if (newStackSize > 0)
-		cart->setStackSize(newStackSize);
+    if (newStackSize > 0)
+        cart->setStackSize(newStackSize);
 }
 
 // DONE
@@ -59,15 +60,29 @@ Flight *Company::createFlight(unsigned number, unsigned duration,
 }
 
 // DONE
-void Company::updateFlight(Flight *flight, unsigned duration, unsigned origin,
-                           unsigned dest, std::string departure,
-                           unsigned plane) {
+void Company::updateFlight(Flight *flight, unsigned duration,
+                           std::string origin, std::string dest,
+                           std::string departure, unsigned plane) {
+    if (duration)
+        flight->setDuration(duration);
 
-    flight->setDuration(duration);
+    if (origin != "") {
+        Airport *o = findAirport(origin);
 
-    flight->setOrigin(_airports.at(origin));
+        if (!o)
+            o = createAirport(origin);
 
-    flight->setDestination(_airports.at(dest));
+        flight->setOrigin(o);
+    }
+
+    if (dest != "") {
+        Airport *d = findAirport(dest);
+
+        if (!d)
+            d = createAirport(dest);
+
+        flight->setDestination(d);
+    }
 
     if (departure != "")
         flight->setDepartureDate(departure);
@@ -343,8 +358,8 @@ void Company::readClient() {
             unsigned flightID = stoul(parsedLine.at(0));
             std::string seat = parsedLine.at(1);
 
-			Ticket *ticket = _flights.at(flightID)->findTicketBySeat(seat);
-			ticket->setClient(client);
+            Ticket *ticket = _flights.at(flightID)->findTicketBySeat(seat);
+            ticket->setClient(client);
             client->addTicket(ticket);
         }
     }

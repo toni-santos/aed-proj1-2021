@@ -9,7 +9,7 @@ class Client;
 #include <vector>
 
 /**
- * @brief Class representing a client.
+ * @brief Represents a client.
  */
 class Client {
 private:
@@ -64,7 +64,8 @@ public:
     void removeTicket(Ticket *ticket);
     /**
      * @param c2 the client to be compared.
-     * @return a boolean that verifies if this client's NIF is equal to another client's (c2's) NIF.
+     * @return a boolean that verifies if this client's NIF is equal to another
+     * client's (c2's) NIF.
      */
     bool operator==(const Client c2) { return (this->getNIF() == c2.getNIF()); }
 };

@@ -10,7 +10,7 @@ class Ticket;
 #include <string>
 
 /**
- * @brief Class representing a ticket for a flight.
+ * @brief Represents a ticket for a flight.
  */
 class Ticket {
     const Flight *_flight;
@@ -43,9 +43,10 @@ public:
      */
     void setClient(Client *client) { _client = client; };
 
-    //TODO checkem só se eu percebi este bem
+    // TODO checkem só se eu percebi este bem
     /**
-     * @brief Associate a luggage to this ticket (which in turn belongs to an owner).
+     * @brief Associate a luggage to this ticket (which in turn belongs to an
+     *        owner).
      *
      * @param luggage The luggage to be linked.
      */

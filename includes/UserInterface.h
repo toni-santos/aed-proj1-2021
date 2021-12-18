@@ -3,43 +3,154 @@
 
 #include "Company.h"
 
+/**
+ * @brief Holds the possible menu values.
+ */
 enum Menu {
+    /**
+     * @brief Exits the program.
+     */
     EXIT,
+    /**
+     * @brief Shows the main options.
+     */
     MAIN,
 
-    CLIENT,
-    CLIENT_OPTIONS,
-    CHECK_FLIGHTS,
-    BUY_TICKETS,
+    /**
+     * @brief Authenticates a client.
+     */
+    C_AUTH,
+    /**
+     * @brief Shows the options for a client.
+     */
+    C_OPTIONS,
+    /**
+     * @brief Shows all flights to a client.
+     */
+    C_CHECK_FLIGHTS,
+    /**
+     * @brief Lets a client buy tickets.
+     */
+    C_BUY_TICKETS,
 
-    EMPLOYEE,
-    EMPLOYEE_OPTIONS,
-    PLANES,
-    CREATE_PLANE,
-    READ_PLANE,
-    UPDATE_PLANE,
-    DELETE_PLANE,
-    FLIGHTS,
-    CREATE_FLIGHT,
-    READ_FLIGHT,
-    UPDATE_FLIGHT,
-    DELETE_FLIGHT,
-    SERVICES,
-    CREATE_SERVICE,
-    READ_SERVICE,
-    COMPLETE_SERVICE,
-    CLIENTS,
-    CREATE_CLIENT,
-    READ_CLIENT,
-    UPDATE_CLIENT,
-    DELETE_CLIENT,
-    AIRPORTS,
-    CREATE_AIRPORT,
-    DELETE_AIRPORT,
-    READ_AIRPORT,
-	CARTS,
-	READ_CART,
-	UPDATE_CART
+    /**
+     * @brief Authenticates an employee.
+     */
+    E_AUTH,
+    /**
+     * @brief Shows the options for an employee.
+     */
+    E_OPTIONS,
+
+    /**
+     * @brief Shows the plane options.
+     */
+    E_PLANE_OPTIONS,
+    /**
+     * @brief Creates a new plane.
+     */
+    E_PLANE_CREATE,
+    /**
+     * @brief Shows all planes.
+     */
+    E_PLANE_READ,
+    /**
+     * @brief Updates a plane.
+     */
+    E_PLANE_UPDATE,
+    /**
+     * @brief Deletes a plane.
+     */
+    E_PLANE_DELETE,
+
+    /**
+     * @brief Shows the flight options.
+     */
+    E_FLIGHT_OPTIONS,
+    /**
+     * @brief Creates a new flight.
+     */
+    E_FLIGHT_CREATE,
+    /**
+     * @brief Shows all flights.
+     */
+    E_FLIGHT_READ,
+    /**
+     * @brief Updates a flight.
+     */
+    E_FLIGHT_UPDATE,
+    /**
+     * @brief Deletes a flight.
+     */
+    E_FLIGHT_DELETE,
+
+    /**
+     * @brief Shows the service options.
+     */
+    E_SERVICE_OPTIONS,
+    /**
+     * @brief Creates a new service.
+     */
+    E_SERVICE_CREATE,
+    /**
+     * @brief Shows all services.
+     */
+    E_SERVICE_READ,
+    /**
+     * @brief Deletes a service.
+     */
+    E_SERVICE_COMPLETE,
+
+    /**
+     * @brief Shows the client options.
+     */
+    E_CLIENT_OPTIONS,
+    /**
+     * @brief Creates a new client.
+     */
+    E_CLIENT_CREATE,
+    /**
+     * @brief Shows all clients.
+     */
+    E_CLIENT_READ,
+    /**
+     * @brief Updates a client.
+     */
+    E_CLIENT_UPDATE,
+    /**
+     * @brief Deletes a client.
+     */
+    E_CLIENT_DELETE,
+
+    /**
+     * @brief Shows the airport options.
+     */
+    E_AIRPORT_OPTIONS,
+    /**
+     * @brief Creates a new airport.
+     */
+    E_AIRPORT_CREATE,
+    /**
+     * @brief Shows all airports.
+     */
+    E_AIRPORT_READ,
+    /**
+     * @brief Deletes an airport.
+     */
+    E_AIRPORT_DELETE,
+
+    /**
+     * @brief Shows the cart options.
+     */
+    E_CART_OPTIONS,
+    /**
+     * @brief Shows all carts.
+     */
+    E_CART_READ,
+    /**
+     * @brief Updates a cart.
+     */
+    E_CART_UPDATE
 };
 
 class UserInterface {
@@ -56,7 +167,7 @@ class UserInterface {
     /**
      * @brief The current client that is accessing the platform
      */
-    Client *currClient = nullptr;
+    Client *_currentClient = nullptr;
 
     /**
      * @brief Helper method to show a menu with options.
@@ -78,7 +189,8 @@ class UserInterface {
                      const std::vector<std::pair<std::string, Menu>> &options);
 
     /**
-     * @brief Procedurally displays a string in the console (as if it were an airplane's trail)
+     * @brief Procedurally displays a string in the console (as if it were an
+     * airplane's trail)
      *
      * @param text The text to be displayed.
      * @param time The time (in milliseconds) it takes to display the text.
@@ -86,14 +198,24 @@ class UserInterface {
     void loadString(const std::string &text, unsigned time) const;
 
     /**
-     * @brief Tries to transform a string into an unsigned integer, displaying an error message if it fails.
+     * @brief Gets a line from stdin and normalizes it.
      *
-     * @note There are optional parameters (min and max) to also display an error message if the prompt is outside of
-     * the designated limit.
+     * @param input Where to store the input
+     *
+     * @throws Exit if the EOF bit is set.
+     */
+    std::string getInput(std::string prompt);
+
+    /**
+     * @brief Tries to transform a string into an unsigned integer, displaying
+     * an error message if it fails.
+     *
+     * @note There are optional parameters (min and max) to also display an
+     * error message if the prompt is outside of the designated limit.
      *
      * @param prompt The string to transform.
-     * @param min The left bound of the limit.
-     * @param max The right bound of the limit.
+     * @param min The left bound of the limit (inclusive).
+     * @param max The right bound of the limit (inclusive).
      * @return The unsigned integer version of the prompt.
      */
     unsigned getNumberInput(std::string prompt, unsigned min = 0,
@@ -109,6 +231,8 @@ class UserInterface {
      */
     bool inRange(unsigned n, unsigned min, unsigned max);
 
+    Client *getOrCreateClient(Company &comp, unsigned nif);
+
     /**
      * @brief Shows the main menu.
      */
@@ -117,193 +241,165 @@ class UserInterface {
     /**
      * @brief Shows the client menu.
      */
-    void clientMenu(Company &comp);
+    void clientAuthMenu(Company &comp);
     /**
      * @brief Shows the client options menu.
      */
     void clientOptionsMenu();
+    /**
+     * @brief Shows the client the flights they have booked.
+     * @param comp the company
+     */
+    void cCheckFlightsMenu(Company &comp);
+    /**
+     * @brief Shows the client a menu to purchase a ticket to a flight.
+     *
+     * @note Can be purchased individually or in multiple quantities (in group,
+     * one for each client), and checks if the client wants to use the automatic
+     * luggage system.
+     *
+     * @param comp the company
+     */
+    void cBuyTicketsMenu(Company &comp);
 
     /**
      * @brief Shows the employee menu.
      */
-    void employeeMenu();
-
+    void employeeAuthMenu();
     /**
      * @brief Shows the employee options menu.
      */
     void employeeOptionsMenu();
 
     /**
-     * @brief Shows the employee CRUD operations over clients.
-     * @param comp the company
-     */
-    void clientsMenu(Company &comp);
-
-    /**
-     * @brief Shows the client the flights they have booked.
-     * @param comp the company
-     */
-    void clientsFlightsMenu(Company &comp);
-
-    /**
-     * @brief Shows the employee a menu to create a new client.
-     * @param comp the company
-     */
-    void createClientMenu(Company &comp);
-
-    /**
-     * @brief Shows the employee a menu to see a specific client's information
-     * (can be ordered by several parameters).
-     * @param comp the company
-     */
-    void readClientMenu(Company &comp);
-
-    /**
-     * @brief Shows the employee a menu to delete a client.
-     * @param comp the company
-     */
-    void deleteClientMenu(Company &comp);
-
-    /**
-     * @brief Shows the employee a menu to alter a specific client's
-     * information.
-     * @param comp the company
-     */
-    void updateClientMenu(Company &comp);
-
-    /**
-     * @brief Shows the employee CRUD operations over the services.
-     * @param comp the company
-     */
-    void servicesMenu(Company &comp);
-
-    /**
      * @brief Shows the employee CRUD operations over the planes.
      * @param comp the company
      */
-    void planesMenu(Company &comp);
-
+    void ePlaneOptionsMenu(Company &comp);
+    /**
+     * @brief Shows the employee a menu to create a new plane.
+     * @param comp the company
+     */
+    void ePlaneCreateMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to see a specific's plane information
      * (can be ordered by several parameters).
      * @param comp the company
      */
-    void checkPlane(Company &comp);
-
-    /**
-     * @brief Shows the employee a menu to create a new plane.
-     * @param comp the company
-     */
-    void createPlane(Company &comp);
-
+    void ePlaneReadMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to alter a specific plane's information.
      * @param comp the company
      */
-    void updatePlane(Company &comp);
-
+    void ePlaneUpdateMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to delete a plane.
      * @param comp the company
      */
-    void deletePlane(Company &comp);
+    void ePlaneDeleteMenu(Company &comp);
 
     /**
      * @brief Shows the employee CRUD operations over the flights.
      * @param comp the company
      */
-    void flightsMenu(Company &comp);
-
-    /**
-     * @brief Shows the employee a menu to create a new service.
-     * @param comp the company
-     */
-    void createService(Company &comp);
-    /**
-     * @brief Shows the employee a menu that displays all of the company comp's services.
-     * @param comp the company
-     */
-    void readService(Company &comp);
+    void eFlightOptionsMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to create a new flight.
      * @param comp the company
      */
-    void createFlight(Company &comp);
-
+    void eFlightCreateMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to see all of the flights' information
      * (can be ordered by several parameters).
      * @param comp the company
      */
-    void readFlight(Company &comp);
-
+    void eFlightReadMenu(Company &comp);
     /**
-     * @brief Shows the employee a menu to alter a specific flight's information.
+     * @brief Shows the employee a menu to alter a specific flight's
+     * information.
      * @param comp the company
      */
-    void updateFlight(Company &comp);
-
+    void eFlightUpdateMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to remove a flight.
      * @param comp the company
      */
-    void removeFlight(Company &comp);
+    void eFlightDeleteMenu(Company &comp);
 
     /**
-     * @brief Shows the client a menu to purchase a ticket to a flight.
-     *
-     * @note Can be purchased individually or in multiple quantities (in group, one for each client), and checks if the
-     * client wants to use the automatic luggage system.
-     *
+     * @brief Shows the employee CRUD operations over the services.
      * @param comp the company
      */
-    void clientBuyTickets(Company &comp);
-
+    void eServiceOptionsMenu(Company &comp);
+    /**
+     * @brief Shows the employee a menu to create a new service.
+     * @param comp the company
+     */
+    void eServiceCreateMenu(Company &comp);
+    /**
+     * @brief Shows the employee a menu that displays all of the company comp's
+     * services.
+     * @param comp the company
+     */
+    void eServiceReadMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to complete a pending service.
      * @param comp the company
      */
-    void completeService(Company &comp);
+    void eServiceCompleteMenu(Company &comp);
+
+    /**
+     * @brief Shows the employee CRUD operations over clients.
+     * @param comp the company
+     */
+    void eClientOptionsMenu(Company &comp);
+    /**
+     * @brief Shows the employee a menu to create a new client.
+     * @param comp the company
+     */
+    void eClientCreateMenu(Company &comp);
+    /**
+     * @brief Shows the employee a menu to see a specific client's information
+     * (can be ordered by several parameters).
+     * @param comp the company
+     */
+    void eClientReadMenu(Company &comp);
+    /**
+     * @brief Shows the employee a menu to alter a specific client's
+     * information.
+     * @param comp the company
+     */
+    void eClientUpdateMenu(Company &comp);
+    /**
+     * @brief Shows the employee a menu to delete a client.
+     * @param comp the company
+     */
+    void eClientDeleteMenu(Company &comp);
 
     /**
      * @brief Shows the employee CRUD operations over the airports.
      * @param comp the company
      */
-
-    void airportsMenu(Company &comp);
-
+    void eAirportOptionsMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to create a new airport.
      * @param comp the company
      */
-    void createAirport(Company &comp);
-
-    /**
-     * @brief Shows the employee a menu to delete an airport.
-     * @param comp the company
-     */
-    void deleteAirport(Company &comp);
-
+    void eAirportCreateMenu(Company &comp);
     /**
      * @brief Shows the employee a menu of all existing airports.
      * @param comp the company
      */
-    void readAirport(Company &comp);
-
+    void eAirportReadMenu(Company &comp);
     /**
-    * @brief Processes the client's luggage and displays a confirmation message.
-     *
-     * @note Processing implies the addition of the luggage to the card and linking it to its owner (the client that
-     * just bought the ticket).
-    * @param comp the company
-    */
-    void doLuggaging(Company &comp, Flight *flight, unsigned NIF, std::string seat);
+     * @brief Shows the employee a menu to delete an airport.
+     * @param comp the company
+     */
+    void eAirportDeleteMenu(Company &comp);
 
-	void cartsMenu(Company &comp);
-
-	void updateCart(Company &comp);
-
-	void readCart(Company &comp);
+    void eCartOptionsMenu(Company &comp);
+    void eCartReadMenu(Company &comp);
+    void eCartUpdateMenu(Company &comp);
 
 public:
     /**
@@ -356,7 +452,8 @@ void printFlightVector(std::vector<Flight *> sortedVec);
 void printAirportVector(Company &comp);
 
 /**
- * @brief Applies a function to all planes that displays their pending and done services.
+ * @brief Applies a function to all planes that displays their pending and done
+ * services.
  *
  * @param comp The company
  */

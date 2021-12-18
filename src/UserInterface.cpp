@@ -86,6 +86,14 @@ void printClientVector(std::vector<Client *> sortedVec, Company &comp) {
     }
 }
 
+void printCartVector(Company &comp) {
+	std::cout << "Cart ID - Cart Size - Trolley Size - Stack Size - Flight ID\n" << std::flush;
+	for (int i = 0; i < comp.getCarts().size(); i++) {
+		Cart * cart = comp.getCarts().at(i);
+		std::cout << i << " - " << cart->getCartSize() << " - " << cart->getTrolleySize() << " - " << cart->getStackSize() << " - " << cart->getFlight()->getID() << std::endl;
+	}
+}
+
 void UserInterface::optionsMenu(
     const std::string &text,
     const std::vector<std::pair<std::string, Menu>> &options) {
@@ -218,7 +226,8 @@ void UserInterface::employeeOptionsMenu() {
                                             {"Flights", FLIGHTS},
                                             {"Services", SERVICES},
                                             {"Airports", AIRPORTS},
-                                            {"Clients", CLIENTS}});
+											{"Carts", CARTS},
+											{"Clients", CLIENTS}});
 }
 
 void UserInterface::clientOptionsMenu() {
@@ -729,8 +738,7 @@ void UserInterface::clientsMenu(Company &comp) {
 void UserInterface::updateClientMenu(Company &comp) {
     std::string strNIF, newName;
     bool flag = true;
-    strNIF =
-        getNumberInput("Insert the NIF of the client you wish to update: ");
+    strNIF = getNumberInput("Insert the NIF of the client you wish to update: ");
     for (Client *client : comp.getClients()) {
         std::cout << "Current name: " << client->getName() << '\n'
                   << "New name (press Enter to not alter the current one): "
@@ -1223,6 +1231,59 @@ void UserInterface::deleteAirport(Company &comp) {
     }
 }
 
+void UserInterface::cartsMenu(Company &comp) {
+	std::stringstream text;
+
+	std::cout << "CARTS\n" << std::endl;
+
+	std::cout << "Choose an operation..." << std::endl;
+
+	optionsMenu(text.str(), {{"Go back", EMPLOYEE_OPTIONS},
+							 {"Read cart", READ_CART},
+							 {"Update cart", UPDATE_CART}});
+}
+
+void UserInterface::readCart(Company &comp) {
+	std::string back;
+	printCartVector(comp);
+	std::cout << "Press 0 to go back!" << std::endl;
+	getInput(back);
+	if (back == "0") {
+		_currentMenu = CARTS;
+	}
+}
+
+
+void UserInterface::updateCart(Company &comp) {
+	unsigned id, newStackSize, newTrolleySize, newCartSize;
+	Cart *cart;
+
+	while (true) {
+		id = getNumberInput("Insert the ID of the cart you wish to update: ", 0,
+							   comp.getCarts().size() - 1);
+
+		if (cart = comp.getCarts().at(id))
+			break;
+		else
+			_errorMessage = "Invalid input!\n";
+	}
+
+	std::cout << "Current cartSize: " << cart->getCartSize() << '\n';
+	newCartSize = getNumberInput("New columns (0 to keep current value): ", 0);
+
+	std::cout << "Current cartSize: " << cart->getTrolleySize() << '\n';
+	newTrolleySize = getNumberInput("New columns (0 to keep current value): ", 0);
+
+	std::cout << "Current cartSize: " << cart->getStackSize() << '\n';
+	newStackSize = getNumberInput("New columns (0 to keep current value): ", 0);
+
+	comp.updateCart(cart, newCartSize, newTrolleySize, newStackSize);
+
+	std::cout << "The changes have been saved! Returning to the previous menu...\n" << std::flush;
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+	_currentMenu = CARTS;
+}
+
 void UserInterface::show(Company &comp) {
     // TODO: rename clientMenu() and clientsMenu()
     switch (_currentMenu) {
@@ -1317,8 +1378,13 @@ void UserInterface::show(Company &comp) {
         readAirport(comp);
         break;
 	case CARTS:
+		cartsMenu(comp);
+		break;
+	case READ_CART:
+		readCart(comp);
 		break;
 	case UPDATE_CART:
+		updateCart(comp);
 		break;
     default:
         throw Exit();

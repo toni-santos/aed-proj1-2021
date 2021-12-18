@@ -38,6 +38,7 @@ enum Menu {
     DELETE_AIRPORT,
     READ_AIRPORT,
 	CARTS,
+	READ_CART,
 	UPDATE_CART
 };
 
@@ -298,6 +299,12 @@ class UserInterface {
     */
     void doLuggaging(Company &comp, Flight *flight, unsigned NIF, std::string seat);
 
+	void cartsMenu(Company &comp);
+
+	void updateCart(Company &comp);
+
+	void readCart(Company &comp);
+
 public:
     /**
      * @brief Shows the current menu.
@@ -361,5 +368,7 @@ void printServiceList(Company &comp);
  * @param comp The company
  */
 void printPlaneServices(Plane *plane);
+
+void printCartVector(Company &comp);
 
 #endif // AED_PROJ_2021_MENU_H

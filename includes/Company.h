@@ -249,6 +249,8 @@ public:
      * @return A pointer to the plane with the correspondent name or nullptr if is does not exist.
      */
     Airport *findAirport(std::string name);
+
+	void updateCart(Cart *cart, unsigned newCartSize, unsigned newTrolleySize, unsigned newStackSize);
 };
 
 #endif // AED_PROJ_2021_COMPANY_H

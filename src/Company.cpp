@@ -29,6 +29,17 @@ void Company::updateClient(Client *client, std::string name) {
         client->setName(name);
 }
 
+void Company::updateCart(Cart *cart, unsigned newCartSize, unsigned newTrolleySize, unsigned newStackSize) {
+	if (newCartSize > 0)
+		cart->setCartSize(newCartSize);
+
+	if (newTrolleySize > 0)
+		cart->setTrolleySize(newTrolleySize);
+
+	if (newStackSize > 0)
+		cart->setStackSize(newStackSize);
+}
+
 // DONE
 void Company::deleteClient(Client *client) {
     _clients.at(client->getID()) = nullptr;

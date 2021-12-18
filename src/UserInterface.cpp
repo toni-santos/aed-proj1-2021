@@ -168,7 +168,7 @@ void UserInterface::clientMenu(Company &comp) {
     for (Client *c : comp.getClients()) {
         if (c->getNIF() == userNIF) {
             currClient = c;
-            ("Connecting you to our services...", 3000);
+            loadString("Connecting you to our services...", 3000);
             _currentMenu = CLIENT_OPTIONS;
             return;
         }

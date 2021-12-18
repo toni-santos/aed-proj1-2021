@@ -30,7 +30,11 @@ public:
      * @return This transport's type.
      */
     TransportType getType() const { return _type; };
-
+    /**
+     * @param other the transport to be compared.
+     * @return a boolean that verifies if this transport's distance (to the airport) is less than
+     * another transport's (other's) distance.
+     */
     bool operator<(const Transport &other) {
         return _distance < other._distance;
     }

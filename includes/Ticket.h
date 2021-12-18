@@ -43,6 +43,12 @@ public:
      */
     void setClient(Client *client) { _client = client; };
 
+    //TODO checkem só se eu percebi este bem
+    /**
+     * @brief Associate a luggage to this ticket (which in turn belongs to an owner).
+     *
+     * @param luggage The luggage to be linked.
+     */
     void addLuggage(Luggage *luggage) { _luggage = luggage; };
 };
 

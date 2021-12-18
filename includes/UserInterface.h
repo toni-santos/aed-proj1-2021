@@ -76,11 +76,36 @@ class UserInterface {
     void optionsMenu(const std::string &text,
                      const std::vector<std::pair<std::string, Menu>> &options);
 
+    /**
+     * @brief Procedurally displays a string in the console (as if it were an airplane's trail)
+     *
+     * @param text The text to be displayed.
+     * @param time The time (in milliseconds) it takes to display the text.
+     */
     void loadString(const std::string &text, unsigned time) const;
 
+    /**
+     * @brief Tries to transform a string into an unsigned integer, displaying an error message if it fails.
+     *
+     * @note There are optional parameters (min and max) to also display an error message if the prompt is outside of
+     * the designated limit.
+     *
+     * @param prompt The string to transform.
+     * @param min The left bound of the limit.
+     * @param max The right bound of the limit.
+     * @return The unsigned integer version of the prompt.
+     */
     unsigned getNumberInput(std::string prompt, unsigned min = 0,
                             unsigned max = INT32_MAX);
 
+    /**
+     * @brief Checks if an unsigned integer n is inside the limit [min, max].
+     *
+     * @param n The number to be checked.
+     * @param min The left bound of the limit.
+     * @param max The right bound of the limit.
+     * @return A boolean that confirms whether or not min <= n <= max.
+     */
     bool inRange(unsigned n, unsigned min, unsigned max);
 
     /**
@@ -126,7 +151,7 @@ class UserInterface {
     void createClientMenu(Company &comp);
 
     /**
-     * @brief Shows the employee a menu to see a specific's client information
+     * @brief Shows the employee a menu to see a specific client's information
      * (can be ordered by several parameters).
      * @param comp the company
      */
@@ -139,7 +164,7 @@ class UserInterface {
     void deleteClientMenu(Company &comp);
 
     /**
-     * @brief Shows the employee a menu to alter a specific's client
+     * @brief Shows the employee a menu to alter a specific client's
      * information.
      * @param comp the company
      */
@@ -171,7 +196,7 @@ class UserInterface {
     void createPlane(Company &comp);
 
     /**
-     * @brief Shows the employee a menu to alter a specific's plane information.
+     * @brief Shows the employee a menu to alter a specific plane's information.
      * @param comp the company
      */
     void updatePlane(Company &comp);
@@ -193,29 +218,84 @@ class UserInterface {
      * @param comp the company
      */
     void createService(Company &comp);
-
+    /**
+     * @brief Shows the employee a menu that displays all of the company comp's services.
+     * @param comp the company
+     */
     void readService(Company &comp);
-
+    /**
+     * @brief Shows the employee a menu to create a new flight.
+     * @param comp the company
+     */
     void createFlight(Company &comp);
 
+    /**
+     * @brief Shows the employee a menu to see all of the flights' information
+     * (can be ordered by several parameters).
+     * @param comp the company
+     */
     void readFlight(Company &comp);
 
+    /**
+     * @brief Shows the employee a menu to alter a specific flight's information.
+     * @param comp the company
+     */
     void updateFlight(Company &comp);
 
+    /**
+     * @brief Shows the employee a menu to remove a flight.
+     * @param comp the company
+     */
     void removeFlight(Company &comp);
 
+    /**
+     * @brief Shows the client a menu to purchase a ticket to a flight.
+     *
+     * @note Can be purchased individually or in multiple quantities (in group, one for each client), and checks if the
+     * client wants to use the automatic luggage system.
+     *
+     * @param comp the company
+     */
     void clientBuyTickets(Company &comp);
 
+    /**
+     * @brief Shows the employee a menu to complete a pending service.
+     * @param comp the company
+     */
     void completeService(Company &comp);
+
+    /**
+     * @brief Shows the employee CRUD operations over the airports.
+     * @param comp the company
+     */
 
     void airportsMenu(Company &comp);
 
+    /**
+     * @brief Shows the employee a menu to create a new airport.
+     * @param comp the company
+     */
     void createAirport(Company &comp);
 
+    /**
+     * @brief Shows the employee a menu to delete an airport.
+     * @param comp the company
+     */
     void deleteAirport(Company &comp);
 
+    /**
+     * @brief Shows the employee a menu of all existing airports.
+     * @param comp the company
+     */
     void readAirport(Company &comp);
 
+    /**
+    * @brief Processes the client's luggage and displays a confirmation message.
+     *
+     * @note Processing implies the addition of the luggage to the card and linking it to its owner (the client that
+     * just bought the ticket).
+    * @param comp the company
+    */
     void doLuggaging(Company &comp, Flight *flight, unsigned NIF, std::string seat);
 
 public:
@@ -249,17 +329,37 @@ void printClientFlights(Client *client, Company &comp);
 /**
  * @brief Prints each attribute of the client in the order of the sortedVec
  *
- * @param sortedVec vector sorted according to previous user decision
- * @param comp the company
+ * @param sortedVec Vector sorted according to previous user decision
+ * @param comp The company
  */
 void printClientVector(std::vector<Client> sortedVec, Company &comp);
 
+/**
+ * @brief Prints each attribute of the flight in the order of the sortedVec
+ *
+ * @param sortedVec Vector sorted according to previous user decision
+ */
 void printFlightVector(std::vector<Flight *> sortedVec);
 
+/**
+ * @brief Prints each attribute of all airports.
+ *
+ * @param comp The company
+ */
 void printAirportVector(Company &comp);
 
+/**
+ * @brief Applies a function to all planes that displays their pending and done services.
+ *
+ * @param comp The company
+ */
 void printServiceList(Company &comp);
 
+/**
+ * @brief Displays the pending and done services of a specific plane.
+ *
+ * @param comp The company
+ */
 void printPlaneServices(Plane *plane);
 
 #endif // AED_PROJ_2021_MENU_H

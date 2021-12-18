@@ -66,30 +66,50 @@ public:
 
     // Setters
     /**
-     * @brief Set this plane's id.
+     * @brief Sets this plane's id.
      *
      * @param rows The new id.
      */
     void setID(unsigned id) { _id = id; };
     /**
-     * @brief Set this plane's rows.
+     * @brief Sets this plane's rows.
      *
      * @param rows The new rows.
      */
     void setRows(unsigned rows) { _rows = rows; };
     /**
-     * @brief Set this plane's columns.
+     * @brief Sets this plane's columns.
      *
      * @param columns The new columns.
      */
     void setColumns(unsigned columns) { _columns = columns; };
 
+    /**
+     * @brief Adds a flight to this plane's schedule.
+     *
+     * @param flight The flight to be added.
+     */
     void addFlight(Flight *flight);
 
+    /**
+     * @brief Removes a flight to this plane's schedule.
+     *
+     * @param flight The flight to be removed.
+     */
     void removeFlight(Flight *flight);
 
+    /**
+     * @brief Adds a service to this plane.
+     *
+     * @param flight The service to be added.
+     */
     void addService(Service serv);
 
+    /**
+     * @brief Marks the service in front of the _services list as done.
+     *
+     * @note It acomplishes this by adding the service to the _servicesDone list and removing it from the _services list.
+     */
     void doService();
 };
 

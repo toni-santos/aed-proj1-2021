@@ -75,53 +75,58 @@ public:
 
     // Setters
     /**
-     * @brief Set this flight's duration.
+     * @brief Sets this flight's duration.
      *
      * @param duration The new duration.
      */
     void setID(unsigned id) { _id = id; };
     /**
-     * @brief Set this flight's duration.
+     * @brief Sets this flight's duration.
      *
      * @param duration The new duration.
      */
     void setDuration(unsigned dur) { _duration = dur; };
     /**
-     * @brief Set this flight's departure date.
+     * @brief Sets this flight's departure date.
      *
      * @param dep The new departure date.
      */
     void setDepartureDate(std::string dep) { _departureDate = dep; };
     /**
-     * @brief Set this flight's origin.
+     * @brief Sets this flight's origin.
      *
      * @param origin The new origin.
      */
     void setOrigin(Airport *origin) { _origin = origin; };
     /**
-     * @brief Set this flight's destination.
+     * @brief Sets this flight's destination.
      *
      * @param dest The new destination.
      */
     void setDestination(Airport *dest) { _destination = dest; };
     /**
-     * @brief Set this flight's plane.
+     * @brief Sets this flight's plane.
      *
      * @param plane The new plane.
      */
     void setPlane(Plane *plane);
 
     /**
-     * @brief Get's the ticket for the corresponding seat.
+     * @brief Gets the ticket for the corresponding seat.
      *
      * @note Uses binary search, as the tickets are generated and stored in
      *       lexicographical order.
      *
      * @param seat The seat to search for.
-     * @return The ticket, if it was found.
+     * @return A pointer to the ticket, if it was found, or nullptr otherwise.
      */
     Ticket *findTicketBySeat(const std::string &seat);
 
+    /**
+     * @brief Adds luggage to the plane's storage, associated to the flight.
+     *
+     * @param luggage The luggage to be added.
+     */
     void addLuggage(Luggage *luggage) { _storage.push_back(luggage); };
 };
 

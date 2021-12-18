@@ -11,6 +11,9 @@ class Luggage {
 public:
     Luggage(Client *owner) : _owner(owner){};
 
+    /**
+     * @return A pointer to the client associated to the luggage (its owner).
+     */
     const Client *getOwner() const { return _owner; };
 };
 

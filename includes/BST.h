@@ -106,21 +106,74 @@ template <class E> void BinaryNode<E>::deleteRight() {
 template <class E> class BST {
     BinaryNode<E> *_root;
 
+    /**
+     * @brief Gets the minimum element in a subtree.
+     *
+     * @param t The root of the subtree.
+     *
+     * @return The node with the minimum element.
+     */
     BinaryNode<E> min(BinaryNode<E> *t) const;
+    /**
+     * @brief Gets the maximum element in a subtree.
+     *
+     * @param t The root of the subtree.
+     *
+     * @return The node with the maximum element.
+     */
     BinaryNode<E> max(BinaryNode<E> *t) const;
 
+    /**
+     * @brief Searches for an element equivelement to the given value in a
+     *        subtree.
+     *
+     * @tparam A type comparable with the element type, that is, implements
+     *         C < E and E < C.
+     * @param x The value to search for.
+     * @param t The root of the subtree.
+     * @return The node with the element searched for, or nullptr if not found.
+     */
     template <class C> BinaryNode<E> *find(const C &x, BinaryNode<E> *t);
 
+    /**
+     * @brief Inserts an element into a subtree.
+     *
+     * @param x The element to insert.
+     * @param t The root of the subtree.
+     * @return true if inserted.
+     * @return false if already in subtree.
+     */
     bool insert(const E &x, BinaryNode<E> *t);
+    /**
+     * @brief Removes the element equivelent to the given value from a subtree.
+     *
+     * @tparam A type comparable with the element type, that is, implements
+     *         C < E and E < C.
+     * @param x The value to search for.
+     * @param t The root of the subtree.
+     * @return true if removed.
+     * @return false if not in subtree.
+     */
     template <class C> bool remove(const C &x, BinaryNode<E> *&t);
 
 public:
     BST(){};
     ~BST() { makeEmpty(); };
 
+    /**
+     * @return The root of this tree.
+     */
     BinaryNode<E> *getRoot() const { return _root; };
 
+    /**
+     * @brief Checks if this tree is empty.
+     *
+     * @return true if this tree is empty.
+     */
     bool empty() const;
+    /**
+     * @brief Empties this tree.
+     */
     void makeEmpty();
 
     /**

@@ -82,23 +82,20 @@ void printClientVector(std::vector<Client *> sortedVec, Company &comp) {
 }
 
 void printTransport(Transport t) {
-    std::cout << t.getName() << " - " << t.getType() << " - " << std::flush;
-    for (auto i{t.getTimetable().begin()}, end{t.getTimetable().end()};
-         i != end; ++i) {
+    std::cout << t.getName() << " - " << t.getType() << " - ";
+    auto timetable{t.getTimetable()};
+    for (auto i{timetable.begin()}, end{timetable.end()}; i != end; ++i) {
         std::cout << i->getElement() << std::endl;
     }
 }
 
 void printTransports(Airport *airport, bool reverse = false) {
+    auto transports{airport->getTransports()};
     if (reverse)
-        for (auto i{airport->getTransports().rbegin()},
-             end{airport->getTransports().rend()};
-             i != end; ++i)
+        for (auto i{transports.rbegin()}, end{transports.rend()}; i != end; ++i)
             printTransport(i->getElement());
     else
-        for (auto t{airport->getTransports().begin()},
-             end{airport->getTransports().end()};
-             t != end; ++t)
+        for (auto t{transports.begin()}, end{transports.end()}; t != end; ++t)
             printTransport(t->getElement());
 }
 
@@ -183,7 +180,7 @@ void UserInterface::loadString(const std::string &text, unsigned time) const {
 
     std::cout << " ✈" << std::flush;
     for (char c : text) {
-        std::cout << "\e[2D" << c << " ✈" << std::flush;
+        std::cout << "\33[2D" << c << " ✈" << std::flush;
         std::this_thread::sleep_for(std::chrono::milliseconds(inc));
     }
     std::cout << std::endl;
@@ -376,7 +373,7 @@ void UserInterface::employeeOptionsMenu() {
                                             {"Clients", E_CLIENT_OPTIONS}});
 }
 
-void UserInterface::ePlaneOptionsMenu(Company &comp) {
+void UserInterface::ePlaneOptionsMenu() {
     optionsMenu(COMPANY_NAME + " - Planes", {{"Go back", E_OPTIONS},
                                              {"New plane", E_PLANE_CREATE},
                                              {"Plane info", E_PLANE_READ},
@@ -492,7 +489,7 @@ void UserInterface::ePlaneDeleteMenu(Company &comp) {
     _currentMenu = E_PLANE_OPTIONS;
 }
 
-void UserInterface::eFlightOptionsMenu(Company &comp) {
+void UserInterface::eFlightOptionsMenu() {
     optionsMenu(COMPANY_NAME + " - Flights",
                 {{"Go back", E_OPTIONS},
                  {"New flight", E_FLIGHT_CREATE},
@@ -638,7 +635,7 @@ void UserInterface::eFlightDeleteMenu(Company &comp) {
     _currentMenu = E_FLIGHT_OPTIONS;
 }
 
-void UserInterface::eServiceOptionsMenu(Company &comp) {
+void UserInterface::eServiceOptionsMenu() {
     optionsMenu(COMPANY_NAME + " - Services",
                 {{"Go back", E_OPTIONS},
                  {"New service", E_SERVICE_CREATE},
@@ -684,7 +681,7 @@ void UserInterface::eServiceCompleteMenu(Company &comp) {
     _currentMenu = E_SERVICE_OPTIONS;
 }
 
-void UserInterface::eClientOptionsMenu(Company &comp) {
+void UserInterface::eClientOptionsMenu() {
     optionsMenu(COMPANY_NAME + " - Clients",
                 {{"Go back", E_OPTIONS},
                  {"New client", E_CLIENT_CREATE},
@@ -799,7 +796,7 @@ void UserInterface::eClientDeleteMenu(Company &comp) {
     _currentMenu = E_PLANE_OPTIONS;
 }
 
-void UserInterface::eAirportOptionsMenu(Company &comp) {
+void UserInterface::eAirportOptionsMenu() {
     optionsMenu(COMPANY_NAME + " - Airports",
                 {{"Go back", E_OPTIONS},
                  {"New airport", E_AIRPORT_CREATE},
@@ -860,7 +857,7 @@ void UserInterface::eAirportDeleteMenu(Company &comp) {
     _currentMenu = E_AIRPORT_OPTIONS;
 }
 
-void UserInterface::eCartOptionsMenu(Company &comp) {
+void UserInterface::eCartOptionsMenu() {
     optionsMenu(COMPANY_NAME + " - Carts", {{"Go back", E_OPTIONS},
                                             {"Read cart", E_CART_READ},
                                             {"Update cart", E_CART_UPDATE}});
@@ -895,8 +892,8 @@ void UserInterface::eCartUpdateMenu(Company &comp) {
     _currentMenu = E_CART_OPTIONS;
 }
 
-void UserInterface::eTransportOptionsMenu(Company &comp) {
-    optionsMenu(COMPANY_NAME + " - Clients",
+void UserInterface::eTransportOptionsMenu() {
+    optionsMenu(COMPANY_NAME + " - Transports",
                 {{"Go back", E_OPTIONS},
                  {"New ransport", E_TRANSPORT_CREATE},
                  {"Check transport", E_TRANSPORT_READ},
@@ -904,8 +901,8 @@ void UserInterface::eTransportOptionsMenu(Company &comp) {
                  {"Delete transport", E_TRANSPORT_DELETE}});
 }
 void UserInterface::eTransportCreateMenu(Company &comp) {
-
-    unsigned t = getNumberInput("Insert the tranport's type: ", 0, 2);
+    unsigned t = getNumberInput(
+        "(0) Train\n(1) Bus\n(2) Metro\nInsert the tranport's type: ", 0, 2);
     TransportType type = static_cast<TransportType>(t);
 
     std::string name = getInput("Insert the tranport's name: ");
@@ -916,20 +913,21 @@ void UserInterface::eTransportCreateMenu(Company &comp) {
     Transport transport{type, distance, name};
 
     while (true) {
-        std::string name = getInput(
-            "Insert a transport's schedule (hh/mm) [press Enter to end]: ");
-        if (name == "") {
+        std::string time = getInput(
+            "Insert a transport's schedule (hh:mm) [press Enter to end]: ");
+        if (time == "") {
             break;
         }
-        transport.insertTime(name);
+        transport.insertTime(time);
     }
 
-    std::cout << "Name - ID" << std::endl;
+    std::cout << "ID - Name" << std::endl;
     for (auto a : comp.getAirports()) {
-        std::cout << a->getName() << " - " << a->getID() << std::endl;
+        std::cout << a->getID() << " - " << a->getName() << std::endl;
     }
 
-    unsigned airportID = getNumberInput("Insert the tranport's name: ", 0);
+    unsigned airportID =
+        getNumberInput("Insert the ID of the nearest airport: ", 0);
     Airport *airport = comp.getAirports().at(airportID);
 
     airport->addTransport(transport);
@@ -948,8 +946,9 @@ void UserInterface::eTransportReadMenu(Company &comp) {
 void UserInterface::eTransportUpdateMenu(Company &comp) {
     unsigned cnt{0};
     for (auto a : comp.getAirports()) {
-        for (auto t : a->getTransports()) {
-            std::cout << cnt++ << " - " << t.getElement().getName()
+        auto &transports{a->getTransports()};
+        for (auto t{transports.begin()}, end{transports.end()}; t != end; ++t) {
+            std::cout << cnt++ << " - " << t->getElement().getName()
                       << std::endl;
         }
     }
@@ -962,15 +961,13 @@ void UserInterface::eTransportUpdateMenu(Company &comp) {
     cnt = 0;
     Transport *transport = nullptr;
     for (auto a : comp.getAirports()) {
-        for (auto t : a->getTransports()) {
-            cnt++;
-            if (cnt == id) {
-                transport = &t.getElement();
+        auto &transports{a->getTransports()};
+        for (auto t{transports.begin()}, end{transports.end()}; t != end; ++t) {
+            if (cnt++ == id) {
+                transport = &t->getElement();
                 break;
             }
         }
-        if (cnt == id)
-            break;
     }
 
     std::cout << "Current transport name: " << transport->getName() << '\n';
@@ -980,11 +977,9 @@ void UserInterface::eTransportUpdateMenu(Company &comp) {
     if (name != "")
         transport->setName(name);
 
-    for (auto i{transport->getTimetable().begin()},
-         end{transport->getTimetable().end()};
-         i != end; ++i) {
+    auto &timetable{transport->getTimetable()};
+    for (auto i{timetable.begin()}, end{timetable.end()}; i != end; ++i)
         std::cout << i->getElement() << std::endl;
-    }
 
     while (true) {
         std::string hour = getInput(
@@ -1001,8 +996,9 @@ void UserInterface::eTransportUpdateMenu(Company &comp) {
 void UserInterface::eTransportDeleteMenu(Company &comp) {
     unsigned cnt{0};
     for (auto a : comp.getAirports()) {
-        for (auto t : a->getTransports()) {
-            std::cout << cnt++ << " - " << t.getElement().getName()
+        auto &transports{a->getTransports()};
+        for (auto t{transports.begin()}, end{transports.end()}; t != end; ++t) {
+            std::cout << cnt++ << " - " << t->getElement().getName()
                       << std::endl;
         }
     }
@@ -1010,22 +1006,21 @@ void UserInterface::eTransportDeleteMenu(Company &comp) {
     std::cout << '\n' << std::flush;
 
     unsigned id = getNumberInput(
-        "Insert the ID of the transport you wish to update: ", 0, cnt - 1);
+        "Insert the ID of the transport you wish to delete: ", 0, cnt - 1);
 
     std::string confirm = getInput("Confirm (y/N): ");
     if (confirm == "Y" || confirm == "y") {
         cnt = 0;
         std::string confirm;
         for (auto a : comp.getAirports()) {
-            for (auto t : a->getTransports()) {
-                cnt++;
-                if (id == cnt) {
-                    a->getTransports().remove(t.getElement());
+            auto &transports{a->getTransports()};
+            for (auto t{transports.begin()}, end{transports.end()}; t != end;
+                 ++t) {
+                if (id == cnt++) {
+                    transports.remove(t->getElement());
                     break;
                 }
             }
-            if (id == cnt)
-                break;
         }
         std::cout << "\nTransport deleted!\n";
     } else {
@@ -1063,7 +1058,7 @@ void UserInterface::show(Company &comp) {
         break;
 
     case E_PLANE_OPTIONS:
-        ePlaneOptionsMenu(comp);
+        ePlaneOptionsMenu();
         break;
     case E_PLANE_CREATE:
         ePlaneCreateMenu(comp);
@@ -1079,7 +1074,7 @@ void UserInterface::show(Company &comp) {
         break;
 
     case E_FLIGHT_OPTIONS:
-        eFlightOptionsMenu(comp);
+        eFlightOptionsMenu();
         break;
     case E_FLIGHT_CREATE:
         eFlightCreateMenu(comp);
@@ -1095,7 +1090,7 @@ void UserInterface::show(Company &comp) {
         break;
 
     case E_SERVICE_OPTIONS:
-        eServiceOptionsMenu(comp);
+        eServiceOptionsMenu();
         break;
     case E_SERVICE_CREATE:
         eServiceCreateMenu(comp);
@@ -1108,7 +1103,7 @@ void UserInterface::show(Company &comp) {
         break;
 
     case E_CLIENT_OPTIONS:
-        eClientOptionsMenu(comp);
+        eClientOptionsMenu();
         break;
     case E_CLIENT_CREATE:
         eClientCreateMenu(comp);
@@ -1124,7 +1119,7 @@ void UserInterface::show(Company &comp) {
         break;
 
     case E_AIRPORT_OPTIONS:
-        eAirportOptionsMenu(comp);
+        eAirportOptionsMenu();
         break;
     case E_AIRPORT_CREATE:
         eAirportCreateMenu(comp);
@@ -1137,13 +1132,29 @@ void UserInterface::show(Company &comp) {
         break;
 
     case E_CART_OPTIONS:
-        eCartOptionsMenu(comp);
+        eCartOptionsMenu();
         break;
     case E_CART_READ:
         eCartReadMenu(comp);
         break;
     case E_CART_UPDATE:
         eCartUpdateMenu(comp);
+        break;
+
+    case E_TRANSPORT_OPTIONS:
+        eTransportOptionsMenu();
+        break;
+    case E_TRANSPORT_CREATE:
+        eTransportCreateMenu(comp);
+        break;
+    case E_TRANSPORT_READ:
+        eTransportReadMenu(comp);
+        break;
+    case E_TRANSPORT_UPDATE:
+        eTransportUpdateMenu(comp);
+        break;
+    case E_TRANSPORT_DELETE:
+        eTransportDeleteMenu(comp);
         break;
 
     default:

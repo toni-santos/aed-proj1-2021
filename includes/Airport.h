@@ -31,7 +31,7 @@ public:
     /**
      * @return Land transports near this airport.
      */
-    BST<Transport> getTransports() const { return _transports; }
+    BST<Transport> &getTransports() { return _transports; }
     /**
      * @brief Set this airport's id.
      *

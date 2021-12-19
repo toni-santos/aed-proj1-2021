@@ -415,7 +415,7 @@ void Company::readClient() {
 
 void Company::writeAirport() {
     // std::ofstream of{AIRPORT_FILE_PATH};
-    std::ofstream of{"../output/airport.tsv"};
+    std::ofstream of{"../../output/airport.tsv"};
 
     if (of.fail())
         throw ReadError();
@@ -429,8 +429,8 @@ void Company::writeAirport() {
             Transport &t{i->getElement()};
             of << t.getType() << '\t' << t.getDistance() << '\t' << t.getName();
 
-            for (auto i{t.getTimetable().bylevelBegin()},
-                 end{t.getTimetable().bylevelEnd()};
+            auto timetable{t.getTimetable()};
+            for (auto i{timetable.bylevelBegin()}, end{timetable.bylevelEnd()};
                  i != end; ++i)
                 of << '\t' << i->getElement();
 
@@ -444,7 +444,7 @@ void Company::writeAirport() {
 // DONE
 void Company::writePlane() {
     // std::ofstream of{PLANE_FILE_PATH};
-    std::ofstream of{"../output/plane.tsv", std::ofstream::trunc};
+    std::ofstream of{"../../output/plane.tsv", std::ofstream::trunc};
 
     if (of.fail())
         throw ReadError();
@@ -506,7 +506,7 @@ void Company::writePlane() {
 // DONE
 void Company::writeClient() {
     // std::ofstream of{CLIENT_FILE_PATH};
-    std::ofstream of{"../output/client.tsv"};
+    std::ofstream of{"../../output/client.tsv"};
 
     if (of.fail())
         throw ReadError();

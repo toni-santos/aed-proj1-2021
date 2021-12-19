@@ -152,10 +152,25 @@ enum Menu {
      */
     E_CART_UPDATE,
 
+    /**
+     * @brief Shows the transport options.
+     */
     E_TRANSPORT_OPTIONS,
+    /**
+     * @brief Creates a new transport.
+     */
     E_TRANSPORT_CREATE,
+    /**
+     * @brief Shows all transports.
+     */
     E_TRANSPORT_READ,
+    /**
+     * @brief Updates a transport.
+     */
     E_TRANSPORT_UPDATE,
+    /**
+     * @brief Deletes a transport.
+     */
     E_TRANSPORT_DELETE
 };
 
@@ -281,9 +296,8 @@ class UserInterface {
 
     /**
      * @brief Shows the employee CRUD operations over the planes.
-     * @param comp the company
      */
-    void ePlaneOptionsMenu(Company &comp);
+    void ePlaneOptionsMenu();
     /**
      * @brief Shows the employee a menu to create a new plane.
      * @param comp the company
@@ -308,9 +322,8 @@ class UserInterface {
 
     /**
      * @brief Shows the employee CRUD operations over the flights.
-     * @param comp the company
      */
-    void eFlightOptionsMenu(Company &comp);
+    void eFlightOptionsMenu();
     /**
      * @brief Shows the employee a menu to create a new flight.
      * @param comp the company
@@ -336,9 +349,8 @@ class UserInterface {
 
     /**
      * @brief Shows the employee CRUD operations over the services.
-     * @param comp the company
      */
-    void eServiceOptionsMenu(Company &comp);
+    void eServiceOptionsMenu();
     /**
      * @brief Shows the employee a menu to create a new service.
      * @param comp the company
@@ -358,9 +370,8 @@ class UserInterface {
 
     /**
      * @brief Shows the employee CRUD operations over clients.
-     * @param comp the company
      */
-    void eClientOptionsMenu(Company &comp);
+    void eClientOptionsMenu();
     /**
      * @brief Shows the employee a menu to create a new client.
      * @param comp the company
@@ -386,9 +397,8 @@ class UserInterface {
 
     /**
      * @brief Shows the employee CRUD operations over the airports.
-     * @param comp the company
      */
-    void eAirportOptionsMenu(Company &comp);
+    void eAirportOptionsMenu();
     /**
      * @brief Shows the employee a menu to create a new airport.
      * @param comp the company
@@ -405,14 +415,45 @@ class UserInterface {
      */
     void eAirportDeleteMenu(Company &comp);
 
-    void eCartOptionsMenu(Company &comp);
+    void eCartOptionsMenu();
+    /**
+     * @brief Shows the employee a menu to see a specific cart's
+     * information.
+     * @param comp the company
+     */
     void eCartReadMenu(Company &comp);
+    /**
+     * @brief Shows the employee a menu to alter a specific cart's
+     * information.
+     * @param comp the company
+     */
     void eCartUpdateMenu(Company &comp);
 
-    void eTransportOptionsMenu(Company &comp);
+    /**
+     * @brief Shows the employee CRUD operations over transports.
+     */
+    void eTransportOptionsMenu();
+    /**
+     * @brief Shows the employee a menu to create a new transport.
+     * @param comp the company
+     */
     void eTransportCreateMenu(Company &comp);
+    /**
+     * @brief Shows the employee a menu to see a specific transport's
+     * information.
+     * @param comp the company
+     */
     void eTransportReadMenu(Company &comp);
+    /**
+     * @brief Shows the employee a menu to alter a specific transport's
+     * information.
+     * @param comp the company
+     */
     void eTransportUpdateMenu(Company &comp);
+    /**
+     * @brief Shows the employee a menu to delete a transport.
+     * @param comp the company
+     */
     void eTransportDeleteMenu(Company &comp);
 
 public:

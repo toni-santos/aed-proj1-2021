@@ -410,32 +410,32 @@ template <class E> template <class C> bool BST<E>::remove(const C &x) {
 }
 
 template <class E> BSTInOrderIterator<E> BST<E>::inorderBegin() const {
-    return {*this};
+    return BSTInOrderIterator<E>(this);
 }
 template <class E> BSTInOrderIterator<E> BST<E>::inorderEnd() const {
     return BSTInOrderIterator<E>(std::stack<BinaryNode<E> *>{});
 }
 template <class E> BSTReverseInOrderIterator<E> BST<E>::rinorderBegin() const {
-    return {*this};
+    return BSTReverseInOrderIterator<E>(this);
 }
 template <class E> BSTReverseInOrderIterator<E> BST<E>::rinorderEnd() const {
     return BSTReverseInOrderIterator<E>(std::stack<BinaryNode<E> *>{});
 }
 template <class E> BSTPreOrderIterator<E> BST<E>::preorderBegin() const {
-    return {*this};
+    return BSTPreOrderIterator<E>(this);
 }
 template <class E> BSTPreOrderIterator<E> BST<E>::preorderEnd() const {
     return BSTPreOrderIterator<E>(std::stack<BinaryNode<E> *>{});
 }
 template <class E> BSTPostOrderIterator<E> BST<E>::postorderBegin() const {
-    return {*this};
+    return BSTPostOrderIterator<E>(this);
 }
 template <class E> BSTPostOrderIterator<E> BST<E>::postorderEnd() const {
     return BSTPostOrderIterator<E>(std::stack<BinaryNode<E> *>{},
                                    std::stack<bool>{});
 }
 template <class E> BSTByLevelIterator<E> BST<E>::bylevelBegin() const {
-    return {*this};
+    return BSTByLevelIterator<E>(this);
 }
 template <class E> BSTByLevelIterator<E> BST<E>::bylevelEnd() const {
     return BSTByLevelIterator<E>(std::queue<BinaryNode<E> *>{});
@@ -468,7 +468,7 @@ template <class E> class BSTPostOrderIterator {
     void slideDown(BinaryNode<E> *n);
 
 public:
-    BSTPostOrderIterator(const BST<E> &bt);
+    BSTPostOrderIterator(const BST<E> *bt);
     BSTPostOrderIterator(std::stack<pointer> stack, std::stack<bool> vstack);
 
     reference operator*() const;
@@ -485,9 +485,9 @@ BSTPostOrderIterator<E>::BSTPostOrderIterator(std::stack<pointer> stack,
     : _stack(stack), _visitedStack(vstack){};
 
 template <class E>
-BSTPostOrderIterator<E>::BSTPostOrderIterator(const BST<E> &bt) {
-    if (bt.getRoot())
-        slideDown(bt.getRoot());
+BSTPostOrderIterator<E>::BSTPostOrderIterator(const BST<E> *bt) {
+    if (bt->getRoot())
+        slideDown(bt->getRoot());
 }
 
 template <class E> void BSTPostOrderIterator<E>::slideDown(pointer n) {
@@ -567,7 +567,7 @@ template <class E> class BSTPreOrderIterator {
     std::stack<pointer> _stack;
 
 public:
-    BSTPreOrderIterator(const BST<E> &bt);
+    BSTPreOrderIterator(const BST<E> *bt);
     BSTPreOrderIterator(std::stack<pointer> stack);
 
     reference operator*() const;
@@ -583,9 +583,9 @@ BSTPreOrderIterator<E>::BSTPreOrderIterator(std::stack<pointer> stack)
     : _stack(stack){};
 
 template <class E>
-BSTPreOrderIterator<E>::BSTPreOrderIterator(const BST<E> &bt) {
-    if (bt.getRoot())
-        _stack.push(bt.getRoot());
+BSTPreOrderIterator<E>::BSTPreOrderIterator(const BST<E> *bt) {
+    if (bt->getRoot())
+        _stack.push(bt->getRoot());
 }
 
 // Prefix
@@ -656,7 +656,7 @@ template <class E> class BSTInOrderIterator {
     void slideLeft(BinaryNode<E> *n);
 
 public:
-    BSTInOrderIterator(const BST<E> &bt);
+    BSTInOrderIterator(const BST<E> *bt);
     BSTInOrderIterator(std::stack<pointer> stack);
 
     reference operator*() const;
@@ -671,9 +671,9 @@ template <class E>
 BSTInOrderIterator<E>::BSTInOrderIterator(std::stack<pointer> stack)
     : _stack(stack){};
 
-template <class E> BSTInOrderIterator<E>::BSTInOrderIterator(const BST<E> &bt) {
-    if (bt.getRoot())
-        slideLeft(bt.getRoot());
+template <class E> BSTInOrderIterator<E>::BSTInOrderIterator(const BST<E> *bt) {
+    if (bt->getRoot())
+        slideLeft(bt->getRoot());
 }
 
 template <class E> void BSTInOrderIterator<E>::slideLeft(pointer n) {
@@ -740,7 +740,7 @@ template <class E> class BSTReverseInOrderIterator {
     void slideRight(BinaryNode<E> *n);
 
 public:
-    BSTReverseInOrderIterator(const BST<E> &bt);
+    BSTReverseInOrderIterator(const BST<E> *bt);
     BSTReverseInOrderIterator(std::stack<pointer> stack);
 
     reference operator*() const;
@@ -757,9 +757,9 @@ BSTReverseInOrderIterator<E>::BSTReverseInOrderIterator(
     : _stack(stack){};
 
 template <class E>
-BSTReverseInOrderIterator<E>::BSTReverseInOrderIterator(const BST<E> &bt) {
-    if (bt.getRoot())
-        slideRight(bt.getRoot());
+BSTReverseInOrderIterator<E>::BSTReverseInOrderIterator(const BST<E> *bt) {
+    if (bt->getRoot())
+        slideRight(bt->getRoot());
 }
 
 template <class E> void BSTReverseInOrderIterator<E>::slideRight(pointer n) {
@@ -829,7 +829,7 @@ template <class E> class BSTByLevelIterator {
     std::queue<pointer> _queue;
 
 public:
-    BSTByLevelIterator(const BST<E> &bt);
+    BSTByLevelIterator(const BST<E> *bt);
     BSTByLevelIterator(std::queue<pointer> queue);
 
     reference operator*() const;
@@ -844,9 +844,9 @@ template <class E>
 BSTByLevelIterator<E>::BSTByLevelIterator(std::queue<pointer> queue)
     : _queue(queue){};
 
-template <class E> BSTByLevelIterator<E>::BSTByLevelIterator(const BST<E> &bt) {
-    if (bt.getRoot())
-        _queue.push(bt.getRoot());
+template <class E> BSTByLevelIterator<E>::BSTByLevelIterator(const BST<E> *bt) {
+    if (bt->getRoot())
+        _queue.push(bt->getRoot());
 }
 
 // Prefix

@@ -5,36 +5,25 @@ project(aed_proj_2021
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(aed_proj_2021 src/main.cpp includes/constants.h includes/Exceptions.h
-               src/Airport.cpp includes/Airport.h
-               includes/BST.h
-               src/Cart.cpp includes/Cart.h
-               src/Client.cpp includes/Client.h
-               src/Company.cpp includes/Company.h
-               src/Flight.cpp includes/Flight.h
-               src/Luggage.cpp includes/Luggage.h
-               src/Plane.cpp includes/Plane.h
-               src/Service.cpp includes/Service.h
-               src/Ticket.cpp includes/Ticket.h
-               src/Transport.cpp includes/Transport.h
-               src/UserInterface.cpp includes/UserInterface.h
-               src/Utils.cpp includes/Utils.h)
+add_executable(aed_proj_2021           src/main.cpp
+               src/Airport.cpp         src/Cart.cpp
+               src/Client.cpp          src/Company.cpp
+               src/Flight.cpp          src/Luggage.cpp
+               src/Plane.cpp           src/Service.cpp
+               src/Ticket.cpp          src/Transport.cpp
+               src/UserInterface.cpp   src/Utils.cpp)
 
-add_compile_definitions(NO_ANSI)
-add_executable(aed_proj_2021_no_ansi src/main.cpp includes/constants.h includes/Exceptions.h
-                src/Airport.cpp includes/Airport.h
-                includes/BST.h
-                src/Cart.cpp includes/Cart.h
-                src/Client.cpp includes/Client.h
-                src/Company.cpp includes/Company.h
-                src/Flight.cpp includes/Flight.h
-                src/Luggage.cpp includes/Luggage.h
-                src/Plane.cpp includes/Plane.h
-                src/Service.cpp includes/Service.h
-                src/Ticket.cpp includes/Ticket.h
-                src/Transport.cpp includes/Transport.h
-                src/UserInterface.cpp includes/UserInterface.h
-                src/Utils.cpp includes/Utils.h)
+add_executable(aed_proj_2021_no_ansi   src/main.cpp
+               src/Airport.cpp         src/Cart.cpp
+               src/Client.cpp          src/Company.cpp
+               src/Flight.cpp          src/Luggage.cpp
+               src/Plane.cpp           src/Service.cpp
+               src/Ticket.cpp          src/Transport.cpp
+               src/UserInterface.cpp   src/Utils.cpp)
+target_compile_definitions(aed_proj_2021_no_ansi PUBLIC NO_ANSI)
+
+include_directories(aed_proj_2021 includes/)
+include_directories(aed_proj_2021_no_ansi includes/)
 
 # Doxygen Build
 find_package(Doxygen)

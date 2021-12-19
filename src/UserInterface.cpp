@@ -176,6 +176,15 @@ void UserInterface::optionsMenu(
 }
 
 void UserInterface::loadString(const std::string &text, unsigned time) const {
+#ifdef NO_ANSI
+    unsigned inc = time / (text.size() + 2);
+
+    for (char c : text + " ✈") {
+        std::cout << c << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(inc));
+    }
+    std::cout << std::endl;
+#else
     unsigned inc = time / text.size();
 
     std::cout << " ✈" << std::flush;
@@ -184,6 +193,7 @@ void UserInterface::loadString(const std::string &text, unsigned time) const {
         std::this_thread::sleep_for(std::chrono::milliseconds(inc));
     }
     std::cout << std::endl;
+#endif
 }
 
 std::string UserInterface::getInput(std::string prompt) {

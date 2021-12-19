@@ -3,21 +3,21 @@
 
 class Luggage;
 
-#include "Client.h"
+#include "Ticket.h"
 
 /**
  * @brief Represents a piece of luggage.
  */
 class Luggage {
-    const Client *_owner;
+    const Ticket *_ticket;
 
 public:
-    Luggage(Client *owner) : _owner(owner){};
+    Luggage(Ticket *ticket) : _ticket(ticket){};
 
     /**
-     * @return A pointer to the client associated to the luggage (its owner).
+     * @return A pointer to the ticket associated to the luggage.
      */
-    const Client *getOwner() const { return _owner; };
+    const Ticket *getTicket() const { return _ticket; };
 };
 
 #endif // AED_PROJ_2021_LUGGAGE_H

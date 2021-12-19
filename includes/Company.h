@@ -86,15 +86,6 @@ public:
     std::vector<Cart *> getCarts() const { return _carts; };
 
     /**
-     * @brief Iterates over the _carts vector to find the cart from flightID.
-     *
-     * @param flightID The ID of the flight to which the cart points at.
-     * @return A pointer to the correspondent cart or nullptr if is does not
-     * exist.
-     */
-    Cart *findCart(unsigned flightID);
-
-    /**
      * @brief Creates a new client.
      *
      * @param nif The new client's NIF.
@@ -219,6 +210,11 @@ public:
      */
     void deleteAirport(Airport *airport);
 
+    Cart *createCart(Flight *flight);
+
+    void updateCart(Cart *cart, unsigned newCartSize, unsigned newTrolleySize,
+                    unsigned newStackSize);
+
     /**
      * @brief Iterates over the _flights vector to find the flight with
      * number.
@@ -256,8 +252,14 @@ public:
      */
     Airport *findAirport(std::string name);
 
-    void updateCart(Cart *cart, unsigned newCartSize, unsigned newTrolleySize,
-                    unsigned newStackSize);
+    /**
+     * @brief Iterates over the _carts vector to find the cart from flightID.
+     *
+     * @param flightID The ID of the flight to which the cart points at.
+     * @return A pointer to the correspondent cart or nullptr if is does not
+     * exist.
+     */
+    Cart *findCart(unsigned flightID);
 };
 
 #endif // AED_PROJ_2021_COMPANY_H

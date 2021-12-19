@@ -44,6 +44,8 @@ public:
      * @param name The new name.
      */
     void setName(std::string name) { _name = name; }
+
+    void addTransport(const Transport &t) { _transports.insert(t); }
 };
 
 #endif // AED_PROJ_2021_AIRPORT_H

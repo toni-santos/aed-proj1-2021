@@ -10,11 +10,6 @@
 #include <sstream>
 #include <thread>
 
-// TODO: IMPLEMENT FILE WRITE/DELETE
-// TODO: WHEN PRINTING AIRPORTS PRINT THE NEARBY DESTINATIONS (?)
-// TODO: DESTINATIONS
-// TODO: UPDATE OF CARTS
-
 void printServiceList(Company &comp) {
     for (auto plane : comp.getPlanes()) {
         std::cout << "Type - Date - Worker" << std::endl;
@@ -86,10 +81,33 @@ void printClientVector(std::vector<Client *> sortedVec, Company &comp) {
     }
 }
 
-void printAirportVector(Company &comp) {
+void printTransport(Transport t) {
+    std::cout << t.getName() << " - " << t.getType() << " - " << std::flush;
+    for (auto i{t.getTimetable().begin()}, end{t.getTimetable().end()};
+         i != end; ++i) {
+        std::cout << i->getElement() << std::endl;
+    }
+}
+
+void printTransports(Airport *airport, bool reverse = false) {
+    if (reverse)
+        for (auto i{airport->getTransports().rbegin()},
+             end{airport->getTransports().rend()};
+             i != end; ++i)
+            printTransport(i->getElement());
+    else
+        for (auto t{airport->getTransports().begin()},
+             end{airport->getTransports().end()};
+             t != end; ++t)
+            printTransport(t->getElement());
+}
+
+void printAirportVectorInOrder(Company &comp, bool reverse) {
     std::cout << "ID - Name\n";
     for (auto a : comp.getAirports()) {
-        std::cout << a->getID() << " - " << a->getName() << '\n' << std::flush;
+        std::cout << a->getID() << " - " << a->getName() << std::endl;
+
+        printTransports(a, reverse);
     }
 }
 
@@ -272,6 +290,9 @@ void UserInterface::cBuyTicketsMenu(Company &comp) {
         }
 
         flight = comp.findFlight(f);
+
+        if (!flight)
+            _errorMessage = "Invalid input!\n";
     } while (!flight);
 
     unsigned availability = flight->getAvailability();
@@ -307,18 +328,18 @@ void UserInterface::cBuyTicketsMenu(Company &comp) {
         unsigned nif = getNumberInput("Insert the passenger's NIF: ");
         Client *client = getOrCreateClient(comp, nif);
 
+        ticket->setClient(client);
+        client->addTicket(ticket);
+
         std::string autoLuggage =
             getInput("Do you wish to use automatic luggaging? (y/N) ");
 
         if (autoLuggage == "Y" || autoLuggage == "y") {
-            Luggage *luggage = new Luggage(client);
+            Luggage *luggage = new Luggage(ticket);
             comp.findCart(flight->getID())->addLuggage(luggage);
 
             ticket->addLuggage(luggage);
         }
-
-        ticket->setClient(client);
-        client->addTicket(ticket);
 
         std::cout << "The ticket has been purchased!\n"
                      "Thanks for travelling with us... :D\n";
@@ -350,6 +371,7 @@ void UserInterface::employeeOptionsMenu() {
                                             {"Flights", E_FLIGHT_OPTIONS},
                                             {"Services", E_SERVICE_OPTIONS},
                                             {"Airports", E_AIRPORT_OPTIONS},
+                                            {"Transports", E_TRANSPORT_OPTIONS},
                                             {"Carts", E_CART_OPTIONS},
                                             {"Clients", E_CLIENT_OPTIONS}});
 }
@@ -800,7 +822,23 @@ void UserInterface::eAirportCreateMenu(Company &comp) {
     _currentMenu = E_AIRPORT_OPTIONS;
 }
 void UserInterface::eAirportReadMenu(Company &comp) {
-    printAirportVector(comp);
+    std::cout << CLEAR_SCREEN
+              << "Duration: (1) Descending	(q) Ascending\n"
+                 "               (0) Go back\n\n";
+
+    std::string opt = getInput("Choose an ordering strategy: ");
+    if (opt == "1") {
+        printAirportVectorInOrder(comp, true);
+    } else if (opt == "q") {
+        printAirportVectorInOrder(comp, false);
+    } else if (opt == "0") {
+        _currentMenu = E_AIRPORT_OPTIONS;
+        return;
+    } else {
+        _errorMessage = "Invalid input!\n";
+        return;
+    }
+
     getInput("Press Enter to continue");
     _currentMenu = E_AIRPORT_OPTIONS;
 }
@@ -855,6 +893,147 @@ void UserInterface::eCartUpdateMenu(Company &comp) {
     std::cout << "\nThe changes have been saved!\n";
     getInput("Press Enter to continue");
     _currentMenu = E_CART_OPTIONS;
+}
+
+void UserInterface::eTransportOptionsMenu(Company &comp) {
+    optionsMenu(COMPANY_NAME + " - Clients",
+                {{"Go back", E_OPTIONS},
+                 {"New ransport", E_TRANSPORT_CREATE},
+                 {"Check transport", E_TRANSPORT_READ},
+                 {"Update transport", E_TRANSPORT_UPDATE},
+                 {"Delete transport", E_TRANSPORT_DELETE}});
+}
+void UserInterface::eTransportCreateMenu(Company &comp) {
+
+    unsigned t = getNumberInput("Insert the tranport's type: ", 0, 2);
+    TransportType type = static_cast<TransportType>(t);
+
+    std::string name = getInput("Insert the tranport's name: ");
+
+    unsigned distance = getNumberInput(
+        "Insert the transport's distance to the nearest airport: ");
+
+    Transport transport{type, distance, name};
+
+    while (true) {
+        std::string name = getInput(
+            "Insert a transport's schedule (hh/mm) [press Enter to end]: ");
+        if (name == "") {
+            break;
+        }
+        transport.insertTime(name);
+    }
+
+    std::cout << "Name - ID" << std::endl;
+    for (auto a : comp.getAirports()) {
+        std::cout << a->getName() << " - " << a->getID() << std::endl;
+    }
+
+    unsigned airportID = getNumberInput("Insert the tranport's name: ", 0);
+    Airport *airport = comp.getAirports().at(airportID);
+
+    airport->addTransport(transport);
+
+    std::cout << "\nTransport created!\n";
+    getInput("Press Enter to continue");
+    _currentMenu = E_TRANSPORT_OPTIONS;
+}
+void UserInterface::eTransportReadMenu(Company &comp) {
+    for (auto a : comp.getAirports()) {
+        printTransports(a, false);
+    }
+    getInput("Press Enter to continue");
+    _currentMenu = E_TRANSPORT_OPTIONS;
+}
+void UserInterface::eTransportUpdateMenu(Company &comp) {
+    unsigned cnt{0};
+    for (auto a : comp.getAirports()) {
+        for (auto t : a->getTransports()) {
+            std::cout << cnt++ << " - " << t.getElement().getName()
+                      << std::endl;
+        }
+    }
+
+    std::cout << '\n' << std::flush;
+
+    unsigned id = getNumberInput(
+        "Insert the ID of the transport you wish to update: ", 0, cnt - 1);
+
+    cnt = 0;
+    Transport *transport = nullptr;
+    for (auto a : comp.getAirports()) {
+        for (auto t : a->getTransports()) {
+            cnt++;
+            if (cnt == id) {
+                transport = &t.getElement();
+                break;
+            }
+        }
+        if (cnt == id)
+            break;
+    }
+
+    std::cout << "Current transport name: " << transport->getName() << '\n';
+    std::string name =
+        getInput("New transport name (press Enter to keep current value): ");
+
+    if (name != "")
+        transport->setName(name);
+
+    for (auto i{transport->getTimetable().begin()},
+         end{transport->getTimetable().end()};
+         i != end; ++i) {
+        std::cout << i->getElement() << std::endl;
+    }
+
+    while (true) {
+        std::string hour = getInput(
+            "Insert a transport's schedule (hh/mm) [press Enter to end]: ");
+        if (hour == "")
+            break;
+        transport->insertTime(hour);
+    }
+
+    std::cout << "Transport updated!\n" << std::flush;
+    getInput("Press Enter to continue");
+    _currentMenu = E_TRANSPORT_OPTIONS;
+}
+void UserInterface::eTransportDeleteMenu(Company &comp) {
+    unsigned cnt{0};
+    for (auto a : comp.getAirports()) {
+        for (auto t : a->getTransports()) {
+            std::cout << cnt++ << " - " << t.getElement().getName()
+                      << std::endl;
+        }
+    }
+
+    std::cout << '\n' << std::flush;
+
+    unsigned id = getNumberInput(
+        "Insert the ID of the transport you wish to update: ", 0, cnt - 1);
+
+    std::string confirm = getInput("Confirm (y/N): ");
+    if (confirm == "Y" || confirm == "y") {
+        cnt = 0;
+        std::string confirm;
+        for (auto a : comp.getAirports()) {
+            for (auto t : a->getTransports()) {
+                cnt++;
+                if (id == cnt) {
+                    a->getTransports().remove(t.getElement());
+                    break;
+                }
+            }
+            if (id == cnt)
+                break;
+        }
+        std::cout << "\nTransport deleted!\n";
+    } else {
+        std::cout << "\nTransport not deleted!\n";
+    }
+
+    getInput("Press Enter to continue");
+    _currentMenu = E_TRANSPORT_OPTIONS;
 }
 
 void UserInterface::show(Company &comp) {

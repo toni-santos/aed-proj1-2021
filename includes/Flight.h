@@ -4,6 +4,7 @@
 class Flight;
 
 #include "Airport.h"
+#include "Cart.h"
 #include "Luggage.h"
 #include "Plane.h"
 #include "Ticket.h"
@@ -31,8 +32,6 @@ private:
     void deleteTickets();
 
 public:
-    // Constructors
-    // TODO: prices (?)
     Flight(unsigned id, unsigned number, unsigned duration, Airport *origin,
            Airport *dest, std::string departureDate, Plane *plane);
     ~Flight();
@@ -70,6 +69,10 @@ public:
      * @return This flight's tickets.
      */
     std::vector<Ticket *> getTickets() const { return _tickets; };
+    /**
+     * @return This flight's storage.
+     */
+    std::vector<Luggage *> getStorage() const { return _storage; };
 
     unsigned getAvailability() const;
 

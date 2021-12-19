@@ -9,20 +9,33 @@ class Cart;
 #include <list>
 #include <stack>
 #include <vector>
+
 /**
  * @brief Represents a luggage cart.
  */
 class Cart {
+    using stackT = std::stack<Luggage *>;
+    using trolleyT = std::vector<stackT>;
+    using cartT = std::list<trolleyT>;
+
     unsigned _cartSize, _trolleySize, _stackSize;
-    std::list<std::vector<std::stack<Luggage *>>> _cart;
-    Flight *_flight;
+    cartT _cart{};
+    Flight *_flight = nullptr;
 
 public:
     Cart(Flight *flight, unsigned cartSize = 3, unsigned trolleySize = 4,
          unsigned stackSize = 5)
         : _cartSize(cartSize), _trolleySize(trolleySize), _stackSize(stackSize),
-          _flight(flight){};
+          _flight(flight),
+          _cart(cartT{_cartSize, trolleyT{_trolleySize, stackT{}}}){};
+    ~Cart();
 
+    /**
+     * @return this cart's capacity.
+     */
+    unsigned getCapacity() const {
+        return _cartSize * _trolleySize * _stackSize;
+    };
     /**
      * @return this cart's size.
      */
@@ -39,6 +52,10 @@ public:
      * @return the flight associated to this cart.
      */
     Flight *getFlight() const { return _flight; };
+    /**
+     * @return the flight associated to this cart.
+     */
+    cartT getCart() const { return _cart; };
     /**
      * @brief set this cart's size.
      *

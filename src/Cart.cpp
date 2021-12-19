@@ -1,20 +1,33 @@
 #include "../includes/Cart.h"
 
-void Cart::addLuggage(Luggage *luggage) {
-    if (!isFull(_cart)) {
-        for (auto trolley : _cart) {
-            if (!isFull(trolley)) {
-                for (auto stack : trolley) {
-                    if (stack.size() <= _stackSize) {
-                        stack.push(luggage);
-                        return;
-                    }
-                }
+Cart::~Cart() {
+    for (auto trolley : _cart) {
+        for (auto stack : trolley) {
+            while (!stack.empty()) {
+                delete stack.top();
+                stack.pop();
             }
         }
     }
+}
 
-    unloadCart();
+void Cart::addLuggage(Luggage *luggage) {
+    unsigned filled{0};
+
+    for (auto &trolley : _cart) {
+        for (auto &stack : trolley) {
+            filled += stack.size();
+
+            if (stack.size() <= _stackSize) {
+                stack.push(luggage);
+
+                if (filled + 1 == getCapacity())
+                    unloadCart();
+
+                return;
+            }
+        }
+    }
 }
 
 void Cart::unloadCart() {

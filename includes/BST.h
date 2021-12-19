@@ -5,6 +5,7 @@
 #include <queue>
 #include <stack>
 
+template <class E> class BSTReverseInOrderIterator;
 template <class E> class BSTInOrderIterator;
 template <class E> class BSTPreOrderIterator;
 template <class E> class BSTPostOrderIterator;
@@ -19,8 +20,8 @@ template <class E> class BST;
  */
 template <class E> class BinaryNode {
     E _element;
-    BinaryNode *_left;
-    BinaryNode *_right;
+    BinaryNode *_left = nullptr;
+    BinaryNode *_right = nullptr;
 
 public:
     BinaryNode(const E &el) : _element(el){};
@@ -29,15 +30,15 @@ public:
     /**
      * @return This node's element.
      */
-    E getElement() const { return _element; };
+    E &getElement() { return _element; };
     /**
      * @return The child to the left of this node.
      */
-    BinaryNode *getLeft() const { return _left; };
+    BinaryNode *&getLeft() { return _left; };
     /**
      * @return The child to the right of this node.
      */
-    BinaryNode *getRight() const { return _right; };
+    BinaryNode *&getRight() { return _right; };
 
     /**
      * @brief Set this node's element.
@@ -72,6 +73,13 @@ public:
      * @brief Deletes the child to the right of this node.
      */
     void deleteRight();
+
+    /**
+     * @brief Clones this node and all its children.
+     *
+     * @return A new node.
+     */
+    BinaryNode<E> *clone();
 };
 
 template <class E> BinaryNode<E>::~BinaryNode() {
@@ -81,11 +89,11 @@ template <class E> BinaryNode<E>::~BinaryNode() {
 
 template <class E> void BinaryNode<E>::insertLeft(const E &el) {
     deleteLeft();
-    _left = new BinaryNode(el);
+    _left = new BinaryNode<E>(el);
 }
 template <class E> void BinaryNode<E>::insertRight(const E &el) {
     deleteRight();
-    _right = new BinaryNode(el);
+    _right = new BinaryNode<E>(el);
 }
 
 template <class E> void BinaryNode<E>::deleteLeft() {
@@ -97,6 +105,17 @@ template <class E> void BinaryNode<E>::deleteRight() {
         delete _right;
 }
 
+template <class E> BinaryNode<E> *BinaryNode<E>::clone() {
+    BinaryNode<E> *n = new BinaryNode<E>(_element);
+
+    if (_left)
+        n->_left = _left->clone();
+    if (_right)
+        n->_right = _right->clone();
+
+    return n;
+}
+
 //-------------------------- BST -------------------------
 /**
  * @brief Implements a binary search tree.
@@ -104,7 +123,7 @@ template <class E> void BinaryNode<E>::deleteRight() {
  * @tparam E The element type.
  */
 template <class E> class BST {
-    BinaryNode<E> *_root;
+    BinaryNode<E> *_root = nullptr;
 
     /**
      * @brief Gets the minimum element in a subtree.
@@ -113,7 +132,7 @@ template <class E> class BST {
      *
      * @return The node with the minimum element.
      */
-    BinaryNode<E> min(BinaryNode<E> *t) const;
+    BinaryNode<E> *min(BinaryNode<E> *t) const;
     /**
      * @brief Gets the maximum element in a subtree.
      *
@@ -121,7 +140,7 @@ template <class E> class BST {
      *
      * @return The node with the maximum element.
      */
-    BinaryNode<E> max(BinaryNode<E> *t) const;
+    BinaryNode<E> *max(BinaryNode<E> *t) const;
 
     /**
      * @brief Searches for an element equivelement to the given value in a
@@ -158,6 +177,7 @@ template <class E> class BST {
 
 public:
     BST(){};
+    BST(const BST<E> &bst) { *this = bst; };
     ~BST() { makeEmpty(); };
 
     /**
@@ -181,13 +201,13 @@ public:
      *
      * @return The node with the minimum element.
      */
-    BinaryNode<E> min() const;
+    BinaryNode<E> *min() const;
     /**
      * @brief Gets the maximum element in the tree.
      *
      * @return The node with the maximum element.
      */
-    BinaryNode<E> max() const;
+    BinaryNode<E> *max() const;
 
     /**
      * @brief Searches for an element equivelement to the given value.
@@ -227,6 +247,15 @@ public:
      *         element.
      */
     BSTInOrderIterator<E> inorderEnd() const;
+    /**
+     * @return A reverse in-order iterator for this tree.
+     */
+    BSTReverseInOrderIterator<E> rinorderBegin() const;
+    /**
+     * @return A reverse in-order iterator for this tree that points to after
+     * the last element.
+     */
+    BSTReverseInOrderIterator<E> rinorderEnd() const;
     /**
      * @return A pre-order iterator for this tree.
      */
@@ -268,6 +297,21 @@ public:
      *         element.
      */
     auto end() const { return inorderEnd(); };
+    /**
+     * @note Same as rinorderBegin.
+     *
+     * @return A reverse in-order iterator for this tree.
+     */
+    auto rbegin() const { return rinorderBegin(); };
+    /**
+     * @note Same as rinorderEnd.
+     *
+     * @return A reverse in-order iterator for this tree that points to after
+     *         the last element.
+     */
+    auto rend() const { return rinorderEnd(); };
+
+    const BST<E> &operator=(const BST<E> &bst);
 };
 
 template <class E> bool BST<E>::empty() const { return !_root; }
@@ -276,23 +320,23 @@ template <class E> void BST<E>::makeEmpty() {
     _root = nullptr;
 }
 
-template <class E> BinaryNode<E> BST<E>::min(BinaryNode<E> *t) const {
+template <class E> BinaryNode<E> *BST<E>::min(BinaryNode<E> *t) const {
     if (!t)
         return nullptr;
     if (!t->getLeft())
         return t;
-    return findMin(t->getLeft());
+    return min(t->getLeft());
 }
-template <class E> BinaryNode<E> BST<E>::min() const { return max(_root); }
+template <class E> BinaryNode<E> *BST<E>::min() const { return min(_root); }
 
-template <class E> BinaryNode<E> BST<E>::max(BinaryNode<E> *t) const {
+template <class E> BinaryNode<E> *BST<E>::max(BinaryNode<E> *t) const {
     if (!t)
         return nullptr;
     if (!t->getRight())
         return t;
-    return findMin(t->getRight());
+    return max(t->getRight());
 }
-template <class E> BinaryNode<E> BST<E>::max() const { return max(_root); }
+template <class E> BinaryNode<E> *BST<E>::max() const { return max(_root); }
 
 template <class E>
 template <class C>
@@ -329,7 +373,14 @@ template <class E> bool BST<E>::insert(const E &x, BinaryNode<E> *t) {
         return false; // Duplicate; do nothing
     }
 }
-template <class E> bool BST<E>::insert(const E &x) { return insert(x, _root); }
+template <class E> bool BST<E>::insert(const E &x) {
+    if (!_root) {
+        _root = new BinaryNode<E>(x);
+        return true;
+    }
+
+    return insert(x, _root);
+}
 
 template <class E>
 template <class C>
@@ -362,25 +413,41 @@ template <class E> BSTInOrderIterator<E> BST<E>::inorderBegin() const {
     return {*this};
 }
 template <class E> BSTInOrderIterator<E> BST<E>::inorderEnd() const {
-    return {};
+    return BSTInOrderIterator<E>(std::stack<BinaryNode<E> *>{});
+}
+template <class E> BSTReverseInOrderIterator<E> BST<E>::rinorderBegin() const {
+    return {*this};
+}
+template <class E> BSTReverseInOrderIterator<E> BST<E>::rinorderEnd() const {
+    return BSTReverseInOrderIterator<E>(std::stack<BinaryNode<E> *>{});
 }
 template <class E> BSTPreOrderIterator<E> BST<E>::preorderBegin() const {
     return {*this};
 }
 template <class E> BSTPreOrderIterator<E> BST<E>::preorderEnd() const {
-    return {};
+    return BSTPreOrderIterator<E>(std::stack<BinaryNode<E> *>{});
 }
 template <class E> BSTPostOrderIterator<E> BST<E>::postorderBegin() const {
     return {*this};
 }
 template <class E> BSTPostOrderIterator<E> BST<E>::postorderEnd() const {
-    return {};
+    return BSTPostOrderIterator<E>(std::stack<BinaryNode<E> *>{},
+                                   std::stack<bool>{});
 }
 template <class E> BSTByLevelIterator<E> BST<E>::bylevelBegin() const {
     return {*this};
 }
 template <class E> BSTByLevelIterator<E> BST<E>::bylevelEnd() const {
-    return {};
+    return BSTByLevelIterator<E>(std::queue<BinaryNode<E> *>{});
+}
+
+template <class E> const BST<E> &BST<E>::operator=(const BST<E> &bst) {
+    if (this != &bst) {
+        makeEmpty();
+        if (bst.getRoot())
+            _root = bst.getRoot()->clone();
+    }
+    return *this;
 }
 
 //----------------- BSTPostOrderIterator -----------------
@@ -419,8 +486,8 @@ BSTPostOrderIterator<E>::BSTPostOrderIterator(std::stack<pointer> stack,
 
 template <class E>
 BSTPostOrderIterator<E>::BSTPostOrderIterator(const BST<E> &bt) {
-    if (bt._root)
-        slideDown(bt._root);
+    if (bt.getRoot())
+        slideDown(bt.getRoot());
 }
 
 template <class E> void BSTPostOrderIterator<E>::slideDown(pointer n) {
@@ -517,22 +584,22 @@ BSTPreOrderIterator<E>::BSTPreOrderIterator(std::stack<pointer> stack)
 
 template <class E>
 BSTPreOrderIterator<E>::BSTPreOrderIterator(const BST<E> &bt) {
-    if (bt._root)
-        _stack.push(bt._root);
+    if (bt.getRoot())
+        _stack.push(bt.getRoot());
 }
 
 // Prefix
 template <class E>
 BSTPreOrderIterator<E> &BSTPreOrderIterator<E>::operator++() {
     pointer current = _stack.top();
-    pointer next = current->left;
+    pointer next = current->getLeft();
     if (next)
         _stack.push(next);
     else {
         while (!_stack.empty()) {
             current = _stack.top();
             _stack.pop();
-            next = current->right;
+            next = current->getRight();
             if (next) {
                 _stack.push(next);
                 break;
@@ -605,8 +672,8 @@ BSTInOrderIterator<E>::BSTInOrderIterator(std::stack<pointer> stack)
     : _stack(stack){};
 
 template <class E> BSTInOrderIterator<E>::BSTInOrderIterator(const BST<E> &bt) {
-    if (bt._root)
-        slideLeft(bt._root);
+    if (bt.getRoot())
+        slideLeft(bt.getRoot());
 }
 
 template <class E> void BSTInOrderIterator<E>::slideLeft(pointer n) {
@@ -620,7 +687,7 @@ template <class E> void BSTInOrderIterator<E>::slideLeft(pointer n) {
 template <class E> BSTInOrderIterator<E> &BSTInOrderIterator<E>::operator++() {
     BinaryNode<E> *current = _stack.top();
     _stack.pop();
-    BinaryNode<E> *next = current->right;
+    BinaryNode<E> *next = current->getRight();
     if (next)
         slideLeft(next);
 
@@ -656,6 +723,96 @@ bool BSTInOrderIterator<E>::operator!=(const BSTInOrderIterator<E> &other) {
     return _stack != other._stack;
 };
 
+//------------------ BSTReverseInOrderIterator ------------------
+/**
+ * @brief An iterator that loops over a binary search tree in reverse order.
+ *
+ * @tparam E The element type.
+ */
+template <class E> class BSTReverseInOrderIterator {
+    using iterator_category = std::forward_iterator_tag;
+    using difference_type = std::ptrdiff_t;
+    using value_type = BinaryNode<E>;
+    using pointer = value_type *;
+    using reference = value_type &;
+
+    std::stack<pointer> _stack;
+    void slideRight(BinaryNode<E> *n);
+
+public:
+    BSTReverseInOrderIterator(const BST<E> &bt);
+    BSTReverseInOrderIterator(std::stack<pointer> stack);
+
+    reference operator*() const;
+    pointer operator->();
+    BSTReverseInOrderIterator &operator++();
+    BSTReverseInOrderIterator operator++(int);
+    bool operator==(const BSTReverseInOrderIterator<E> &other);
+    bool operator!=(const BSTReverseInOrderIterator<E> &other);
+};
+
+template <class E>
+BSTReverseInOrderIterator<E>::BSTReverseInOrderIterator(
+    std::stack<pointer> stack)
+    : _stack(stack){};
+
+template <class E>
+BSTReverseInOrderIterator<E>::BSTReverseInOrderIterator(const BST<E> &bt) {
+    if (bt.getRoot())
+        slideRight(bt.getRoot());
+}
+
+template <class E> void BSTReverseInOrderIterator<E>::slideRight(pointer n) {
+    while (n) {
+        _stack.push(n);
+        n = n->getRight();
+    }
+}
+
+// Prefix
+template <class E>
+BSTReverseInOrderIterator<E> &BSTReverseInOrderIterator<E>::operator++() {
+    BinaryNode<E> *current = _stack.top();
+    _stack.pop();
+    BinaryNode<E> *next = current->getLeft();
+    if (next)
+        slideRight(next);
+
+    return *this;
+}
+
+// Postfix
+template <class E>
+BSTReverseInOrderIterator<E> BSTReverseInOrderIterator<E>::operator++(int) {
+    BSTReverseInOrderIterator<E> temp = *this;
+    ++(*this);
+    return temp;
+}
+
+template <class E>
+typename BSTReverseInOrderIterator<E>::reference
+BSTReverseInOrderIterator<E>::operator*() const {
+    return *_stack.top();
+}
+
+template <class E>
+typename BSTReverseInOrderIterator<E>::pointer
+BSTReverseInOrderIterator<E>::operator->() {
+    return _stack.top();
+}
+
+template <class E>
+bool BSTReverseInOrderIterator<E>::operator==(
+    const BSTReverseInOrderIterator<E> &other) {
+    return _stack == other._stack;
+};
+
+template <class E>
+bool BSTReverseInOrderIterator<E>::operator!=(
+    const BSTReverseInOrderIterator<E> &other) {
+    return _stack != other._stack;
+};
+
 //------------------ BSTByLevelIterator ------------------
 /**
  * @brief An iterator that loops over a binary search tree by level.
@@ -688,18 +845,18 @@ BSTByLevelIterator<E>::BSTByLevelIterator(std::queue<pointer> queue)
     : _queue(queue){};
 
 template <class E> BSTByLevelIterator<E>::BSTByLevelIterator(const BST<E> &bt) {
-    if (bt._root)
-        _queue.push(bt._root);
+    if (bt.getRoot())
+        _queue.push(bt.getRoot());
 }
 
 // Prefix
 template <class E> BSTByLevelIterator<E> &BSTByLevelIterator<E>::operator++() {
     pointer current = _queue.front();
     _queue.pop();
-    pointer next = current->left;
+    pointer next = current->getLeft();
     if (next)
         _queue.push(next);
-    next = current->_right;
+    next = current->getRight();
     if (next)
         _queue.push(next);
 

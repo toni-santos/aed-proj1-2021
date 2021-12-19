@@ -17,7 +17,7 @@ class Ticket {
     const std::string _seat;
     Client *_client = nullptr;
     Luggage *_luggage = nullptr;
-    // TODO: prices (?)
+
 public:
     Ticket(Flight *flight, std::string seat) : _flight(flight), _seat(seat){};
     ~Ticket();
@@ -41,12 +41,13 @@ public:
      *
      * @param client The new client.
      */
-    void setClient(Client *client) { _client = client; };
+    void setClient(Client *client) {
+        _luggage = nullptr;
+        _client = client;
+    };
 
-    // TODO checkem só se eu percebi este bem
     /**
-     * @brief Associate a luggage to this ticket (which in turn belongs to an
-     *        owner).
+     * @brief Associate a luggage to this ticket.
      *
      * @param luggage The luggage to be linked.
      */

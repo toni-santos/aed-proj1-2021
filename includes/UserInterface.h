@@ -150,7 +150,13 @@ enum Menu {
     /**
      * @brief Updates a cart.
      */
-    E_CART_UPDATE
+    E_CART_UPDATE,
+
+    E_TRANSPORT_OPTIONS,
+    E_TRANSPORT_CREATE,
+    E_TRANSPORT_READ,
+    E_TRANSPORT_UPDATE,
+    E_TRANSPORT_DELETE
 };
 
 class UserInterface {
@@ -179,9 +185,6 @@ class UserInterface {
      * @note The first option on the list will be shown last and is
      *       intended to be a way to go back in the navigation tree.
      *
-     * @note This can show an arbitrary amount of options, but only navigate to
-     *       the first 10 options.
-     *
      * @param text Text to show before the options
      * @param options The list of options to show
      */
@@ -200,9 +203,12 @@ class UserInterface {
     /**
      * @brief Gets a line from stdin and normalizes it.
      *
-     * @param input Where to store the input
+     * @note Also shows _errorMessage and then resets it.
      *
      * @throws Exit if the EOF bit is set.
+     *
+     * @param prompt Shown to the user.
+     * @return The user input.
      */
     std::string getInput(std::string prompt);
 
@@ -213,10 +219,12 @@ class UserInterface {
      * @note There are optional parameters (min and max) to also display an
      * error message if the prompt is outside of the designated limit.
      *
-     * @param prompt The string to transform.
+     * @note Also shows _errorMessage and then resets it.
+     *
+     * @param prompt Shown to the user.
      * @param min The left bound of the limit (inclusive).
      * @param max The right bound of the limit (inclusive).
-     * @return The unsigned integer version of the prompt.
+     * @return The user input, as an unsigned integer.
      */
     unsigned getNumberInput(std::string prompt, unsigned min = 0,
                             unsigned max = INT32_MAX);
@@ -401,6 +409,12 @@ class UserInterface {
     void eCartReadMenu(Company &comp);
     void eCartUpdateMenu(Company &comp);
 
+    void eTransportOptionsMenu(Company &comp);
+    void eTransportCreateMenu(Company &comp);
+    void eTransportReadMenu(Company &comp);
+    void eTransportUpdateMenu(Company &comp);
+    void eTransportDeleteMenu(Company &comp);
+
 public:
     /**
      * @brief Shows the current menu.
@@ -467,5 +481,11 @@ void printServiceList(Company &comp);
 void printPlaneServices(Plane *plane);
 
 void printCartVector(Company &comp);
+
+void printTransport(Transport *t);
+
+void printTransports(Airport *airport);
+
+void printAirportVectorInOrder(Company &comp, bool reverse);
 
 #endif // AED_PROJ_2021_MENU_H

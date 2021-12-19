@@ -29,18 +29,6 @@ void Company::updateClient(Client *client, std::string name) {
         client->setName(name);
 }
 
-void Company::updateCart(Cart *cart, unsigned newCartSize,
-                         unsigned newTrolleySize, unsigned newStackSize) {
-    if (newCartSize > 0)
-        cart->setCartSize(newCartSize);
-
-    if (newTrolleySize > 0)
-        cart->setTrolleySize(newTrolleySize);
-
-    if (newStackSize > 0)
-        cart->setStackSize(newStackSize);
-}
-
 // DONE
 void Company::deleteClient(Client *client) {
     _clients.at(client->getID()) = nullptr;
@@ -55,7 +43,7 @@ Flight *Company::createFlight(unsigned number, unsigned duration,
     Flight *flight = new Flight(_flights.size(), number, duration, origin, dest,
                                 departure, plane);
     _flights.push_back(flight);
-    _carts.push_back(new Cart(flight));
+    createCart(flight);
     return flight;
 }
 
@@ -92,6 +80,9 @@ void Company::updateFlight(Flight *flight, unsigned duration,
 
 // DONE
 void Company::deleteFlight(Flight *flight) {
+    Cart *cart = findCart(flight->getID());
+    delete cart;
+
     bool deleted = false;
     for (size_t i{0}; i < _flights.size(); ++i) {
         if (_flights.at(i) == flight)
@@ -175,6 +166,24 @@ void Company::deleteAirport(Airport *airport) {
     }
 }
 
+Cart *Company::createCart(Flight *flight) {
+    Cart *cart = new Cart(flight);
+    _carts.push_back(cart);
+    return cart;
+}
+
+void Company::updateCart(Cart *cart, unsigned newCartSize,
+                         unsigned newTrolleySize, unsigned newStackSize) {
+    if (newCartSize > 0)
+        cart->setCartSize(newCartSize);
+
+    if (newTrolleySize > 0)
+        cart->setTrolleySize(newTrolleySize);
+
+    if (newStackSize > 0)
+        cart->setStackSize(newStackSize);
+}
+
 Plane *Company::findPlane(unsigned id) {
     for (Plane *p : _planes) {
         if (p->getID() == id) {
@@ -232,15 +241,37 @@ void Company::readAirport() {
 
     while (!f.eof()) {
         std::string line;
-        // std::vector<std::string> parsedLine;
+        std::vector<std::string> parsedLine;
         getline(f, line);
 
         if (line == "")
             break;
 
-        // parsedLine = split(line, '\t');
+        Airport *airport = createAirport(line);
 
-        createAirport(line);
+        // READ TRANSPORTS
+        while (!f.eof()) {
+            getline(f, line);
+
+            if (line == "")
+                break;
+
+            parsedLine = split(line, '\t');
+
+            auto i{parsedLine.begin()};
+
+            unsigned t = stoul(*i++);
+            TransportType type = static_cast<TransportType>(t);
+            unsigned distance = stoul(*i++);
+            std::string name = *i++;
+
+            Transport transport{type, distance, name};
+
+            for (auto end{parsedLine.end()}; i < end; ++i)
+                transport.insertTime(*i);
+
+            airport->addTransport(transport);
+        }
     }
     f.close();
 }
@@ -276,16 +307,31 @@ void Company::readPlane() {
                 break;
 
             parsedLine = split(line, '\t');
+            auto i{parsedLine.begin()};
 
-            unsigned number = stoul(parsedLine.at(0));
-            unsigned duration = stoul(parsedLine.at(1));
-            unsigned originIndex = stoul(parsedLine.at(2));
-            unsigned destIndex = stoul(parsedLine.at(3));
-            std::string date = parsedLine.at(4);
+            unsigned number = stoul(*i++);
+            unsigned duration = stoul(*i++);
+            unsigned originIndex = stoul(*i++);
+            unsigned destIndex = stoul(*i++);
+            std::string date = *i++;
 
             Flight *flight =
                 createFlight(number, duration, _airports.at(originIndex),
                              _airports.at(destIndex), date, plane);
+
+            getline(f, line);
+            parsedLine = split(line, '\t');
+            if (line != "")
+                for (auto s : parsedLine)
+                    flight->addLuggage(
+                        new Luggage(flight->findTicketBySeat(s)));
+
+            getline(f, line);
+            parsedLine = split(line, '\t');
+            Cart *cart = findCart(flight->getID());
+            if (line != "")
+                for (auto s : parsedLine)
+                    cart->addLuggage(new Luggage(flight->findTicketBySeat(s)));
         }
 
         // READ DONE SERVICES
@@ -376,6 +422,22 @@ void Company::writeAirport() {
 
     for (Airport *airport : _airports) {
         of << airport->getName() << '\n';
+
+        auto transports = airport->getTransports();
+        for (auto i{transports.bylevelBegin()}, end{transports.bylevelEnd()};
+             i != end; ++i) {
+            Transport &t{i->getElement()};
+            of << t.getType() << '\t' << t.getDistance() << '\t' << t.getName();
+
+            for (auto i{t.getTimetable().bylevelBegin()},
+                 end{t.getTimetable().bylevelEnd()};
+                 i != end; ++i)
+                of << '\t' << i->getElement();
+
+            of << '\n';
+        }
+
+        of << '\n';
     }
 }
 
@@ -391,11 +453,42 @@ void Company::writePlane() {
         of << plane->getRows() << '\t' << plane->getColumns() << '\t'
            << plane->getPlate() << '\t' << plane->getType() << '\n';
 
-        for (Flight *flight : plane->getFlights())
+        for (Flight *flight : plane->getFlights()) {
             of << flight->getNumber() << '\t' << flight->getDuration() << '\t'
                << flight->getOrigin()->getID() << '\t'
                << flight->getDestination()->getID() << '\t'
                << flight->getDepartureDate() << '\n';
+
+            bool first = true;
+            for (auto l : flight->getStorage()) {
+                if (!first)
+                    of << '\t';
+                of << l->getTicket()->getSeat();
+                first = false;
+            }
+            of << '\n';
+            first = true;
+            auto cart = findCart(flight->getID())->getCart();
+            for (auto trolley : cart) {
+                for (auto stack : trolley) {
+                    std::stack<Luggage *> temp{};
+
+                    while (!stack.empty()) {
+                        temp.push(stack.top());
+                        stack.pop();
+                    }
+
+                    while (!temp.empty()) {
+                        if (!first)
+                            of << '\t';
+                        of << temp.top()->getTicket()->getSeat();
+                        temp.pop();
+                        first = false;
+                    }
+                }
+            }
+            of << '\n';
+        }
         of << '\n';
 
         for (const Service &service : plane->getServicesDone())

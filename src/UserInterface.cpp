@@ -85,8 +85,9 @@ void printTransport(Transport t) {
     std::cout << t.getName() << " - " << t.getType() << " - ";
     auto timetable{t.getTimetable()};
     for (auto i{timetable.begin()}, end{timetable.end()}; i != end; ++i) {
-        std::cout << i->getElement() << std::endl;
+        std::cout << i->getElement() << ' ' << std::flush;
     }
+    std::cout << std::endl;
 }
 
 void printTransports(Airport *airport, bool reverse = false) {
@@ -713,7 +714,7 @@ void UserInterface::eClientCreateMenu(Company &comp) {
 
     std::cout << "\nClient created!\n";
     getInput("Press Enter to continue");
-    _currentMenu = E_PLANE_OPTIONS;
+    _currentMenu = E_CLIENT_OPTIONS;
 }
 void UserInterface::eClientReadMenu(Company &comp) {
     std::cout << CLEAR_SCREEN
@@ -777,7 +778,7 @@ void UserInterface::eClientUpdateMenu(Company &comp) {
 
     std::cout << "\nThe changes have been saved!\n";
     getInput("Press Enter to continue");
-    _currentMenu = E_PLANE_OPTIONS;
+    _currentMenu = E_CLIENT_OPTIONS;
 }
 void UserInterface::eClientDeleteMenu(Company &comp) {
     Client *client;
@@ -801,9 +802,8 @@ void UserInterface::eClientDeleteMenu(Company &comp) {
     }
 
     getInput("Press enter to continue");
-    _currentMenu = E_PLANE_OPTIONS;
+    _currentMenu = E_CLIENT_OPTIONS;
 }
-
 void UserInterface::eAirportOptionsMenu() {
     optionsMenu(COMPANY_NAME + " - Airports",
                 {{"Go back", E_OPTIONS},
@@ -903,7 +903,7 @@ void UserInterface::eCartUpdateMenu(Company &comp) {
 void UserInterface::eTransportOptionsMenu() {
     optionsMenu(COMPANY_NAME + " - Transports",
                 {{"Go back", E_OPTIONS},
-                 {"New ransport", E_TRANSPORT_CREATE},
+                 {"New transport", E_TRANSPORT_CREATE},
                  {"Check transport", E_TRANSPORT_READ},
                  {"Update transport", E_TRANSPORT_UPDATE},
                  {"Delete transport", E_TRANSPORT_DELETE}});
@@ -947,6 +947,7 @@ void UserInterface::eTransportCreateMenu(Company &comp) {
 void UserInterface::eTransportReadMenu(Company &comp) {
     for (auto a : comp.getAirports()) {
         printTransports(a, false);
+        std::cout << std::endl;
     }
     getInput("Press Enter to continue");
     _currentMenu = E_TRANSPORT_OPTIONS;

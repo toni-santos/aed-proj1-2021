@@ -7,15 +7,15 @@
 /**
  * @brief Where to store info about the clients.
  */
-const std::string CLIENT_FILE_PATH = "../../input/client.tsv";
+const std::string CLIENT_FILE_PATH = "../input/client.tsv";
 /**
  * @brief Where to store info about the planes.
  */
-const std::string PLANE_FILE_PATH = "../../input/plane.tsv";
+const std::string PLANE_FILE_PATH = "../input/plane.tsv";
 /**
  * @brief Where to store info about the airports.
  */
-const std::string AIRPORT_FILE_PATH = "../../input/airport.tsv";
+const std::string AIRPORT_FILE_PATH = "../input/airport.tsv";
 
 // Terminal escape sequences
 #ifdef NO_ANSI

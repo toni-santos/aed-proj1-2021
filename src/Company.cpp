@@ -184,7 +184,7 @@ void Company::readClient() {
 
 void Company::writePlane() {
     // std::ofstream of{PLANE_FILE_PATH};
-    std::ofstream of{"../../output/plane.tsv", std::ofstream::trunc};
+    std::ofstream of{"../output/plane.tsv", std::ofstream::trunc};
 
     if (of.fail())
         throw WriteError();
@@ -244,7 +244,7 @@ void Company::writePlane() {
 }
 void Company::writeAirport() {
     // std::ofstream of{AIRPORT_FILE_PATH};
-    std::ofstream of{"../../output/airport.tsv"};
+    std::ofstream of{"../output/airport.tsv"};
 
     if (of.fail())
         throw WriteError();
@@ -271,7 +271,7 @@ void Company::writeAirport() {
 }
 void Company::writeClient() {
     // std::ofstream of{CLIENT_FILE_PATH};
-    std::ofstream of{"../../output/client.tsv"};
+    std::ofstream of{"../output/client.tsv"};
 
     if (of.fail())
         throw WriteError();

@@ -40,25 +40,3 @@ void Cart::unloadCart() {
         }
     }
 }
-
-bool Cart::isFull(std::list<std::vector<std::stack<Luggage *>>> cart) {
-    if (cart.size() <= _cartSize) {
-        for (auto trolley : cart) {
-            if (!isFull(trolley) && trolley.size() <= _trolleySize) {
-                return false;
-            }
-        }
-    }
-
-    return true;
-}
-
-bool Cart::isFull(std::vector<std::stack<Luggage *>> trolley) {
-    for (auto stack : trolley) {
-        if (stack.size() <= _stackSize) {
-            return false;
-        }
-    }
-
-    return true;
-}

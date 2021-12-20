@@ -517,7 +517,7 @@ void printServiceList(Company &comp);
 /**
  * @brief Displays the pending and done services of a specific plane.
  *
- * @param comp The company
+ * @param plane The plane
  */
 void printPlaneServices(Plane *plane);
 

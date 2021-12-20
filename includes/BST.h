@@ -19,11 +19,25 @@ template <class E> class BST;
  * @tparam E The element type.
  */
 template <class E> class BinaryNode {
+    /**
+     * @brief This node's element.
+     */
     E _element;
+    /**
+     * @brief The child to the left of this node.
+     */
     BinaryNode *_left = nullptr;
+    /**
+     * @brief The child to the right of this node.
+     */
     BinaryNode *_right = nullptr;
 
 public:
+    /**
+     * @brief Creates a new binary node with an element and no children.
+     *
+     * @param el The element.
+     */
     BinaryNode(const E &el) : _element(el){};
     ~BinaryNode();
 
@@ -123,6 +137,9 @@ template <class E> BinaryNode<E> *BinaryNode<E>::clone() {
  * @tparam E The element type.
  */
 template <class E> class BST {
+    /**
+     * @brief The root of this tree.
+     */
     BinaryNode<E> *_root = nullptr;
 
     /**
@@ -176,7 +193,15 @@ template <class E> class BST {
     template <class C> bool remove(const C &x, BinaryNode<E> *&t);
 
 public:
+    /**
+     * @brief Creates an empty binary search tree.
+     */
     BST(){};
+    /**
+     * @brief Creates a binary search tree from an existing one.
+     *
+     * @param bst Another BST.
+     */
     BST(const BST<E> &bst) { *this = bst; };
     ~BST() { makeEmpty(); };
 

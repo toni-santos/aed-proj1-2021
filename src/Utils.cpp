@@ -1,17 +1,6 @@
 #include "../includes/Utils.h"
 #include "../includes/Exceptions.h"
 
-void readFile(std::string filePath) {
-    std::ifstream i;
-
-    i.open(filePath);
-    if (i.good()) {
-        std::cout << i.rdbuf() << std::endl;
-    }
-
-    i.close();
-}
-
 std::vector<std::string> split(std::string str, char sep) {
     std::string temp;
     std::vector<std::string> final;

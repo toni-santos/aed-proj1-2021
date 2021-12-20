@@ -13,18 +13,45 @@ class Client;
  */
 class Client {
 private:
-    const unsigned _id;
+    /**
+     * @brief This client's index in the Company::_clients vector.
+     */
+    unsigned _id;
 
+    /**
+     * @brief This client's NIF.
+     */
     const unsigned _nif{};
+    /**
+     * @brief This client's name.
+     */
     std::string _name{};
+    /**
+     * @brief The tickets this client has bought.
+     */
     std::vector<Ticket *> _tickets{};
 
 public:
+    /**
+     * @brief Creates a new client.
+     *
+     * @note Don't call this directly, use Company::createClient.
+     *
+     * @param id The client's index in the Company::_clients vector.
+     * @param nif The client's NIF.
+     * @param name The client's name.
+     */
     Client(unsigned id, unsigned nif, std::string name)
         : _id(id), _nif(nif), _name(name){};
     ~Client();
 
     // Setters
+    /**
+     * @brief Sets this client's index in the Company::_clients vector.
+     *
+     * @param id The new index.
+     */
+    void setID(unsigned id) { _id = id; }
     /**
      * @brief Set this client's name.
      *
@@ -51,23 +78,25 @@ public:
     std::vector<Ticket *> getTickets() const { return _tickets; }
 
     /**
-     * @brief associate a ticket to this client.
+     * @brief Adds a ticket to this client's bought tickets.
      *
-     * @param ticket the ticket to be added.
+     * @param ticket The ticket.
      */
     void addTicket(Ticket *ticket) { _tickets.push_back(ticket); }
     /**
-     * @brief remove a ticket from this client.
+     * @brief Removes a ticket from this client's bought tickets.
      *
-     * @param ticket the ticket to be removed.
+     * @param ticket The ticket.
      */
     void removeTicket(Ticket *ticket);
     /**
-     * @param c2 the client to be compared.
-     * @return a boolean that verifies if this client's NIF is equal to another
-     * client's (c2's) NIF.
+     * @brief Checks if two clients have the same NIF.
+     *
+     * @param other The other client.
+     * @return true if both clients have the same NIF.
+     * @return false otherwise.
      */
-    bool operator==(const Client c2) { return (this->getNIF() == c2.getNIF()); }
+    bool operator==(const Client &other) { return _nif == other._nif; }
 };
 
 #endif // AED_PROJ_2021_CLIENT_H

@@ -30,7 +30,7 @@ int main() {
 
     try {
         comp.save();
-    } catch (ReadError) {
+    } catch (WriteError) {
         std::cerr << "Something went wrong writing to a file!" << std::endl;
         return 1;
     }

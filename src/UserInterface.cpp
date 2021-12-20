@@ -176,24 +176,22 @@ void UserInterface::optionsMenu(
 }
 
 void UserInterface::loadString(const std::string &text, unsigned time) const {
-#ifdef NO_ANSI
-    unsigned inc = time / (text.size() + 2);
+    unsigned inc = time / (text.size());
 
-    for (char c : text + " ✈") {
+#ifdef NO_ANSI
+    for (char c : text) {
         std::cout << c << std::flush;
         std::this_thread::sleep_for(std::chrono::milliseconds(inc));
     }
-    std::cout << std::endl;
 #else
-    unsigned inc = time / text.size();
-
     std::cout << " ✈" << std::flush;
     for (char c : text) {
         std::cout << "\33[2D" << c << " ✈" << std::flush;
         std::this_thread::sleep_for(std::chrono::milliseconds(inc));
     }
-    std::cout << std::endl;
 #endif
+
+    std::cout << std::endl;
 }
 
 std::string UserInterface::getInput(std::string prompt) {
@@ -343,7 +341,7 @@ void UserInterface::cBuyTicketsMenu(Company &comp) {
 
         if (autoLuggage == "Y" || autoLuggage == "y") {
             Luggage *luggage = new Luggage(ticket);
-            comp.findCart(flight->getID())->addLuggage(luggage);
+            comp.findCart(flight)->addLuggage(luggage);
 
             ticket->addLuggage(luggage);
         }

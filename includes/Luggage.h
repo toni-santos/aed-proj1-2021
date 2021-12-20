@@ -9,13 +9,21 @@ class Luggage;
  * @brief Represents a piece of luggage.
  */
 class Luggage {
+    /**
+     * @brief The ticket this luggage is associated with.
+     */
     const Ticket *_ticket;
 
 public:
+    /**
+     * @brief Creates a new luggage.
+     *
+     * @param ticket The ticket to associate this luggage to.
+     */
     Luggage(Ticket *ticket) : _ticket(ticket){};
 
     /**
-     * @return A pointer to the ticket associated to the luggage.
+     * @return The ticket this luggage is associated with.
      */
     const Ticket *getTicket() const { return _ticket; };
 };

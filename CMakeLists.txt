@@ -6,19 +6,15 @@ project(aed_proj_2021
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(aed_proj_2021           src/main.cpp
-               src/Airport.cpp         src/Cart.cpp
-               src/Client.cpp          src/Company.cpp
-               src/Flight.cpp          src/Luggage.cpp
-               src/Plane.cpp           src/Service.cpp
-               src/Ticket.cpp          src/Transport.cpp
+               src/Cart.cpp            src/Client.cpp
+               src/Company.cpp         src/Flight.cpp
+               src/Plane.cpp           src/Ticket.cpp
                src/UserInterface.cpp   src/Utils.cpp)
 
 add_executable(aed_proj_2021_no_ansi   src/main.cpp
-               src/Airport.cpp         src/Cart.cpp
-               src/Client.cpp          src/Company.cpp
-               src/Flight.cpp          src/Luggage.cpp
-               src/Plane.cpp           src/Service.cpp
-               src/Ticket.cpp          src/Transport.cpp
+               src/Cart.cpp            src/Client.cpp
+               src/Company.cpp         src/Flight.cpp
+               src/Plane.cpp           src/Ticket.cpp
                src/UserInterface.cpp   src/Utils.cpp)
 target_compile_definitions(aed_proj_2021_no_ansi PUBLIC NO_ANSI)
 

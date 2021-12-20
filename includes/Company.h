@@ -13,39 +13,50 @@
  */
 class Company {
 private:
-    std::vector<Flight *> _flights{};
+    /**
+     * @brief All the planes that belong to this company.
+     */
     std::vector<Plane *> _planes{};
+    /**
+     * @brief All the flights this company operates.
+     */
+    std::vector<Flight *> _flights{};
+    /**
+     * @brief All the clients that have used this company.
+     */
     std::vector<Client *> _clients{};
+    /**
+     * @brief All the airports this company operates at.
+     */
     std::vector<Airport *> _airports{};
+    /**
+     * @brief All the luggage carts this company operates.
+     */
     std::vector<Cart *> _carts{};
 
     /**
-     * @brief Loads airports from file.
-     */
-    void readAirport();
-
-    /**
-     * @brief Loads planes, their flights and their services from file.
+     * @brief Loads all planes, their flights and their services from file.
      */
     void readPlane();
-
     /**
-     * @brief Loads clients and their tickets from file.
+     * @brief Loads all airports and the land transports near them from file.
+     */
+    void readAirport();
+    /**
+     * @brief Loads all clients and their tickets from file.
      */
     void readClient();
 
     /**
-     * @brief Writes the names of the airports to file.
-     */
-    void writeAirport();
-
-    /**
-     * @brief Writes the planes, their flights and their services to file.
+     * @brief Writes all planes, their flights and their services to file.
      */
     void writePlane();
-
     /**
-     * @brief Writes the clients and their tickets to file.
+     * @brief Writes all airports and the land transports near them to file.
+     */
+    void writeAirport();
+    /**
+     * @brief Writes all clients and their tickets to file.
      */
     void writeClient();
 
@@ -61,60 +72,67 @@ public:
     void save();
 
     /**
-     * @return All the flights operated by this company.
-     */
-    std::vector<Flight *> getFlights() const { return _flights; };
-
-    /**
-     * @return All the planes flown by this company.
+     * @return All the planes that belong to this company.
      */
     std::vector<Plane *> getPlanes() const { return _planes; };
-
     /**
-     * @return All the clients that have bought from this company.
+     * @return All the flights this company operates.
+     */
+    std::vector<Flight *> getFlights() const { return _flights; };
+    /**
+     * @return All the clients that have used this company.
      */
     std::vector<Client *> getClients() const { return _clients; };
-
     /**
-     * @return all of this company's airports.
+     * @return All the airports this company operates at.
      */
     std::vector<Airport *> getAirports() const { return _airports; };
-
     /**
-     * @return all of this company's lugagge carts.
+     * @return All the luggage carts this company operates.
      */
     std::vector<Cart *> getCarts() const { return _carts; };
 
     /**
-     * @brief Creates a new client.
+     * @brief Creates a new plane.
      *
-     * @param nif The new client's NIF.
-     * @param name The new client's name.
-     * @return A pointer to the newly created client.
+     * @details Also adds the plane to the _planes vector and sets its ID to
+     *          the correct value.
+     *
+     * @param rows The new plane's rows.
+     * @param columns The new plane's columns.
+     * @param plate The new plane's plate.
+     * @param type The new plane's type.
+     * @return A pointer to the newly created plane.
      */
-    Client *createClient(unsigned nif, std::string name);
-
+    Plane *createPlane(unsigned rows, unsigned columns, std::string plate,
+                       std::string type);
     /**
-     * @brief Updates a client with new information.
+     * @brief Updates a plane with new information.
      *
-     * @note All arguments can be empty, at which point they won't be changed.
+     * @note If a string argument is left empty it won't be changed.
+     *       The same applies when an unsigned argument is equal to 0.
+     *       (IDs will always change the value.)
      *
-     * @param client The client to update.
-     * @param name The new name.
+     * @param plane The plane to update.
+     * @param rows The new rows.
+     * @param columns The new columns.
      */
-    void updateClient(Client *client, std::string name);
-
+    void updatePlane(Plane *plane, unsigned rows, unsigned columns);
     /**
-     * @brief Deletes a client.
+     * @brief Deletes a plane.
      *
-     * @note Dealocates the pointer and sets it to null in the _clients vector.
+     * @details Also removes the plane from the _planes vector and updates every
+     *          other plane's ID.
      *
-     * @param client The client to delete
+     * @param plane The plane to delete.
      */
-    void deleteClient(Client *client);
+    void deletePlane(Plane *plane);
 
     /**
      * @brief Creates a new flight.
+     *
+     * @details Also adds the flight to the _flights vector and sets its ID to
+     *          the correct value.
      *
      * @param number The new flight's number.
      * @param duration The new flight's duration.
@@ -126,140 +144,152 @@ public:
      */
     Flight *createFlight(unsigned number, unsigned duration, Airport *origin,
                          Airport *dest, std::string departure, Plane *plane);
-
     /**
      * @brief Updates a flight with new information.
      *
-     * @note All arguments can be empty, at which point they won't be changed.
+     * @note If a string argument is left empty it won't be changed.
+     *       The same applies when an unsigned argument is equal to 0.
+     *       (IDs will always change the value.)
      *
      * @param flight The flight to update.
      * @param duration The new duration.
      * @param origin The new origin.
      * @param dest The new destination.
      * @param departure The new departure date.
-     * @param plane The new plane.
+     * @param plane The ID of new plane.
      */
     void updateFlight(Flight *flight, unsigned duration, std::string origin,
                       std::string dest, std::string departure, unsigned plane);
-
     /**
      * @brief Deletes a flight.
      *
-     * @note Dealocates the pointer and sets it to null in the _flights vector.
+     * @details Also removes the flight from the _flights vector and updates
+     *          every other flight's ID.
      *
      * @param flight The flight to delete.
      */
     void deleteFlight(Flight *flight);
 
     /**
-     * @brief Creates a new plane.
+     * @brief Creates a new client.
      *
-     * @param rows The new plane's rows.
-     * @param columns The new plane's columns.
-     * @param plate The new plane's plate.
-     * @param type The new plane's type.
-     * @return A pointer to the newly created plane.
+     * @details Also adds the client to the _clients vector and sets its ID to
+     *          the correct value.
+     *
+     * @param nif The new client's NIF.
+     * @param name The new client's name.
+     * @return A pointer to the newly created client.
      */
-    Plane *createPlane(unsigned rows, unsigned columns, std::string plate,
-                       std::string type);
-
+    Client *createClient(unsigned nif, std::string name);
     /**
-     * @brief Updates a plane with new information.
+     * @brief Updates a client with new information.
      *
-     * @note All arguments can be empty, at which point they won't be changed.
+     * @note If a string argument is left empty it won't be changed.
+     *       The same applies when an unsigned argument is equal to 0.
+     *       (IDs will always change the value.)
      *
-     * @param plane The plane to update.
-     * @param rows The new rows.
-     * @param columns The new columns.
+     * @param client The client to update.
+     * @param name The new name.
      */
-    void updatePlane(Plane *plane, unsigned rows, unsigned columns);
-
+    void updateClient(Client *client, std::string name);
     /**
-     * @brief Deletes a plane.
+     * @brief Deletes a client.
      *
-     * @note Dealocates the pointer and sets it to null in the _planes vector.
+     * @details Also removes the client from the _clients vector and updates
+     *          every other client's ID.
      *
-     * @param plane The plane to delete.
+     * @param client The client to delete
      */
-    void deletePlane(Plane *plane);
+    void deleteClient(Client *client);
 
     /**
      * @brief Creates a new airport.
+     *
+     * @details Also adds the airport to the _airports vector and sets its ID
+     * to the correct value.
      *
      * @param name The new airport's name.
      * @return A pointer to the newly created airport.
      */
     Airport *createAirport(std::string name);
-
     /**
      * @brief Updates an airport with new information.
      *
-     * @note All arguments can be empty, at which point they won't be changed.
+     * @note If a string argument is left empty it won't be changed.
+     *       The same applies when an unsigned argument is equal to 0.
+     *       (IDs will always change the value.)
      *
      * @param airport The airport to update.
      * @param name The new name.
      */
     void updateAirport(Airport *airport, std::string name);
-
     /**
      * @brief Deletes an airport.
      *
-     * @note Dealocates the pointer and sets it to null in the _airports vector.
+     * @details Also removes the airport from the _airports vector and updates
+     *          every other airport's ID.
      *
      * @param airport The airport to delete.
      */
     void deleteAirport(Airport *airport);
 
+    /**
+     * @brief Creates a new luggage cart.
+     *
+     * @details Also adds the cart to the _carts vector.
+     *
+     * @param flight The new cart's flight.
+     * @return A pointer to the newly created cart.
+     */
     Cart *createCart(Flight *flight);
-
+    // TODO: This isn't actually working, and isn't being saved.
+    /**
+     * @brief Updates a cart with new information.
+     *
+     * @note If a string argument is left empty it won't be changed.
+     *       The same applies when an unsigned argument is equal to 0.
+     *       (IDs will always change the value.)
+     *
+     * @param cart The cart to update.
+     * @param newCartSize The new cart size.
+     * @param newTrolleySize The new trolley size.
+     * @param newStackSize The new stack size.
+     */
     void updateCart(Cart *cart, unsigned newCartSize, unsigned newTrolleySize,
                     unsigned newStackSize);
 
     /**
-     * @brief Iterates over the _flights vector to find the flight with
-     * number.
+     * @brief Finds a flight by its number.
      *
-     * @param number The number of the flight that is being searched.
-     * @return A pointer to the flight with the correspondent number or nullptr
-     * if is does not exist.
+     * @param number The number of the flight we want to find.
+     * @return A pointer to the flight if found.
+     * @return nullptr otherwise.
      */
     Flight *findFlight(unsigned number);
-
     /**
-     * @brief Iterates over the _clients vector to find the client with NIF.
+     * @brief Finds a client by its NIF.
      *
-     * @param nif The NIF of the client that is being searched.
-     * @return A pointer to the client with the correspondent NIF or nullptr if
-     * is does not exist.
+     * @param nif The NIF of the client we want to find.
+     * @return A pointer to the client if found.
+     * @return nullptr otherwise.
      */
     Client *findClient(unsigned nif);
-
     /**
-     * @brief Iterates over the _planes vector to find the plane with id.
+     * @brief Finds an airport by its name.
      *
-     * @param id The id of the plane.
-     * @return A pointer to the plane with the correspondent id or nullptr if is
-     * does not exist.
-     */
-    Plane *findPlane(unsigned id);
-
-    /**
-     * @brief Iterates over the _airports vector to find the plane with name.
-     *
-     * @param name The name of the airport.
-     * @return A pointer to the plane with the correspondent name or nullptr if
-     * is does not exist.
+     * @param name The name of the airport we want to find.
+     * @return A pointer to the airport if found.
+     * @return nullptr otherwise.
      */
     Airport *findAirport(std::string name);
-
     /**
-     * @brief Iterates over the _carts vector to find the cart from flightID.
+     * @brief Finds a luggage cart by its flight.
      *
-     * @param flightID The ID of the flight to which the cart points at.
-     * @return A pointer to the correspondent cart or nullptr if is does not
-     * exist.
+     * @param flight The flight of cart we want to find.
+     * @return A pointer to the cart if found.
+     * @return nullptr otherwise.
      */
-    Cart *findCart(unsigned flightID);
+    Cart *findCart(Flight *flight);
 };
 
 #endif // AED_PROJ_2021_COMPANY_H

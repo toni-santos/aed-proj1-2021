@@ -11,4 +11,9 @@ class Exit {};
  */
 class ReadError {};
 
+/**
+ * @brief Exception thrown when there is an error writing to a file.
+ */
+class WriteError {};
+
 #endif // AED_PROJ_2021_EXCEPTIONS_H

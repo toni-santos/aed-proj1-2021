@@ -60,8 +60,7 @@ std::string UserInterface::getInput(std::string prompt) {
     return input;
 }
 
-unsigned UserInterface::getNumberInput(std::string prompt, unsigned min,
-                                       unsigned max) {
+unsigned UserInterface::getNumberInput(std::string prompt, long min, long max) {
     std::string input;
     unsigned number;
     bool done = false;
@@ -81,7 +80,7 @@ unsigned UserInterface::getNumberInput(std::string prompt, unsigned min,
     return number;
 }
 
-bool UserInterface::inRange(unsigned n, unsigned min, unsigned max) {
+bool UserInterface::inRange(long n, long min, long max) {
     bool b = (n <= max) && (n >= min);
 
     if (!b)
@@ -210,7 +209,7 @@ void UserInterface::cCheckTransportsMenu(Company &comp) {
     std::cout << '\n';
 
     unsigned airportID =
-        getNumberInput("Insert airport ID: ", 0, comp.getAirports().size());
+        getNumberInput("Insert airport ID: ", 0, comp.getAirports().size() - 1);
     Airport *airport = comp.getAirports().at(airportID);
 
     std::cout << '\n';

@@ -249,8 +249,8 @@ class UserInterface {
      * @param max The right bound of the limit (inclusive).
      * @return The user input, as an unsigned integer.
      */
-    unsigned getNumberInput(std::string prompt, unsigned min = 0,
-                            unsigned max = INT32_MAX);
+    unsigned getNumberInput(std::string prompt, long min = 0,
+                            long max = INT32_MAX);
 
     /**
      * @brief Checks if an unsigned integer n is inside the limit [min, max].
@@ -260,7 +260,7 @@ class UserInterface {
      * @param max The right bound of the limit.
      * @return A boolean that confirms whether or not min <= n <= max.
      */
-    bool inRange(unsigned n, unsigned min, unsigned max);
+    bool inRange(long n, long min, long max);
 
     Client *getOrCreateClient(Company &comp, unsigned nif);
 

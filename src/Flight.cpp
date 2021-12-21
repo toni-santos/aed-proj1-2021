@@ -36,6 +36,8 @@ Flight::Flight(unsigned id, unsigned number, unsigned duration, Airport *origin,
 };
 
 Flight::~Flight() {
+    _plane->removeFlight(this);
+
     deleteTickets();
 
     delete _cart;

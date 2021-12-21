@@ -12,12 +12,9 @@ int main() {
 
     try {
         comp.populate();
-    } catch (ReadError) {
-        std::cerr << "Something went wrong reading a file!" << std::endl;
-        return 1;
-    } catch (std::invalid_argument) {
+    } catch (...) {
         std::cerr << "Error in file!" << std::endl;
-        return 2;
+        return 1;
     }
 
     try {

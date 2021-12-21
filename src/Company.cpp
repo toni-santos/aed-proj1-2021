@@ -8,7 +8,7 @@ void Company::readPlane() {
     std::ifstream f{PLANE_FILE_PATH};
 
     if (f.fail())
-        throw ReadError();
+        return;
 
     while (!f.eof()) {
         std::string line;
@@ -110,7 +110,7 @@ void Company::readAirport() {
     std::ifstream f{AIRPORT_FILE_PATH};
 
     if (f.fail())
-        throw ReadError();
+        return;
 
     while (!f.eof()) {
         std::string line;
@@ -152,7 +152,7 @@ void Company::readClient() {
     std::ifstream f{CLIENT_FILE_PATH};
 
     if (f.fail())
-        throw ReadError();
+        return;
 
     while (!f.eof()) {
         std::string line;
@@ -190,8 +190,7 @@ void Company::readClient() {
 }
 
 void Company::writePlane() {
-    // std::ofstream of{PLANE_FILE_PATH};
-    std::ofstream of{"../output/plane.tsv", std::ofstream::trunc};
+    std::ofstream of{PLANE_FILE_PATH};
 
     if (of.fail())
         throw WriteError();
@@ -252,8 +251,7 @@ void Company::writePlane() {
     }
 }
 void Company::writeAirport() {
-    // std::ofstream of{AIRPORT_FILE_PATH};
-    std::ofstream of{"../output/airport.tsv"};
+    std::ofstream of{AIRPORT_FILE_PATH};
 
     if (of.fail())
         throw WriteError();
@@ -279,8 +277,7 @@ void Company::writeAirport() {
     }
 }
 void Company::writeClient() {
-    // std::ofstream of{CLIENT_FILE_PATH};
-    std::ofstream of{"../output/client.tsv"};
+    std::ofstream of{CLIENT_FILE_PATH};
 
     if (of.fail())
         throw WriteError();

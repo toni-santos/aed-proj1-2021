@@ -7,11 +7,6 @@
 class Exit {};
 
 /**
- * @brief Exception thrown when there is an error reading a file.
- */
-class ReadError {};
-
-/**
  * @brief Exception thrown when there is an error writing to a file.
  */
 class WriteError {};

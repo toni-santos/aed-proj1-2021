@@ -494,7 +494,7 @@ void UserInterface::ePlaneDeleteMenu(Company &comp) {
         std::cout << "\nPlane not deleted!\n";
     }
 
-    getInput("Press enter to continue");
+    getInput("Press Enter to continue");
     _currentMenu = E_PLANE_OPTIONS;
 }
 
@@ -640,7 +640,7 @@ void UserInterface::eFlightDeleteMenu(Company &comp) {
         std::cout << "\nFlight not deleted!\n";
     }
 
-    getInput("Press enter to continue");
+    getInput("Press Enter to continue");
     _currentMenu = E_FLIGHT_OPTIONS;
 }
 
@@ -801,7 +801,7 @@ void UserInterface::eClientDeleteMenu(Company &comp) {
         std::cout << "\nClient not deleted!\n";
     }
 
-    getInput("Press enter to continue");
+    getInput("Press Enter to continue");
     _currentMenu = E_CLIENT_OPTIONS;
 }
 void UserInterface::eAirportOptionsMenu() {
@@ -861,7 +861,7 @@ void UserInterface::eAirportDeleteMenu(Company &comp) {
         std::cout << "\nAirport not deleted!\n";
     }
 
-    getInput("Press enter to continue");
+    getInput("Press Enter to continue");
     _currentMenu = E_AIRPORT_OPTIONS;
 }
 

@@ -42,56 +42,89 @@ void normalizeInput(std::string &input);
  */
 unsigned numberLength(unsigned n);
 
-// TODO: Documentation
+/**
+ * @brief Sleeps for a certain amount of time.
+ *
+ * @param millis The time to sleep for, in milliseconds.
+ */
 void sleep(const unsigned millis);
 
 /**
- * @brief Prints each attribute of the plane in the order of the sortedVec
+ * @brief Prints info about some planes to the screen.
  *
- * @param planes Vector sorted according to previous user decision
+ * @param planes The planes.
  */
 void printPlanes(const std::vector<Plane *> &planes);
 
 /**
- * @brief Prints each attribute of the flight in the order of the sortedVec
+ * @brief Prints info about some flights to the screen.
  *
- * @param sortedVec Vector sorted according to previous user decision
+ * @param flights The flights.
  */
 void printFlights(const std::vector<Flight *> &flights);
 
 /**
- * @brief Applies a function to all planes that displays their pending and done
- * services.
+ * @brief Prints info about the services of some planes to the screen.
  *
- * @param comp The company
+ * @param planes The planes.
  */
 void printServices(const std::vector<Plane *> &planes);
 
+/**
+ * @brief Prints info about the services of a plane to the screen.
+ *
+ * @param planes The plane.
+ */
 void printServices(const Plane *plane);
 
 /**
- * @brief Prints each attribute of the client in the order of the sortedVec
+ * @brief Prints info about some clients to the screen.
  *
- * @param sortedVec Vector sorted according to previous user decision
- * @param comp The company
+ * @param clients The clients.
  */
 void printClients(const std::vector<Client *> &clients);
 
 /**
- * @brief Prints each attribute of all airports.
+ * @brief Prints info about some airports to the screen.
  *
- * @param comp The company
+ * @param airports The airports.
  */
 void printAirports(const std::vector<Airport *> &airports);
 
+/**
+ * @brief Prints info about some luggage carts to the screen.
+ *
+ * @param carts The carts.
+ */
 void printCarts(const std::vector<Cart *> &carts);
 
+/**
+ * @brief Prints info about a transport to the screen.
+ *
+ * @param transport The transport.
+ */
 void printTransport(const Transport *t);
 
+/**
+ * @brief Prints info about some transports to the screen.
+ *
+ * @param transports The transports.
+ * @param reverse Whether to print in reverse order.
+ */
 void printTransports(const BST<Transport> &transports, bool reverse = false);
 
+/**
+ * @brief Prints all the seats in a flight in a grid.
+ *
+ * @param flight The flight.
+ */
 void printPlaneLayout(const Flight *flight);
 
+/**
+ * @brief Prints info about some tickets to the screen.
+ *
+ * @param tickets The tickets.
+ */
 void printTickets(const std::vector<Ticket *> &tickets);
 
 #endif // AED_PROJ_2021_UTILS_H

@@ -262,6 +262,14 @@ class UserInterface {
      */
     bool inRange(long n, long min, long max);
 
+    /**
+     * @brief Finds a client by their NIF. If they aren't found, asks the user
+     *        for their name and creates a new client.
+     *
+     * @param comp The company.
+     * @param nif The NIF of the client.
+     * @return The client.
+     */
     Client *getOrCreateClient(Company &comp, unsigned nif);
 
     /**
@@ -271,6 +279,8 @@ class UserInterface {
 
     /**
      * @brief Shows the client menu.
+     *
+     * @param comp The company.
      */
     void clientAuthMenu(Company &comp);
     /**
@@ -280,7 +290,7 @@ class UserInterface {
     /**
      * @brief Shows the client the flights they have booked.
      *
-     * @param comp the company
+     * @param comp The company.
      */
     void cCheckFlightsMenu(Company &comp);
     /**
@@ -290,13 +300,13 @@ class UserInterface {
      * one for each client), and checks if the client wants to use the automatic
      * luggage system.
      *
-     * @param comp the company
+     * @param comp The company.
      */
     void cBuyTicketsMenu(Company &comp);
     /**
      * @brief Shows transports near an airport to the client.
      *
-     * @param comp the company
+     * @param comp The company.
      */
     void cCheckTransportsMenu(Company &comp);
 
@@ -315,23 +325,23 @@ class UserInterface {
     void ePlaneOptionsMenu();
     /**
      * @brief Shows the employee a menu to create a new plane.
-     * @param comp the company
+     * @param comp The company.
      */
     void ePlaneCreateMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to see a specific's plane information
      * (can be ordered by several parameters).
-     * @param comp the company
+     * @param comp The company.
      */
     void ePlaneReadMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to alter a specific plane's information.
-     * @param comp the company
+     * @param comp The company.
      */
     void ePlaneUpdateMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to delete a plane.
-     * @param comp the company
+     * @param comp The company.
      */
     void ePlaneDeleteMenu(Company &comp);
 
@@ -341,19 +351,19 @@ class UserInterface {
     void eFlightOptionsMenu();
     /**
      * @brief Shows the employee a menu to create a new flight.
-     * @param comp the company
+     * @param comp The company.
      */
     void eFlightCreateMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to see all of the flights' information
      * (can be ordered by several parameters).
-     * @param comp the company
+     * @param comp The company.
      */
     void eFlightReadMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to alter a specific flight's
      * information.
-     * @param comp the company
+     * @param comp The company.
      */
     void eFlightUpdateMenu(Company &comp);
     /**
@@ -368,18 +378,18 @@ class UserInterface {
     void eServiceOptionsMenu();
     /**
      * @brief Shows the employee a menu to create a new service.
-     * @param comp the company
+     * @param comp tThe company.
      */
     void eServiceCreateMenu(Company &comp);
     /**
      * @brief Shows the employee a menu that displays all of the company comp's
      * services.
-     * @param comp the company
+     * @param comp The company.
      */
     void eServiceReadMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to complete a pending service.
-     * @param comp the company
+     * @param comp The company.
      */
     void eServiceCompleteMenu(Company &comp);
 
@@ -389,13 +399,13 @@ class UserInterface {
     void eClientOptionsMenu();
     /**
      * @brief Shows the employee a menu to create a new client.
-     * @param comp the company
+     * @param comp The company.
      */
     void eClientCreateMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to see a specific client's information
      * (can be ordered by several parameters).
-     * @param comp the company
+     * @param comp The company.
      */
     void eClientReadMenu(Company &comp);
     /**
@@ -406,7 +416,7 @@ class UserInterface {
     void eClientUpdateMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to delete a client.
-     * @param comp the company
+     * @param comp The company.
      */
     void eClientDeleteMenu(Company &comp);
 
@@ -416,31 +426,34 @@ class UserInterface {
     void eAirportOptionsMenu();
     /**
      * @brief Shows the employee a menu to create a new airport.
-     * @param comp the company
+     * @param comp The company.
      */
     void eAirportCreateMenu(Company &comp);
     /**
      * @brief Shows the employee a menu of all existing airports.
-     * @param comp the company
+     * @param comp The company.
      */
     void eAirportReadMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to delete an airport.
-     * @param comp the company
+     * @param comp The company.
      */
     void eAirportDeleteMenu(Company &comp);
 
+    /**
+     * @brief Shows the employee CRUD operations over the luggage carts.
+     */
     void eCartOptionsMenu();
     /**
      * @brief Shows the employee a menu to see a specific cart's
      * information.
-     * @param comp the company
+     * @param comp The company.
      */
     void eCartReadMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to alter a specific cart's
      * information.
-     * @param comp the company
+     * @param comp The company.
      */
     void eCartUpdateMenu(Company &comp);
 
@@ -450,24 +463,24 @@ class UserInterface {
     void eTransportOptionsMenu();
     /**
      * @brief Shows the employee a menu to create a new transport.
-     * @param comp the company
+     * @param comp The company.
      */
     void eTransportCreateMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to see a specific transport's
      * information.
-     * @param comp the company
+     * @param comp The company.
      */
     void eTransportReadMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to alter a specific transport's
      * information.
-     * @param comp the company
+     * @param comp The company.
      */
     void eTransportUpdateMenu(Company &comp);
     /**
      * @brief Shows the employee a menu to delete a transport.
-     * @param comp the company
+     * @param comp The company.
      */
     void eTransportDeleteMenu(Company &comp);
 

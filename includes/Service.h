@@ -59,6 +59,12 @@ public:
      * @return This service's type.
      */
     ServiceType getType() const { return _type; };
+    /**
+     * @return This service's type, in string form.
+     */
+    std::string getTypeStr() const {
+        return _type == CLEANING ? "Cleaning" : "Maintenance";
+    }
 };
 
 #endif // AED_PROJ_2021_SERVICE_H

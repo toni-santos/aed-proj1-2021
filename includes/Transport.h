@@ -72,6 +72,19 @@ public:
      * @return This transport's timetable.
      */
     BST<std::string> &getTimetable() { return _timetable; };
+    /**
+     * @return This transport's type, in string form.
+     */
+    std::string getTypeStr() const {
+        switch (_type) {
+        case TRAIN:
+            return "Train";
+        case BUS:
+            return "Bus";
+        default:
+            return "Subway";
+        }
+    }
 
     /**
      * @brief Sets this transport's name.

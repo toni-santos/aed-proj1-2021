@@ -32,6 +32,10 @@ enum Menu {
      * @brief Lets a client buy tickets.
      */
     C_BUY_TICKETS,
+    /**
+     * @brief Shows all transports near an airport to a client.
+     */
+    C_CHECK_TRANSPORTS,
 
     /**
      * @brief Authenticates an employee.
@@ -174,6 +178,10 @@ enum Menu {
     E_TRANSPORT_DELETE
 };
 
+/**
+ * @brief Implements the terminal interface for the user to interact with the
+ *        company.
+ */
 class UserInterface {
     /**
      * @brief Specifies which menu to show.
@@ -271,6 +279,7 @@ class UserInterface {
     void clientOptionsMenu();
     /**
      * @brief Shows the client the flights they have booked.
+     *
      * @param comp the company
      */
     void cCheckFlightsMenu(Company &comp);
@@ -284,6 +293,12 @@ class UserInterface {
      * @param comp the company
      */
     void cBuyTicketsMenu(Company &comp);
+    /**
+     * @brief Shows transports near an airport to the client.
+     *
+     * @param comp the company
+     */
+    void cCheckTransportsMenu(Company &comp);
 
     /**
      * @brief Shows the employee menu.
@@ -468,65 +483,5 @@ public:
      */
     void exit();
 };
-
-/**
- * @brief Prints each attribute of the plane in the order of the sortedVec
- *
- * @param sortedVec Vector sorted according to previous user decision
- */
-void printPlaneVector(std::vector<Plane> sortedVec);
-
-/**
- * @brief Prints all of the flights' information of a given client
- *
- * @param client The client that is getting their flights printed
- * @param comp The company
- */
-void printClientFlights(Client *client, Company &comp);
-
-/**
- * @brief Prints each attribute of the client in the order of the sortedVec
- *
- * @param sortedVec Vector sorted according to previous user decision
- * @param comp The company
- */
-void printClientVector(std::vector<Client> sortedVec, Company &comp);
-
-/**
- * @brief Prints each attribute of the flight in the order of the sortedVec
- *
- * @param sortedVec Vector sorted according to previous user decision
- */
-void printFlightVector(std::vector<Flight *> sortedVec);
-
-/**
- * @brief Prints each attribute of all airports.
- *
- * @param comp The company
- */
-void printAirportVector(Company &comp);
-
-/**
- * @brief Applies a function to all planes that displays their pending and done
- * services.
- *
- * @param comp The company
- */
-void printServiceList(Company &comp);
-
-/**
- * @brief Displays the pending and done services of a specific plane.
- *
- * @param plane The plane
- */
-void printPlaneServices(Plane *plane);
-
-void printCartVector(Company &comp);
-
-void printTransport(Transport *t);
-
-void printTransports(Airport *airport);
-
-void printAirportVectorInOrder(Company &comp, bool reverse);
 
 #endif // AED_PROJ_2021_MENU_H

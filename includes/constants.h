@@ -31,7 +31,8 @@ const struct ClearScreen {
     }
 } CLEAR_SCREEN;
 
-const std::string ERROR_MESSAGE = "";
+const std::string RED_TEXT = "";
+const std::string GREEN_TEXT = "";
 const std::string CONCEAL_TEXT = "";
 const std::string STRIKE_THROUGH = "";
 const std::string DISABLE_CURSOR = "";
@@ -49,7 +50,13 @@ const std::string CLEAR_SCREEN = "\33[2J\33[H";
  *
  * @note May be disabled.
  */
-const std::string ERROR_MESSAGE = "\33[31m";
+const std::string RED_TEXT = "\33[31m";
+/**
+ * @brief Turns any text that follows green.
+ *
+ * @note May be disabled.
+ */
+const std::string GREEN_TEXT = "\33[32m";
 /**
  * @brief Hides any text that follows.
  *

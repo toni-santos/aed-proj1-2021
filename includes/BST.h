@@ -93,7 +93,14 @@ public:
      *
      * @return A new node.
      */
-    BinaryNode<E> *clone();
+    BinaryNode<E> *clone() const;
+
+    /**
+     * @brief Calculates the size of the tree with this node as root.
+     *
+     * @return The size of this tree.
+     */
+    size_t size() const;
 };
 
 template <class E> BinaryNode<E>::~BinaryNode() {
@@ -119,7 +126,7 @@ template <class E> void BinaryNode<E>::deleteRight() {
         delete _right;
 }
 
-template <class E> BinaryNode<E> *BinaryNode<E>::clone() {
+template <class E> BinaryNode<E> *BinaryNode<E>::clone() const {
     BinaryNode<E> *n = new BinaryNode<E>(_element);
 
     if (_left)
@@ -128,6 +135,18 @@ template <class E> BinaryNode<E> *BinaryNode<E>::clone() {
         n->_right = _right->clone();
 
     return n;
+}
+
+template <class E> size_t BinaryNode<E>::size() const {
+    size_t s{1};
+
+    if (_left)
+        s += _left->size();
+
+    if (_right)
+        s += _right->size();
+
+    return s;
 }
 
 //-------------------------- BST -------------------------
@@ -262,6 +281,13 @@ public:
      * @return false if not in tree.
      */
     template <class C> bool remove(const C &x);
+
+    /**
+     * @brief Calculates the size of this tree.
+     *
+     * @return The size of this tree.
+     */
+    size_t size() const;
 
     /**
      * @return An in-order iterator for this tree.
@@ -432,6 +458,13 @@ bool BST<E>::remove(const C &x, BinaryNode<E> *&t) {
 }
 template <class E> template <class C> bool BST<E>::remove(const C &x) {
     return remove(x, _root);
+}
+
+template <class E> size_t BST<E>::size() const {
+    if (!_root)
+        return 0;
+
+    return _root->size();
 }
 
 template <class E> BSTInOrderIterator<E> BST<E>::inorderBegin() const {

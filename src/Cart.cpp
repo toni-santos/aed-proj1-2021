@@ -11,6 +11,17 @@ Cart::~Cart() {
     }
 }
 
+void Cart::setSizes(unsigned cartSize, unsigned trolleySize,
+                    unsigned stackSize) {
+    _cartSize = cartSize;
+    _trolleySize = trolleySize;
+    _stackSize = stackSize;
+
+    unloadCart();
+
+    _cart = cartT{_cartSize, trolleyT{_trolleySize, stackT{}}};
+}
+
 void Cart::addLuggage(Luggage *luggage) {
     unsigned filled{0};
 

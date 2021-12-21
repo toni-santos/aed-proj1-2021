@@ -152,14 +152,16 @@ void printAirports(const std::vector<Airport *> &airports) {
                   << a->getTransports().size() << " transports" << std::endl;
 }
 
-void printCarts(const std::vector<Cart *> &carts) {
+void printCarts(const std::vector<Flight *> &flights) {
     std::cout << "Flight ID - Cart Size - Trolley Size - Stack Size\n"
               << std::flush;
 
-    for (const Cart *cart : carts)
+    for (const Flight *flight : flights) {
+        Cart *cart = flight->getCart();
         std::cout << cart->getFlight()->getID() << " - " << cart->getCartSize()
                   << " - " << cart->getTrolleySize() << " - "
                   << cart->getStackSize() << std::endl;
+    }
 }
 
 void printTransport(Transport t) {

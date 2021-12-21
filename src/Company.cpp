@@ -56,10 +56,17 @@ void Company::readPlane() {
 
             getline(f, line);
             parsedLine = split(line, '\t');
-            Cart *cart = findCart(flight);
-            if (line != "")
-                for (auto s : parsedLine)
-                    cart->addLuggage(new Luggage(flight->findTicketBySeat(s)));
+            i = parsedLine.begin();
+
+            unsigned cartSize = stoul(*i++);
+            unsigned trolleySize = stoul(*i++);
+            unsigned stackSize = stoul(*i++);
+
+            Cart *cart = flight->getCart();
+            cart->setSizes(cartSize, trolleySize, stackSize);
+
+            for (auto end{parsedLine.end()}; i < end; ++i)
+                cart->addLuggage(new Luggage(flight->findTicketBySeat(*i)));
         }
 
         // READ DONE SERVICES
@@ -207,9 +214,13 @@ void Company::writePlane() {
                 first = false;
             }
             of << '\n';
-            first = true;
-            auto cart = findCart(flight)->getCart();
-            for (auto trolley : cart) {
+
+            auto cart = flight->getCart();
+
+            of << cart->getCartSize() << '\t' << cart->getTrolleySize() << '\t'
+               << cart->getStackSize();
+
+            for (auto trolley : cart->getCart()) {
                 for (auto stack : trolley) {
                     std::stack<Luggage *> temp{};
 
@@ -219,9 +230,7 @@ void Company::writePlane() {
                     }
 
                     while (!temp.empty()) {
-                        if (!first)
-                            of << '\t';
-                        of << temp.top()->getTicket()->getSeat();
+                        of << '\t' << temp.top()->getTicket()->getSeat();
                         temp.pop();
                         first = false;
                     }
@@ -336,7 +345,6 @@ Flight *Company::createFlight(unsigned number, unsigned duration,
     Flight *flight = new Flight(_flights.size(), number, duration, origin, dest,
                                 departure, plane);
     _flights.push_back(flight);
-    createCart(flight);
     return flight;
 }
 void Company::updateFlight(Flight *flight, unsigned duration,
@@ -369,9 +377,6 @@ void Company::updateFlight(Flight *flight, unsigned duration,
     flight->setPlane(_planes.at(plane));
 }
 void Company::deleteFlight(Flight *flight) {
-    Cart *cart = findCart(flight);
-    delete cart;
-
     bool deleted = false;
     for (size_t i{0}; i < _flights.size(); ++i) {
         if (_flights.at(i) == flight)
@@ -437,23 +442,6 @@ void Company::deleteAirport(Airport *airport) {
     }
 }
 
-Cart *Company::createCart(Flight *flight) {
-    Cart *cart = new Cart(flight);
-    _carts.push_back(cart);
-    return cart;
-}
-void Company::updateCart(Cart *cart, unsigned newCartSize,
-                         unsigned newTrolleySize, unsigned newStackSize) {
-    if (newCartSize > 0)
-        cart->setCartSize(newCartSize);
-
-    if (newTrolleySize > 0)
-        cart->setTrolleySize(newTrolleySize);
-
-    if (newStackSize > 0)
-        cart->setStackSize(newStackSize);
-}
-
 Flight *Company::findFlight(unsigned number) {
     for (Flight *f : _flights) {
         if (f->getNumber() == number) {
@@ -478,14 +466,5 @@ Airport *Company::findAirport(std::string name) {
             return a;
         }
     }
-    return nullptr;
-}
-Cart *Company::findCart(Flight *flight) {
-    for (auto cart : _carts) {
-        if (cart->getFlight() == flight) {
-            return cart;
-        }
-    }
-
     return nullptr;
 }

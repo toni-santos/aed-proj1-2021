@@ -61,9 +61,9 @@ public:
      */
     Cart(Flight *flight, unsigned cartSize = 3, unsigned trolleySize = 4,
          unsigned stackSize = 5)
-        : _cartSize(cartSize), _trolleySize(trolleySize), _stackSize(stackSize),
-          _flight(flight),
-          _cart(cartT{_cartSize, trolleyT{_trolleySize, stackT{}}}){};
+        : _flight(flight) {
+        setSizes(cartSize, trolleySize, stackSize);
+    };
     ~Cart();
 
     /**
@@ -92,24 +92,17 @@ public:
      * @return The cart itself.
      */
     cartT getCart() const { return _cart; };
+
     /**
-     * @brief Sets how many stacks each trolley has.
+     * @brief Updates the different sizes of this cart.
      *
-     * @param cartSize The new cart size.
-     */
-    void setCartSize(unsigned cartSize) { _cartSize = cartSize; };
-    /**
-     * @brief Sets how many stacks each trolley has.
+     * @note Also unloads the cart, see Cart::unloadCart.
      *
-     * @param trolleySize The new trolley size.
+     * @param cartSize How many trolleys this cart has.
+     * @param trolleySize How many stacks each trolley has.
+     * @param stackSize How much luggage each stack has.
      */
-    void setTrolleySize(unsigned trolleySize) { _trolleySize = trolleySize; };
-    /**
-     * @brief Sets how much luggage each stack has.
-     *
-     * @param stackSize The new stack size.
-     */
-    void setStackSize(unsigned stackSize) { _stackSize = stackSize; };
+    void setSizes(unsigned cartSize, unsigned trolleySize, unsigned stackSize);
 
     /**
      * @brief Adds luggage to the cart.

@@ -1,6 +1,8 @@
 #ifndef AED_PROJ_2021_COMPANY_H
 #define AED_PROJ_2021_COMPANY_H
 
+class Company;
+
 #include "Airport.h"
 #include "Cart.h"
 #include "Client.h"
@@ -29,10 +31,6 @@ private:
      * @brief All the airports this company operates at.
      */
     std::vector<Airport *> _airports{};
-    /**
-     * @brief All the luggage carts this company operates.
-     */
-    std::vector<Cart *> _carts{};
 
     /**
      * @brief Loads all planes, their flights and their services from file.
@@ -87,10 +85,6 @@ public:
      * @return All the airports this company operates at.
      */
     std::vector<Airport *> getAirports() const { return _airports; };
-    /**
-     * @return All the luggage carts this company operates.
-     */
-    std::vector<Cart *> getCarts() const { return _carts; };
 
     /**
      * @brief Creates a new plane.
@@ -234,31 +228,6 @@ public:
     void deleteAirport(Airport *airport);
 
     /**
-     * @brief Creates a new luggage cart.
-     *
-     * @details Also adds the cart to the _carts vector.
-     *
-     * @param flight The new cart's flight.
-     * @return A pointer to the newly created cart.
-     */
-    Cart *createCart(Flight *flight);
-    // TODO: This isn't actually working, and isn't being saved.
-    /**
-     * @brief Updates a cart with new information.
-     *
-     * @note If a string argument is left empty it won't be changed.
-     *       The same applies when an unsigned argument is equal to 0.
-     *       (IDs will always change the value.)
-     *
-     * @param cart The cart to update.
-     * @param newCartSize The new cart size.
-     * @param newTrolleySize The new trolley size.
-     * @param newStackSize The new stack size.
-     */
-    void updateCart(Cart *cart, unsigned newCartSize, unsigned newTrolleySize,
-                    unsigned newStackSize);
-
-    /**
      * @brief Finds a flight by its number.
      *
      * @param number The number of the flight we want to find.
@@ -282,14 +251,6 @@ public:
      * @return nullptr otherwise.
      */
     Airport *findAirport(std::string name);
-    /**
-     * @brief Finds a luggage cart by its flight.
-     *
-     * @param flight The flight of cart we want to find.
-     * @return A pointer to the cart if found.
-     * @return nullptr otherwise.
-     */
-    Cart *findCart(Flight *flight);
 };
 
 #endif // AED_PROJ_2021_COMPANY_H

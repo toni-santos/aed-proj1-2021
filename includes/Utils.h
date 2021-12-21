@@ -94,9 +94,9 @@ void printAirports(const std::vector<Airport *> &airports);
 /**
  * @brief Prints info about some luggage carts to the screen.
  *
- * @param carts The carts.
+ * @param flights The flights with which the carts are associated.
  */
-void printCarts(const std::vector<Cart *> &carts);
+void printCarts(const std::vector<Flight *> &flights);
 
 /**
  * @brief Prints info about a transport to the screen.

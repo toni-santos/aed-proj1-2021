@@ -54,6 +54,10 @@ private:
      * @brief This flight's plane.
      */
     Plane *_plane = nullptr;
+    /**
+     * @brief The cart associated with this flight.
+     */
+    Cart *_cart = nullptr;
 
     /**
      * @brief Generates a ticket for each seat on this plane.
@@ -122,6 +126,10 @@ public:
      * @return This flight's plane.
      */
     Plane *getPlane() const { return _plane; };
+    /**
+     * @return The cart associated with this flight.
+     */
+    Cart *getCart() const { return _cart; };
     /**
      * @return All of this flight's tickets, bought or otherwise.
      */

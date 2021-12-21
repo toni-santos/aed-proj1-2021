@@ -30,11 +30,19 @@ void Flight::deleteTickets() {
 Flight::Flight(unsigned id, unsigned number, unsigned duration, Airport *origin,
                Airport *dest, std::string departureDate, Plane *plane)
     : _id(id), _number(number), _origin(origin), _destination(dest),
-      _departureDate(departureDate), _duration(duration) {
+      _departureDate(departureDate), _duration(duration),
+      _cart(new Cart(this)) {
     setPlane(plane);
 };
 
-Flight::~Flight() { deleteTickets(); };
+Flight::~Flight() {
+    deleteTickets();
+
+    delete _cart;
+
+    for (Luggage *luggage : _storage)
+        delete luggage;
+};
 
 void Flight::setPlane(Plane *plane) {
     if (_plane)

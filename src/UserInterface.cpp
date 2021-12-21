@@ -190,7 +190,7 @@ void UserInterface::cBuyTicketsMenu(Company &comp) {
 
         if (autoLuggage == "Y" || autoLuggage == "y") {
             Luggage *luggage = new Luggage(ticket);
-            comp.findCart(flight)->addLuggage(luggage);
+            flight->getCart()->addLuggage(luggage);
 
             ticket->addLuggage(luggage);
         }
@@ -762,17 +762,17 @@ void UserInterface::eCartOptionsMenu() {
 void UserInterface::eCartReadMenu(Company &comp) {
     std::cout << CLEAR_SCREEN << COMPANY_NAME << " - Cart info\n\n";
 
-    printCarts(comp.getCarts());
+    printCarts(comp.getFlights());
     getInput("\nPress Enter to continue\n");
     _currentMenu = E_CART_OPTIONS;
 }
 void UserInterface::eCartUpdateMenu(Company &comp) {
     std::cout << CLEAR_SCREEN << COMPANY_NAME << " - Update cart\n\n";
 
-    unsigned id =
-        getNumberInput("Insert the ID of the cart you wish to update: ", 0,
-                       comp.getCarts().size() - 1);
-    Cart *cart = comp.getCarts().at(id);
+    unsigned id = getNumberInput(
+        "Insert the ID of the flight whose cart you wish to update: ", 0,
+        comp.getFlights().size() - 1);
+    Cart *cart = comp.getFlights().at(id)->getCart();
 
     std::cout << "Current cart size: " << cart->getCartSize() << '\n';
     unsigned newCartSize =
@@ -786,7 +786,7 @@ void UserInterface::eCartUpdateMenu(Company &comp) {
     unsigned newStackSize =
         getNumberInput("New stack size (0 to keep current value): ", 0);
 
-    comp.updateCart(cart, newCartSize, newTrolleySize, newStackSize);
+    cart->setSizes(newCartSize, newTrolleySize, newStackSize);
 
     std::cout << "\nThe changes have been saved!\n";
     getInput("Press Enter to continue\n");
